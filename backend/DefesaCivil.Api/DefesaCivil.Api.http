@@ -1,0 +1,6 @@
+@DefesaCivil.Api_HostAddress = http://localhost:5105
+
+GET {{DefesaCivil.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
