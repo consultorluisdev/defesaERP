@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#f97316" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function () {
+        try {
+          var k = "defesa-theme";
+          var v = localStorage.getItem(k);
+          var root = document.documentElement;
+          if (v === "light") {
+            root.classList.remove("dark");
+            root.style.colorScheme = "light";
+          } else {
+            root.classList.add("dark");
+            root.style.colorScheme = "dark";
+          }
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+          document.documentElement.style.colorScheme = "dark";
+        }
+      })();
+    </script>
+    <title>Defesa Civil</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

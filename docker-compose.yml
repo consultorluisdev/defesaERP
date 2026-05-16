@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: defesa-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: defesa_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend/DefesaCivil.Api
+      dockerfile: Dockerfile
+    container_name: defesa-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend/defesa-web
+      dockerfile: Dockerfile
+    container_name: defesa-frontend
+    restart: always
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./frontend/defesa-web:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+    depends_on:
+      - backend
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: defesa-portainer
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  postgres_data:
+  portainer_data:

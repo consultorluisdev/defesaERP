@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/DefesaCivil.Api.props" />
+</Project>
