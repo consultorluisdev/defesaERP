@@ -51,8 +51,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         };
         loadStoredData();
     }, []);
+
     const login = async (email: string, password: string) => {
-        try{
+        try {
             setError(null);
             const response = await api.post('/Auth/login', {
                 email,
@@ -60,47 +61,43 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             });
 
             const { token } = response.data;
-            const user = {
-                id: email,
-                email,
-                name: email,
-            };
 
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify({ id: email, email, name: email }));
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-            setUser(user);
-            return { success: true};
-        }catch(error : any){
+            setUser({ id: email, email, name: email });
+            return { success: true };
+        } catch (error: any) {
             const message = error.response?.data?.message || error.response?.data || 'Erro ao fazer login';
             setError(message);
-            return{ success: false, error: message };
-            
+            return { success: false, error: message };
         }
     };
+
     const register = async (userData: { email: string; password: string; name?: string; role?: string }) => {
-        try{
+        try {
             setError(null);
             await api.post('/Auth/register', {
                 email: userData.email,
                 passwordHash: userData.password,
             });
             return { success: true };
-        }catch (error: any){
+        } catch (error: any) {
             const message = error.response?.data?.message || error.response?.data || 'Erro ao registrar';
             setError(message);
             return { success: false, error: message };
         }
-
     };
+
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         delete api.defaults.headers.common['Authorization'];
         setUser(null);
     };
-    return(
+
+    return (
         <AuthContext.Provider value={{
             user,
             loading,

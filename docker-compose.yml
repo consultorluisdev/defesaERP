@@ -20,6 +20,9 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=defesa_db;Username=postgres;Password=DEFINIDA_VIA_ENV"
     depends_on:
       - postgres
 
@@ -30,14 +33,18 @@ services:
     container_name: defesa-frontend
     restart: always
     ports:
-      - "3000:5173"
-    volumes:
-      - ./frontend/defesa-web:/app
-      - /app/node_modules
-    environment:
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+      - "3000:80"
     depends_on:
       - backend
+
+  monitoramento:
+    build:
+      context: ./backend/monitoramento-api
+      dockerfile: Dockerfile
+    container_name: defesa-monitoramento
+    restart: always
+    ports:
+      - "8000:8000"
 
   portainer:
     image: portainer/portainer-ce:latest

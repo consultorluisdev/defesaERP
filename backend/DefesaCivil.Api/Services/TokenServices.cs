@@ -8,22 +8,36 @@ namespace DefesaCivil.Api.Services;
 
 public class TokenService
 {
+    private readonly IConfiguration _configuration;
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     public string GenerateToken(User user)
     {
-        
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JWT_KEY_DEFINIDA_VIA_AMBIENTE"));
+        var jwtKey = _configuration["Jwt:Key"] ?? "JWT_KEY_DEFINIDA_VIA_AMBIENTE";
+        var jwtIssuer = _configuration["Jwt:Issuer"] ?? "DefesaCivilApi";
+        var jwtAudience = _configuration["Jwt:Audience"] ?? "DefesaCivilApiUsers";
+        var expireDays = int.Parse(_configuration["Jwt:ExpireDays"] ?? "7");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
             new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
 
         var token = new JwtSecurityToken(
+            issuer: jwtIssuer,
+            audience: jwtAudience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.UtcNow.AddDays(expireDays),
             signingCredentials: creds
         );
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-}   
+}

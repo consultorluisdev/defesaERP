@@ -10,4 +10,14 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  server: {
+    host: true,
+    watch: {
+      usePolling: true,
+      interval: 500,
+    },
+    hmr: {
+      overlay: true,
+    },
+  },
 })
