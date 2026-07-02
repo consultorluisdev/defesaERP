@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "7GchCXYES/luUKuLhk77d9w1lJjx3k1GRUjEavA5toKRlvX0oWtgIv50vbyJkMpxR/8ZHmAwFM98OPZ3Ok7MSg==",
+  "dgSpecHash": "LG19jN4lNxacg78VrVZIdzipnrsQfoWdFWL5wF/BXNGwRNZGqytiQfjfhNS7G2JSfET7GC9KNB8rp4mzuqw8RA==",
   "success": true,
   "projectFilePath": "/home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/DefesaCivil.Api.csproj",
   "expectedPackageFiles": [
     "/home/luis/.nuget/packages/bcrypt.net-next/4.1.0/bcrypt.net-next.4.1.0.nupkg.sha512",
     "/home/luis/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
+    "/home/luis/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.0/microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.aspnetcore.openapi/8.0.26/microsoft.aspnetcore.openapi.8.0.26.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.codeanalysis.analyzers/3.3.3/microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
@@ -32,6 +33,8 @@
     "/home/luis/.nuget/packages/microsoft.identitymodel.abstractions/8.17.0/microsoft.identitymodel.abstractions.8.17.0.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.17.0/microsoft.identitymodel.jsonwebtokens.8.17.0.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.identitymodel.logging/8.17.0/microsoft.identitymodel.logging.8.17.0.nupkg.sha512",
+    "/home/luis/.nuget/packages/microsoft.identitymodel.protocols/7.0.3/microsoft.identitymodel.protocols.7.0.3.nupkg.sha512",
+    "/home/luis/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/7.0.3/microsoft.identitymodel.protocols.openidconnect.7.0.3.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.identitymodel.tokens/8.17.0/microsoft.identitymodel.tokens.8.17.0.nupkg.sha512",
     "/home/luis/.nuget/packages/microsoft.openapi/1.6.14/microsoft.openapi.1.6.14.nupkg.sha512",
     "/home/luis/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",

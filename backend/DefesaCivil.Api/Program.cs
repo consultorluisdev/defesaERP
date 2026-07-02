@@ -1,20 +1,46 @@
+using System.Text;
 using DefesaCivil.Api.Data;
 using DefesaCivil.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+var connectionString = builder.Configuration.GetConnectionString("Default") ??
+    "Host=localhost;Port=5432;Database=defesa_db;Username=postgres;Password=postgres";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql("Host=postgres;Port=5432;Database=defesa_db;Username=postgres;Password=postgres"));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication();
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "DEFESA_CIVIL_SUPER_SECRETA_2026_123456";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "DefesaCivilApi";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "DefesaCivilApiUsers";
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtIssuer,
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+        };
+    });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
@@ -27,6 +53,8 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader();
         });
 });
+
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -43,8 +71,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
-// 🔥 WAIT DATABASE (CORRETO E LIMPO)
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

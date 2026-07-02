@@ -21,7 +21,7 @@ import {
     FaWarehouse,
 } from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext";
-import "./Siderbar.css";
+import "./Sidebar.css";
 
 type MenuItem = {
     Icon: IconType;

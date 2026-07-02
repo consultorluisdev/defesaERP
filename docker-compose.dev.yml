@@ -27,13 +27,17 @@ services:
       - postgres
 
   frontend:
-    build:
-      context: ./frontend/defesa-web
-      dockerfile: Dockerfile
-    container_name: defesa-frontend
-    restart: always
+    image: node:22-alpine
+    container_name: defesa-frontend-dev
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
     ports:
-      - "3000:80"
+      - "3000:5173"
+    volumes:
+      - ./frontend/defesa-web:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
     depends_on:
       - backend
 

@@ -220,3 +220,7 @@
 /home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/obj/Debug/net8.0/DefesaCivil.Api.pdb
 /home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/obj/Debug/net8.0/DefesaCivil.Api.genruntimeconfig.cache
 /home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/obj/Debug/net8.0/ref/DefesaCivil.Api.dll
+/home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/obj/Debug/net8.0/DefesaCivil.Api.sourcelink.json

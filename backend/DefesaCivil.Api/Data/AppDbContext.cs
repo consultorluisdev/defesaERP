@@ -10,4 +10,9 @@ public class AppDbContext : DbContext
     base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Alerta> Alertas { get; set; }
+    public DbSet<Ocorrencia> Ocorrencias { get; set; }
+    public DbSet<Equipe> Equipes { get; set; }
+    public DbSet<Abrigo> Abrigos { get; set; }
+    public DbSet<Cidade> Cidades { get; set; }
 } 

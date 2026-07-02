@@ -18,4 +18,6 @@ COPY --from=build /app .
 # Expor porta
 EXPOSE 8080
 
+ENV ASPNETCORE_URLS=http://+:8080
+
 ENTRYPOINT ["dotnet", "DefesaCivil.Api.dll"]

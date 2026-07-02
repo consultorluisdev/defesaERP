@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from "./Siderbar/Siderbar";
+import Sidebar from "./Sidebar/Sidebar";
 import Topbar from "./Topbar/Topbar";
 import "./Layout.css";
 

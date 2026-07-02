@@ -1,18 +1,25 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
 public class MonitoramentoController : ControllerBase
 {
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public MonitoramentoController(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
+    }
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var http = new HttpClient();
+        var http = _httpClientFactory.CreateClient();
 
-        var response = await http.GetAsync("https://monitoramento:8000/monitoramento");
+        var response = await http.GetAsync("http://monitoramento:8000/monitoramento");
         var content = await response.Content.ReadAsStringAsync();
 
-        return Ok(content);
-
-    }   
+        return Content(content, "application/json", System.Text.Encoding.UTF8);
+    }
 }
