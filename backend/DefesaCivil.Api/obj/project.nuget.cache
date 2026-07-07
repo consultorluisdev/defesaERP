@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "LG19jN4lNxacg78VrVZIdzipnrsQfoWdFWL5wF/BXNGwRNZGqytiQfjfhNS7G2JSfET7GC9KNB8rp4mzuqw8RA==",
+  "dgSpecHash": "zzACQR1RMctd1//kY8SnoZzV8X5UuedpEWn2CwOnPo2/XTqlPFOpodWMo6VuYLGfySadE9z9eQCu6Rgch/+ZSQ==",
   "success": true,
   "projectFilePath": "/home/luis/dev-lf/DefesaERP/backend/DefesaCivil.Api/DefesaCivil.Api.csproj",
   "expectedPackageFiles": [
