@@ -21,14 +21,14 @@ public class AppDbContext : DbContext
         .IsUnique();
         
         modelBuilder.Entity<Ocorrencias>()
-        .HasIndex(o => o.Status)
+        .HasIndex(o => o.Status);
 
         modelBuilder.Entity<Ocorrencias>()
-        .HasIndex(o => o.Cidade)
+        .HasIndex(o => o.Cidade);
 
 
         modelBuilder.Entity<Ocorrencias>()
-        .HasIndex(o => o.Prioridade)        
+        .HasIndex(o => o.Prioridade);        
 
     }
 } 

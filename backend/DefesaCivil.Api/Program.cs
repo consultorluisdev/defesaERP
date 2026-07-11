@@ -91,4 +91,8 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+app.MapControllers();
+app.UseAuthentication();
+app.UseCors("AllowReactApp");
+app.UseHttpsRedirection();
 app.Run();
