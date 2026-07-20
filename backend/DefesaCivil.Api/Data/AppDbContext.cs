@@ -11,6 +11,10 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Ocorrencias> Ocorrencias { get; set; }
+    public DbSet<Alerta> Alertas { get; set; }
+    public DbSet<Equipe> Equipes { get; set; }
+    public DbSet<Abrigo> Abrigos { get; set; }
+    public DbSet<Cidade> Cidades { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -26,9 +30,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ocorrencias>()
         .HasIndex(o => o.Cidade);
 
-
         modelBuilder.Entity<Ocorrencias>()
-        .HasIndex(o => o.Prioridade);        
-
+        .HasIndex(o => o.Prioridade);
     }
-} 
+}

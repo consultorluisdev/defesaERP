@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { ThemeToggle } from "../../ThemeToggle/ThemeToggle";
 import "./Topbar.css";
 
 type TopbarProps = {
-    /** Abre o drawer do menu em telas pequenas */
     onOpenMobileNav?: () => void;
 };
 
+const PAGE_NAMES: Record<string, string> = {
+    "/dashboard": "Dashboard",
+    "/ocorrencias": "Ocorrências",
+    "/alertas": "Alertas",
+    "/radar": "Radar",
+    "/riscos": "Riscos",
+    "/equipes": "Equipes",
+    "/abrigo": "Abrigos",
+    "/viaturas": "Viaturas",
+    "/relatorios": "Relatórios",
+    "/analises": "Análises",
+    "/ia-predict-ia": "IA Predict",
+    "/perfis": "Perfis",
+    "/configuracoes": "Configurações",
+};
+
 const Topbar: React.FC<TopbarProps> = ({ onOpenMobileNav }) => {
+    const location = useLocation();
     const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {
@@ -33,6 +50,8 @@ const Topbar: React.FC<TopbarProps> = ({ onOpenMobileNav }) => {
         });
     };
 
+    const pageName = PAGE_NAMES[location.pathname] ?? "Defesa Civil";
+
     return (
         <header className="topbar">
             <div className="topbar-left">
@@ -47,7 +66,7 @@ const Topbar: React.FC<TopbarProps> = ({ onOpenMobileNav }) => {
                     </button>
                 ) : null}
                 <div className="page-info">
-                    <h2>Dashboard</h2>
+                    <h2>{pageName}</h2>
                     <p className="page-info-sub">
                         {formatDate(currentTime)} — {formatTime(currentTime)}
                     </p>
