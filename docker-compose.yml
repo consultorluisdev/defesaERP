@@ -37,11 +37,11 @@ services:
     depends_on:
       - backend
 
-  monitoramento:
+  defesa-ia:
     build:
-      context: ./backend/monitoramento-api
+      context: ./backend/DefesaIA-api
       dockerfile: Dockerfile
-    container_name: defesa-monitoramento
+    container_name: defesa-ia
     restart: always
     ports:
       - "8000:8000"

@@ -17,7 +17,7 @@ public class MonitoramentoController : ControllerBase
     {
         var http = _httpClientFactory.CreateClient();
 
-        var response = await http.GetAsync("http://monitoramento:8000/monitoramento");
+        var response = await http.GetAsync("http://defesa-ia:8000/monitoramento");
         var content = await response.Content.ReadAsStringAsync();
 
         return Content(content, "application/json", System.Text.Encoding.UTF8);

@@ -1,6 +1,7 @@
 using System.Text;
 using DefesaCivil.Api.Data;
 using DefesaCivil.Api.Services;
+using DefesaERP.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<OcorrenciaService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -58,13 +60,13 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-app.UseCors("AllowFrontend");
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -91,8 +93,4 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.MapControllers();
-app.UseAuthentication();
-app.UseCors("AllowReactApp");
-app.UseHttpsRedirection();
 app.Run();

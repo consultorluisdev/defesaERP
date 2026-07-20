@@ -54,12 +54,12 @@ const menuItems: MenuItem[] = [
     { Icon: FaCog, label: "Configurações", path: "/configuracoes", section: "sistema" },
 ];
 
-type SiderbarProps = {
+type SidebarProps = {
     /** Drawer aberto em viewport mobile (≤768px). */
     mobileOpen?: boolean;
 };
 
-const Siderbar: React.FC<SiderbarProps> = ({ mobileOpen = false }) => {
+const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
@@ -176,4 +176,4 @@ const Siderbar: React.FC<SiderbarProps> = ({ mobileOpen = false }) => {
     );
 };
 
-export default Siderbar;
+export default Sidebar;

@@ -89,7 +89,7 @@ const Dashboard: React.FC = () => {
       Alto: { bg: 'bg-yellow-500', text: 'text-yellow-600', border: 'border-yellow-200' },
       Moderado: { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' },
     };
-    const config = configs[nivel as keyof typeof configs];
+    const config = configs[nivel as keyof typeof configs] || { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200' };
     return (
       <span className={[`px-2 py-1 rounded-full text-xs font-semibold`, config.bg, config.text, config.border].join(' ')}>
         {nivel}
@@ -157,7 +157,7 @@ const Dashboard: React.FC = () => {
           <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Clima Atual</h3>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Temperatura atual</p>
           <div className="flex items-center justify-end gap-3 mt-2 text-gray-500">
-            <span className="flex items-center gap-1"><Wind className="w-4 h-4" /> {d?.temperatura ?? '--'}°C</span>
+            <span className="flex items-center gap-1"><Activity className="w-4 h-4" /> {d?.temperatura ?? '--'}°C</span>
             <span className="flex items-center gap-1"><Droplets className="w-4 h-4" /> {d?.umidade ?? '--'}%</span>
             <span className="flex items-center gap-1"><Wind className="w-4 h-4" /> {d?.velocidadeVento ?? '--'} km/h</span>
           </div>
