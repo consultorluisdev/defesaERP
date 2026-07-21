@@ -1,5 +1,6 @@
 using DefesaCivil.Api.DTOs.Dashboard;
 using DefesaCivil.Api.Data;
+using DefesaCivil.Api.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DefesaCivil.Api.Services
@@ -21,7 +22,7 @@ namespace DefesaCivil.Api.Services
         public async Task<DashboardResponseDto> GetDashboardDataAsync()
         {
             var alertasAtivos = await _context.Alertas
-                .Where(a => a.Status == "Ativo" || a.Status == "EmAndamento")
+                .Where(a => a.Status == StatusAlerta.Ativo || a.Status == StatusAlerta.Monitorando)
                 .CountAsync();
 
             var ocorrenciasAbertas = await _context.Ocorrencias
@@ -38,16 +39,16 @@ namespace DefesaCivil.Api.Services
                 .CountAsync();
 
             var ultimosAlertas = await _context.Alertas
-                .OrderByDescending(a => a.DataHora)
+                .OrderByDescending(a => a.CreatedAt)
                 .Take(5)
                 .Select(a => new UltimoAlertaDto
                 {
                     Id = a.Id,
                     Alerta = a.Descricao,
-                    Tempo = a.DataHora.ToString("g"),
-                    Cidade = a.Cidade!.Nome,
-                    Nivel = a.Nivel,
-                    DataHora = a.DataHora
+                    Tempo = a.CreatedAt.ToString("g"),
+                    Cidade = a.Cidade,
+                    Nivel = a.Nivel.ToString(),
+                    DataHora = a.CreatedAt
                 })
                 .ToListAsync();
 
