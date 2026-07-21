@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DefesaCivil.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9cde58feb8f6626875fec09c12bf163bba5e339c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eb7f0df8cfc2222a3b4efc5bb5c81a7898f958cf")]
 [assembly: System.Reflection.AssemblyProductAttribute("DefesaCivil.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DefesaCivil.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

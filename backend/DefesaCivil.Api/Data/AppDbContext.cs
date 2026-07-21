@@ -7,7 +7,8 @@ namespace DefesaCivil.Api.Data;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) :
-    base(options) { }
+    base(options)
+    { }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Ocorrencias> Ocorrencias { get; set; }
@@ -23,7 +24,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ocorrencias>()
         .HasIndex(o => o.NumeroProtocolo)
         .IsUnique();
-        
+
         modelBuilder.Entity<Ocorrencias>()
         .HasIndex(o => o.Status);
 
@@ -32,5 +33,12 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Ocorrencias>()
         .HasIndex(o => o.Prioridade);
+
+        modelBuilder.Entity<Alerta>(entity =>
+        {
+            entity.Property(a => a.Tipo).HasConversion<string>();
+            entity.Property(a => a.Nivel).HasConversion<string>();
+            entity.Property(a => a.Status).HasConversion<string>();
+        });
     }
 }
