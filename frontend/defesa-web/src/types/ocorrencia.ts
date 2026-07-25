@@ -29,7 +29,7 @@ export interface Ocorrencia {
     telefoneSolicitante: string | null;
     nomeSolicitante: string | null;
     observacoes: string | null;
-    createAt: string;
+    createdAt: string;
     updateAt: string;
 }
 

@@ -39,12 +39,12 @@ services:
 
   defesa-ia:
     build:
-      context: ./backend/DefesaIA-api
+      context: ./backend/DefesaIA-api/monitor-agent
       dockerfile: Dockerfile
-    container_name: defesa-ia
-    restart: always
+    container_name: defesa-monitor-agent
+    restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8001"
 
   portainer:
     image: portainer/portainer-ce:latest
