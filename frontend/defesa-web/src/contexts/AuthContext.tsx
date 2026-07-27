@@ -45,7 +45,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             if (token && userData) {
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                setUser(JSON.parse(userData));
+                try {
+                    setUser(JSON.parse(userData));
+                } catch {
+                    localStorage.removeItem('user');
+                }
             }
             setLoading(false);
         };

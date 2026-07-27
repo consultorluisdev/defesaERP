@@ -5,7 +5,7 @@ interface Props{
   onChange: (filtros: AlertaFiltros) => void;
 }
 
-export function AlertaFiltres({filtros, onChange }: Props){
+export function AlertaFilters({filtros, onChange }: Props){
   return (
     <div className="flex flex-wrap gap-3 items-center mb-4">
       <input
@@ -15,7 +15,7 @@ export function AlertaFiltres({filtros, onChange }: Props){
         className="bg-[#111a2c] border border-[#1e293b] rounded-lg px-3 py-2 text-sm"
       />
       <select
-        value={filtros.busca ?? ""}
+        value={filtros.status ?? "Todos"}
         onChange={(e) =>
           onChange({
             ...filtros,
@@ -25,8 +25,8 @@ export function AlertaFiltres({filtros, onChange }: Props){
         className="bg-[#111a2c] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 w-64 outline-none focus:border-amber-500"
       >
         <option value="Todos">Todos os status</option>
-        <option value="Ativos">Ativos</option>
-        <option value="Monitoramento">Monitoramento</option>
+        <option value="Ativo">Ativo</option>
+        <option value="Monitorando">Monitorando</option>
         <option value="Encerrado">Encerrado</option>
         <option value="Cancelado">Cancelado</option>
       </select>

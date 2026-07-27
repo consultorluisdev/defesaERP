@@ -2,11 +2,12 @@ import { api } from "./api";
 import {
   Alerta,
   CreateAlertaDto,
+  UpdateAlertaDto,
   NivelAlerta,
 } from "../types/alerta";
 
 
-const BASE_URL = "/api/alertas";
+const BASE_URL = "/alertas";
 
 export const alertaService = {
   async listar(): Promise<Alerta[]> {
@@ -21,6 +22,11 @@ export const alertaService = {
 
   async criar(dto: CreateAlertaDto): Promise<Alerta> {
     const { data } = await api.post<Alerta>(BASE_URL, dto);
+    return data;
+  },
+
+  async update(id: number, dto: UpdateAlertaDto): Promise<Alerta> {
+    const { data } = await api.put<Alerta>(`${BASE_URL}/${id}`, dto);
     return data;
   },
 

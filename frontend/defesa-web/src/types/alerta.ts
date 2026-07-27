@@ -10,9 +10,26 @@ export type TipoAlerta =
 | "Incendio"
 | "Outros";
 
+export const TiposAlerta: TipoAlerta[] = [
+  "ChuvaIntensa",
+  "Enchente",
+  "Alagamento",
+  "Enxurrada",
+  "Deslizamento",
+  "Vendaval",
+  "Microexplosao",
+  "Granizo",
+  "Incendio",
+  "Outros",
+];
+
 export type NivelAlerta = 'Baixo' | 'Moderado' | 'Alto' | 'Critico';
 
+export const NiveisAlerta: NivelAlerta[] = ['Baixo', 'Moderado', 'Alto', 'Critico'];
+
 export type StatusAlerta = 'Ativo' | 'Monitorando' | 'Encerrado' | 'Cancelado';
+
+export const StatusAlertaValues: StatusAlerta[] = ['Ativo', 'Monitorando', 'Encerrado', 'Cancelado'];
 
 export interface Alerta {
   id: number;
@@ -29,7 +46,7 @@ export interface Alerta {
   responsavel?: string | null;
   observacoes?: string | null;
   createdAt: string;
-  updateAt?: string | null;
+  updatedAt?: string | null;
 }
 
 export interface CreateAlertaDto {
@@ -50,10 +67,12 @@ export interface UpdateAlertaDto {
   descricao: string;
   tipo: TipoAlerta;
   nivel: NivelAlerta;
+  status?: StatusAlerta;
   cidade: string;
   latitude?: number;
   longitude?: number;
   dataInicio?: string;
+  dataFim?: string;
   responsavel?: string;
   observacoes?: string;
 }
