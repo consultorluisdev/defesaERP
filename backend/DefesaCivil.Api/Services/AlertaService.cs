@@ -107,5 +107,25 @@ namespace DefesaCivil.Api.Services
 
       return alertas.Select(AlertaResponseDto.FromEntity).ToList();
     }
+
+    public async Task<List<AlertaResponseDto>> GetByCidade(string cidade)
+    {
+      var alertas = await _context.Alertas
+        .Where(a => a.Cidade.ToLower().Contains(cidade.ToLower()))
+        .OrderByDescending(a => a.CreatedAt)
+        .ToListAsync();
+
+      return alertas.Select(AlertaResponseDto.FromEntity).ToList();
+    }
+
+    public async Task<bool> Delete(int id)
+    {
+      var alerta = await _context.Alertas.FindAsync(id);
+      if (alerta is null) return false;
+
+      _context.Alertas.Remove(alerta);
+      await _context.SaveChangesAsync();
+      return true;
+    }
   }
 }

@@ -52,8 +52,10 @@ namespace DefesaCivil.Api.Services
                 })
                 .ToListAsync();
 
-            var equipesDb = await _context.Equipes
+            var equipesDb = (await _context.Equipes
                 .Where(e => e.Status == "Em Campo" || e.Status == "EmAndamento")
+                .Select(e => new { e.Id, e.Nome, e.Status, e.LocalizacaoAtual })
+                .ToListAsync())
                 .Select(e => new EquipeCampoDto
                 {
                     Id = e.Id,
@@ -62,7 +64,7 @@ namespace DefesaCivil.Api.Services
                     Local = e.LocalizacaoAtual,
                     Icone = GetEquipeIcone(e.Nome)
                 })
-                .ToListAsync();
+                .ToList();
 
             var riscoGeral = CalcularRiscoGeral(alertasAtivos, ocorrenciasAbertas);
             var indiceRisco = CalcularIndiceRisco(alertasAtivos, ocorrenciasAbertas);

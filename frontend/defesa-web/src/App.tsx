@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import { OcorrenciaPage } from "./pages/OcorrenciaPage";
+import { AlertasPage } from "./pages/AlertasPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PrivateRoute } from "./routes/PrivateRoute";
@@ -37,7 +38,7 @@ function App() {
                         >
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/ocorrencias" element={<OcorrenciaPage />} />
-                            <Route path="/alertas" element={<Placeholder title="Alertas" />} />
+                            <Route path="/alertas" element={<AlertasPage />} />
                             <Route path="/radar" element={<Placeholder title="Radar" />} />
                             <Route path="/riscos" element={<Placeholder title="Riscos" />} />
                             <Route path="/equipes" element={<Placeholder title="Equipes" />} />

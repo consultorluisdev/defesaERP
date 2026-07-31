@@ -3,9 +3,9 @@ import { MapPin, Calendar, User } from "lucide-react";
 
 const NIVEL_STYLE: Record<string, string> = {
   Critico: "bg-red-950 text-red-400 border border-red-900",
-  Alto: "bg-red-950 text-orange-400 border border-orange-900",
-  Moderado: "bg-yellow-950 text-red-400 border border-yellow-900",
-  Baixo: "bg-green-950 text-red-400 border border-green-900",
+  Alto: "bg-orange-950 text-orange-400 border border-orange-900",
+  Moderado: "bg-yellow-950 text-yellow-400 border border-yellow-900",
+  Baixo: "bg-green-950 text-green-400 border border-green-900",
 };
 
 const STATUS_STYLE: Record<string, string> = {

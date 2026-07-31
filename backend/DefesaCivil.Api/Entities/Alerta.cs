@@ -33,7 +33,8 @@ namespace DefesaCivil.Api.Entities
     {
       ChuvaIntensa,
       Enchente,
-      Enxurada,
+      Alagamento,
+      Enxurrada,
       Deslizamento,
       Vendaval,
       Microexplosao,

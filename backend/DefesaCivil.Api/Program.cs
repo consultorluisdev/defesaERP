@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using DefesaCivil.Api.Data;
 using DefesaCivil.Api.Services;
 using DefesaERP.Services;
@@ -8,7 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var connectionString = builder.Configuration.GetConnectionString("Default") ??
     "Host=localhost;Port=5432;Database=defesa_db;Username=postgres;Password=DEFINIDA_VIA_ENV";

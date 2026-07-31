@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
   Alerta,
-  CreateAlertaDto,
   UpdateAlertaDto,
+  TipoAlerta,
+  NivelAlerta,
   TiposAlerta,
   NiveisAlerta,
   StatusAlertaValues,
@@ -15,6 +16,27 @@ interface AlertaFormProps {
   onCancel: () => void;
 }
 
+interface AlertaFormData {
+  titulo: string;
+  descricao: string;
+  tipo: TipoAlerta | "";
+  nivel: NivelAlerta | "";
+  status?: string;
+  cidade: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  dataInicio: string;
+  dataFim?: string;
+  responsavel?: string;
+  observacoes?: string;
+}
+
+function toLocalInputValue(iso: string) {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export const AlertaForm: React.FC<AlertaFormProps> = ({
   alerta,
   onSuccess,
@@ -22,15 +44,13 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<CreateAlertaDto | UpdateAlertaDto>({
+  const [formData, setFormData] = useState<AlertaFormData>({
     titulo: "",
     descricao: "",
     tipo: "",
     nivel: "",
     cidade: "",
-    latitude: null,
-    longitude: null,
-    dataInicio: new Date().toISOString().slice(0, 16),
+    dataInicio: toLocalInputValue(new Date().toISOString()),
     responsavel: "",
     observacoes: "",
     ...(alerta ? { status: alerta.status, dataFim: alerta.dataFim || "" } : {}),
@@ -47,10 +67,8 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
         cidade: alerta.cidade,
         latitude: alerta.latitude,
         longitude: alerta.longitude,
-        dataInicio: new Date(alerta.dataInicio).toISOString().slice(0, 16),
-        dataFim: alerta.dataFim
-          ? new Date(alerta.dataFim).toISOString().slice(0, 16)
-          : "",
+        dataInicio: toLocalInputValue(alerta.dataInicio),
+        dataFim: alerta.dataFim ? toLocalInputValue(alerta.dataFim) : "",
         responsavel: alerta.responsavel || "",
         observacoes: alerta.observacoes || "",
       });
@@ -63,19 +81,46 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
     >,
   ) => {
     const { name, value } = e.target;
+    if (name === "latitude" || name === "longitude") {
+      const parsed = value === "" ? null : Number(value);
+      setFormData((prev) => ({ ...prev, [name]: parsed }));
+      return;
+    }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.tipo || !formData.nivel) {
+      setError("Selecione o tipo e o nível do alerta.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
+    const base = {
+      titulo: formData.titulo,
+      descricao: formData.descricao,
+      tipo: formData.tipo,
+      nivel: formData.nivel,
+      cidade: formData.cidade,
+      latitude: formData.latitude ?? undefined,
+      longitude: formData.longitude ?? undefined,
+      dataInicio: formData.dataInicio,
+      responsavel: formData.responsavel,
+      observacoes: formData.observacoes,
+    };
+
     try {
       if (alerta) {
-        await alertaService.update(alerta.id, formData as UpdateAlertaDto);
+        await alertaService.update(alerta.id, {
+          ...base,
+          status: formData.status as UpdateAlertaDto["status"],
+          dataFim: formData.dataFim || undefined,
+        });
       } else {
-        await alertaService.criar(formData as CreateAlertaDto);
+        await alertaService.criar(base);
       }
       onSuccess();
     } catch (err: any) {
@@ -171,7 +216,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               </label>
               <select
                 name="status"
-                value={(formData as UpdateAlertaDto).status}
+                value={formData.status || ""}
                 onChange={handleChange}
                 required
                 className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
@@ -220,7 +265,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               <input
                 type="datetime-local"
                 name="dataFim"
-                value={(formData as UpdateAlertaDto).dataFim || ""}
+                value={formData.dataFim || ""}
                 onChange={handleChange}
                 className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
               />
