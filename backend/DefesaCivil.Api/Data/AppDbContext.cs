@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using DefesaCivil.Api.Entities;
 using DefesaCivil.Api.Models;
+using DefesaERP.Entities;
+using DefesaERP.DTOs;
 
 namespace DefesaCivil.Api.Data;
 
