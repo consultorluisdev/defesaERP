@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: defesa_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
@@ -22,7 +22,8 @@ services:
       - "8080:8080"
     environment:
       ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=defesa_db;Username=postgres;Password=DEFINIDA_VIA_ENV"
+      ConnectionStrings__Default: "Host=postgres;Port=5432;Database=defesa_db;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
+      Jwt__Key: ${JWT_KEY:?Defina a variavel JWT_KEY no .env}
     depends_on:
       - postgres
 

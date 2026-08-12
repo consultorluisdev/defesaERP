@@ -16,8 +16,10 @@ public class MonitoramentoController : ControllerBase
     public async Task<IActionResult> Get()
     {
         var http = _httpClientFactory.CreateClient();
+        http.Timeout = TimeSpan.FromSeconds(10);
 
-        var response = await http.GetAsync("http://defesa-ia:8000/monitoramento");
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        var response = await http.GetAsync("http://defesa-ia:8000/monitoramento", cts.Token);
         var content = await response.Content.ReadAsStringAsync();
 
         return Content(content, "application/json", System.Text.Encoding.UTF8);

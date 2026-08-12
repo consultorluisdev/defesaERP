@@ -18,7 +18,6 @@ namespace DefesaCivil.Api.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<DashboardResponseDto>> GetDashboard()
         {
             try

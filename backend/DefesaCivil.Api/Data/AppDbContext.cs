@@ -36,6 +36,26 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Ocorrencias>()
         .HasIndex(o => o.Prioridade);
 
+        // Configuraçoes de Alerta
+        modelBuilder.Entity<Alerta>()
+        .HasIndex(a => a.Cidade);
+
+        modelBuilder.Entity<Alerta>()
+       .HasIndex(a => a.Status);
+
+        modelBuilder.Entity<Alerta>()
+        .HasIndex(a => a.Nivel);
+
+        // configurações de equipes
+        modelBuilder.Entity<Equipe>()
+       .HasIndex(e => e.Municipio);
+
+        modelBuilder.Entity<Equipe>()
+        .HasIndex(e => e.Status);
+
+        modelBuilder.Entity<Equipe>()
+       .HasIndex(e => e.Tipo);
+
         modelBuilder.Entity<Alerta>(entity =>
         {
             entity.Property(a => a.Tipo).HasConversion<string>();

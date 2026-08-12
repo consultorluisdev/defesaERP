@@ -1,6 +1,7 @@
 using DefesaCivil.Api.DTOs.Dashboard;
 using DefesaCivil.Api.Data;
 using DefesaCivil.Api.Entities;
+using DefesaERP.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DefesaCivil.Api.Services
@@ -26,11 +27,13 @@ namespace DefesaCivil.Api.Services
                 .CountAsync();
 
             var ocorrenciasAbertas = await _context.Ocorrencias
-                .Where(o => o.Status == "Aberto" || o.Status == "EmAndamento")
+                .Where(o => o.Status == OcorrenciaStatus.Aberta || o.Status == OcorrenciaStatus.EmAndamento)
                 .CountAsync();
 
             var equipesEmCampo = await _context.Equipes
-                .Where(e => e.Status == "Em Campo" || e.Status == "EmAndamento")
+                .Where(e => e.Status == StatusEquipe.EmAtendimento.ToString() ||
+                            e.Status == StatusEquipe.EmDeslocamento.ToString() ||
+                            e.Status == StatusEquipe.EmApoio.ToString())
                 .Select(e => e.Nome)
                 .ToListAsync();
 
@@ -53,16 +56,18 @@ namespace DefesaCivil.Api.Services
                 .ToListAsync();
 
             var equipesDb = (await _context.Equipes
-                .Where(e => e.Status == "Em Campo" || e.Status == "EmAndamento")
+                .Where(e => e.Status == StatusEquipe.EmAtendimento.ToString() ||
+                            e.Status == StatusEquipe.EmDeslocamento.ToString() ||
+                            e.Status == StatusEquipe.EmApoio.ToString())
                 .Select(e => new { e.Id, e.Nome, e.Status, e.LocalizacaoAtual })
                 .ToListAsync())
                 .Select(e => new EquipeCampoDto
                 {
                     Id = e.Id,
-                    Nome = e.Nome,
-                    Status = e.Status,
-                    Local = e.LocalizacaoAtual,
-                    Icone = GetEquipeIcone(e.Nome)
+                    Nome = e.Nome ?? string.Empty,
+                    Status = e.Status ?? string.Empty,
+                    Local = e.LocalizacaoAtual ?? string.Empty,
+                    Icone = GetEquipeIcone(e.Nome ?? string.Empty)
                 })
                 .ToList();
 

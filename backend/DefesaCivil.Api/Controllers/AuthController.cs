@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using DefesaCivil.Api.Services;
 using DefesaCivil.Api.Models;
 using DefesaCivil.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using DefesaCivil.Api.DTOs;
+using System.Security.Claims;
 
 namespace DefesaCivil.Api.Controllers;
 
@@ -21,6 +23,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
@@ -45,6 +48,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
@@ -56,8 +60,38 @@ public class AuthController : ControllerBase
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.PasswordHash, user.PasswordHash))
             return Unauthorized("Credenciais inválidas");
 
-        var token = _tokenService.GenerateToken(user);
+        var token = _tokenService.GenerateAccessToken(user);
+        var refreshToken = _tokenService.GenerateRefreshToken(user);
 
-        return Ok(new { token });
+        return Ok(new { token, refreshToken });
+    }
+
+    [HttpPost("refresh")]
+    [EnableRateLimiting("auth")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshDTO dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.RefreshToken))
+            return BadRequest("Refresh token é obrigatório");
+
+        var principal = _tokenService.ValidateToken(dto.RefreshToken);
+
+        if (principal == null)
+            return Unauthorized("Refresh token inválido ou expirado");
+
+        if (principal.FindFirst("token_type")?.Value != "refresh")
+            return Unauthorized("Token inválido");
+
+        var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null || !int.TryParse(userId, out var id))
+            return Unauthorized("Token inválido");
+
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+            return Unauthorized("Usuário não encontrado");
+
+        var token = _tokenService.GenerateAccessToken(user);
+        var refreshToken = _tokenService.GenerateRefreshToken(user);
+
+        return Ok(new { token, refreshToken });
     }
 }

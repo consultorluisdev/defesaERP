@@ -36,6 +36,40 @@
 - [ ] **Projeto de teste unitário** (xUnit) para `TokenService` e `AuthService`
 - [ ] **Projeto de teste de integração** para controllers com WebApplicationFactory + banco de teste
 
+## 🧾 Notas de Revisão do Backend — 12/08/2026
+
+### Corrigido nesta revisão
+
+- [x] **Rate limiting** nos endpoints de auth (`/Auth/login`, `/Auth/register`, `/Auth/refresh`) — 5 req/min por IP (429)
+- [x] **`Dashboard` sem `[AllowAnonymous]`** — agora exige token (frontend já envia via `api.ts`)
+- [x] **JWT com lifetime curto** (30 min) + **refresh token** (7 dias) em `/api/Auth/refresh` (stateless, sem tabela)
+- [x] **HttpClient com timeout** de 10s no `MonitoramentoController` (antes podia pendurar)
+- [x] **Usuário dedicado `defesa` no Postgres** (prod compose) — senha obrigatória via `${POSTGRES_PASSWORD:?}`; volume existente precisa ser recriado (`docker compose down -v`)
+- [x] **`Jwt:Key` e senha do DB fora do código** — ENV obrigatório (startup falha se ausente)
+- [x] **CORS via config**, `AllowedHosts` restrito, **HSTS/HTTPS**, **compilação 0 erros/0 warnings**
+- [x] **EquipesController/EquipeService** corrigidos e `EquipeService` no DI
+- [x] **Warnings de nulidade** eliminados (`OcorrenciaService`, `EquipeService`, `DashboardService`)
+- [x] **DashboardService**: comparações de status corrigidas para as constantes reais — antes retornava sempre 0/vazio
+- [x] **UpdateOcorrenciaDto**: update parcial preserva valor existente (`dto.X ?? ocorrencia.X`)
+
+### Pendências conhecidas
+
+- [ ] **FRONTEND — implementar fluxo de refresh token no Axios (PRÓXIMA NOITE)**
+  - Login já recebe `{ token, refreshToken }`, mas o frontend ignora o `refreshToken` (`AuthContext.tsx`)
+  - Access token agora expira em 30 min → usuário será deslogado sem renovação
+  - Fazer: guardar `refreshToken`, interceptor no Axios para tentar `/Auth/refresh` ao receber 401 e repetir a requisição original
+- [ ] **Refresh token stateless** — sem revogação/rotação persistida; para controle real, criar tabela `RefreshTokens` + migração
+- [ ] **Migrations** — `EnsureCreated()` não altera tabelas existentes (colunas/tabelas novas não são aplicadas em DB já criado)
+
+### Pontos de atenção levantados
+
+- [ ] **JWT Key hardcoded** como fallback em `Program.cs:30` e `TokenServices.cs:20` — mover 100% para ENV/user secrets
+- [ ] **Namespaces misturados** — `DefesaERP.*` (Equipes) vs `DefesaCivil.Api.*`; padronizar
+- [ ] **`GerarNumeroProtocolo`** usa `Count() + 1` — quebra sob concorrência; usar sequence do Postgres
+- [ ] **Dados mock** no DashboardService (cidades, equipes, clima) — falta integrar com `DefesaIA-api`
+- [ ] **`AuthController.Register`** recebe senha no campo `PasswordHash` — renomear para `Password`
+- [ ] **Sem testes** no backend
+
 ## 🐍 Monitoramento API (Python/FastAPI)
 
 - [ ] **requirements.txt** ou `pyproject.toml` com dependências fixadas

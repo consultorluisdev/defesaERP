@@ -1,0 +1,10 @@
+# Segredos / ambiente
+.env
+
+# .NET build artifacts
+**/bin/
+**/obj/
+
+# Python
+venv/
+__pycache__/

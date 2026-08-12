@@ -29,7 +29,7 @@ namespace DefesaERP.Services
             return ocorrencias.Select(ToResponseDto).ToList();
         }
 
-        public async Task<OcorrenciaResponseDto> GetById(int id)
+        public async Task<OcorrenciaResponseDto?> GetById(int id)
         {
             var ocorrencia = await _context.Ocorrencias
                 .FirstOrDefaultAsync(o => o.Id == id);
@@ -48,14 +48,14 @@ namespace DefesaERP.Services
                 Cidade = dto.Cidade,
                 Bairro = dto.Bairro,
                 Endereco = dto.Endereco,
-                Latitude = dto.Latitude,
-                Longitude = dto.Longitude,
+                Latitude = dto.Latitude ?? string.Empty,
+                Longitude = dto.Longitude ?? string.Empty,
                 Status = OcorrenciaStatus.Aberta,
                 Prioridade = dto.Prioridade,
-                Responsavel = dto.Responsavel,
-                TelefoneSolicitante = dto.TelefoneSolicitante,
-                NomeSolicitante = dto.NomeSolicitante,
-                Observacoes = dto.Observacoes,
+                Responsavel = dto.Responsavel ?? string.Empty,
+                TelefoneSolicitante = dto.TelefoneSolicitante ?? string.Empty,
+                NomeSolicitante = dto.NomeSolicitante ?? string.Empty,
+                Observacoes = dto.Observacoes ?? string.Empty,
                 DataHora = dto.DataHora,
                 CreateAt = DateTime.UtcNow,
                 UpdateAt = DateTime.UtcNow
@@ -66,7 +66,7 @@ namespace DefesaERP.Services
 
             return ToResponseDto(ocorrencia);
         }
-        public async Task<OcorrenciaResponseDto> Update(int id, UpdateOcorrenciaDto dto)
+        public async Task<OcorrenciaResponseDto?> Update(int id, UpdateOcorrenciaDto dto)
         {
             var ocorrencia = await _context.Ocorrencias
             .FirstOrDefaultAsync(o => o.Id == id);
@@ -74,19 +74,19 @@ namespace DefesaERP.Services
             if(ocorrencia == null)
                 return null;
 
-            ocorrencia.TipoOcorrencia = dto.TipoOcorrencia;
-            ocorrencia.Descricao = dto.Descricao;
-            ocorrencia.Cidade = dto.Cidade;
-            ocorrencia.Bairro = dto.Bairro;
-            ocorrencia.Endereco = dto.Endereco;
-            ocorrencia.Latitude = dto.Latitude;
-            ocorrencia.Longitude = dto.Longitude;
-            ocorrencia.Status = dto.Status;
-            ocorrencia.Prioridade = dto.Prioridade;
-            ocorrencia.Responsavel = dto.Responsavel;
-            ocorrencia.TelefoneSolicitante = dto.TelefoneSolicitante;
-            ocorrencia.NomeSolicitante = dto.NomeSolicitante;
-            ocorrencia.Observacoes = dto.Observacoes;
+            ocorrencia.TipoOcorrencia = dto.TipoOcorrencia ?? ocorrencia.TipoOcorrencia;
+            ocorrencia.Descricao = dto.Descricao ?? ocorrencia.Descricao;
+            ocorrencia.Cidade = dto.Cidade ?? ocorrencia.Cidade;
+            ocorrencia.Bairro = dto.Bairro ?? ocorrencia.Bairro;
+            ocorrencia.Endereco = dto.Endereco ?? ocorrencia.Endereco;
+            ocorrencia.Latitude = dto.Latitude ?? ocorrencia.Latitude;
+            ocorrencia.Longitude = dto.Longitude ?? ocorrencia.Longitude;
+            ocorrencia.Status = dto.Status ?? ocorrencia.Status;
+            ocorrencia.Prioridade = dto.Prioridade ?? ocorrencia.Prioridade;
+            ocorrencia.Responsavel = dto.Responsavel ?? ocorrencia.Responsavel;
+            ocorrencia.TelefoneSolicitante = dto.TelefoneSolicitante ?? ocorrencia.TelefoneSolicitante;
+            ocorrencia.NomeSolicitante = dto.NomeSolicitante ?? ocorrencia.NomeSolicitante;
+            ocorrencia.Observacoes = dto.Observacoes ?? ocorrencia.Observacoes;
             ocorrencia.DataHora = dto.DataOcorrencia;
             ocorrencia.UpdateAt = DateTime.UtcNow;
 
