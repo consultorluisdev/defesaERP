@@ -206,7 +206,7 @@ defesaERP/
 ```
 
 **Config JWT:**
-- Secret: `JWT_KEY_DEFINIDA_VIA_AMBIENTE`
+- Secret: definido via variavel de ambiente `Jwt__Key` (nunca commitar a chave real)
 - Expiracao: 7 dias
 - Algoritmo: HMAC-SHA256
 
