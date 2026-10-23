@@ -12,7 +12,7 @@ const getStatusColor = (status: string) => {
     case 'Disponivel': return 'bg-green-100 text-green-800 border-green-200';
     case 'EmAtendimento': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case 'EmDeslocamento': return 'bg-blue-100 text-blue-800 border-blue-200';
-    case 'EmApoio': return 'bg-purple-100 text-gray-800 border-purple-200';
+    case 'EmApoio': return 'bg-purple-100 text-purple-800 border-purple-200';
     case 'Indisponivel': return 'bg-gray-100 text-gray-800 border-gray-200';
     default: return 'bg-gray-100 text-gray-800 border-gray-200';
   }
@@ -61,7 +61,7 @@ export const EquipeCard: React.FC<EquipeCardProps> = ({ equipe, onClick }) => {
         <div className='flex items-center gap-2'>
           <MapPin size={16} className='text-gray-400 flex-shrink: 0' />
 
-          <span>{equipe.municipio || 'Municipio não informado'}</span>
+          <span>{equipe.municipio || 'Município não informado'}</span>
         </div>
         <div className='flex items-center gap-2'>
           <Phone size={16} className='text-gray-400 flex-shrink: 0' />
@@ -69,7 +69,7 @@ export const EquipeCard: React.FC<EquipeCardProps> = ({ equipe, onClick }) => {
         </div>
         {equipe.email &&(
           <div className='flex items-center gap-2'>
-            <Mail size={16} className='text-gray-400 flex-shirink-0' />
+            <Mail size={16} className='text-gray-400 flex-shrink-0' />
             <span className='truncate'>{equipe.email}</span>
           </div>
         )}
@@ -78,7 +78,7 @@ export const EquipeCard: React.FC<EquipeCardProps> = ({ equipe, onClick }) => {
       <div className='mt-3 pt-3 border-t border-gray-100'>
         <p className='text-xs text-gray-400'>
           Reponsavel: <span className='font-medium text-gray-600'>
-            {equipe.reponsavel}
+            {equipe.responsavel}
           </span>
         </p>
       </div>
