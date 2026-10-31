@@ -20,9 +20,8 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]
