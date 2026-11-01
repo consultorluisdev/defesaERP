@@ -8,9 +8,15 @@ services:
       POSTGRES_USER: defesa
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina a variavel POSTGRES_PASSWORD no .env}
     ports:
-      - "5433:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5435}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
 
   backend:
     build:
@@ -24,36 +30,50 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__Default: "Host=postgres;Port=5432;Database=defesa_db;Username=defesa;Password=${POSTGRES_PASSWORD:?Defina a variavel POSTGRES_PASSWORD no .env}"
       Jwt__Key: ${JWT_KEY:?Defina a variavel JWT_KEY no .env}
+      Cors__AllowedOrigins: "${CORS_ALLOWED_ORIGINS:-http://localhost:3000;http://127.0.0.1:3000}"
+      Services__DefesaIAUrl: "${DEFESA_IA_URL:-http://defesa-ia:8000}"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      defesa-ia:
+        condition: service_started
 
   frontend:
     build:
       context: ./frontend/defesa-web
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
     container_name: defesa-frontend
     restart: always
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
   defesa-ia:
     build:
-      context: ./backend/DefesaIA-api/monitor-agent
+      context: ./backend/DefesaIA-api
       dockerfile: Dockerfile
-    container_name: defesa-monitor-agent
+    container_name: defesa-ia
     restart: unless-stopped
     ports:
-      - "8001:8001"
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   portainer:
     image: portainer/portainer-ce:latest
     container_name: defesa-portainer
     restart: always
     ports:
-      - "9001:9000"
-      - "9444:9443"
+      - "127.0.0.1:9001:9000"
+      - "127.0.0.1:9444:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data

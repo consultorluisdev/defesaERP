@@ -112,21 +112,27 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var migrated = false;
 
     for (int i = 0; i < 10; i++)
     {
         try
         {
-            db.Database.EnsureCreated();
-            Console.WriteLine("Banco conectado com sucesso.");
+            db.Database.Migrate();
+            migrated = true;
+            logger.LogInformation("Banco conectado e migrations aplicadas com sucesso.");
             break;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Tentativa {i + 1}: {ex.Message}");
+            logger.LogWarning(ex, "Tentativa {Tentativa} de conexão/migração do banco falhou.", i + 1);
             Thread.Sleep(3000);
         }
     }
+
+    if (!migrated)
+        throw new InvalidOperationException("Não foi possível conectar ao banco ou aplicar as migrations após 10 tentativas.");
 }
 
 app.Run();

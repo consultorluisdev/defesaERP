@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 public class MonitoramentoController : ControllerBase
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly string _defesaIAUrl;
 
-    public MonitoramentoController(IHttpClientFactory httpClientFactory)
+    public MonitoramentoController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         _httpClientFactory = httpClientFactory;
+        _defesaIAUrl = configuration["Services:DefesaIAUrl"] ?? "http://defesa-ia:8000";
     }
 
     [HttpGet]
@@ -18,10 +20,20 @@ public class MonitoramentoController : ControllerBase
         var http = _httpClientFactory.CreateClient();
         http.Timeout = TimeSpan.FromSeconds(10);
 
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        var response = await http.GetAsync("http://defesa-ia:8000/monitoramento", cts.Token);
-        var content = await response.Content.ReadAsStringAsync();
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var response = await http.GetAsync($"{_defesaIAUrl.TrimEnd('/')}/monitoramento", cts.Token);
+            var content = await response.Content.ReadAsStringAsync();
 
-        return Content(content, "application/json", System.Text.Encoding.UTF8);
+            if (!response.IsSuccessStatusCode)
+                return StatusCode(StatusCodes.Status502BadGateway, new { message = "Serviço de IA indisponível" });
+
+            return Content(content, "application/json", System.Text.Encoding.UTF8);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, new { message = "Serviço de IA indisponível" });
+        }
     }
 }

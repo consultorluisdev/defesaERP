@@ -8,7 +8,7 @@ RUN dotnet restore
 
 # Copiar tudo e buildar
 COPY . .
-RUN dotnet publish -c Release -o /app
+RUN dotnet publish -c Release -o /app --no-restore
 
 # Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:10.0

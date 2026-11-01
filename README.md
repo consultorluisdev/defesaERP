@@ -80,6 +80,49 @@ DefesaERP
 
 ---
 
+## 🐳 Rodando com Docker
+
+Pré-requisitos: Docker e Docker Compose instalados.
+
+```bash
+# 1. Crie o arquivo de ambiente
+cp .env.example .env
+
+# 2. Edite o .env e defina POSTGRES_PASSWORD e JWT_KEY (mínimo 32 caracteres)
+
+# 3. Suba o ambiente de produção
+docker compose up -d --build
+
+# Acompanhar logs
+docker compose logs -f
+```
+
+Acessos:
+
+| Serviço | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| API (.NET) | http://localhost:8080/api |
+| IA (FastAPI) | http://localhost:8001/docs |
+| Postgres | localhost:5435 |
+| Portainer | http://localhost:9001 |
+
+Para desenvolvimento com hot-reload do frontend:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Para parar e remover os containers:
+
+```bash
+docker compose down
+# Remover também os volumes (apaga o banco)
+docker compose down -v
+```
+
+---
+
 ## 📂 Estrutura do Frontend
 
 ```text

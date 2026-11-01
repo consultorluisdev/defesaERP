@@ -20,6 +20,10 @@ def analizar_risco(dados):
     
     return "Risco Normal"
 
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
 @app.get("/monitoramento")
 def monitoramento():
     resultado = []

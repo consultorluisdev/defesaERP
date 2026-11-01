@@ -8,9 +8,15 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${POSTGRES_PORT_DEV:-5436}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
 
   backend:
     build:
@@ -24,8 +30,13 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__Default: "Host=postgres;Port=5432;Database=defesa_db;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
       Jwt__Key: ${JWT_KEY:?Defina a variavel JWT_KEY no .env}
+      Cors__AllowedOrigins: "${CORS_ALLOWED_ORIGINS:-http://localhost:3000;http://127.0.0.1:3000}"
+      Services__DefesaIAUrl: "${DEFESA_IA_URL:-http://defesa-ia:8000}"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      defesa-ia:
+        condition: service_started
 
   frontend:
     image: node:22-alpine
@@ -44,24 +55,30 @@ services:
 
   defesa-ia:
     build:
-      context: ./backend/DefesaIA-api/monitor-agent
+      context: ./backend/DefesaIA-api
       dockerfile: Dockerfile
-    container_name: defesa-monitor-agent
+    container_name: defesa-ia
     restart: unless-stopped
     ports:
-      - "8001:8001"
+      - "8001:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   portainer:
     image: portainer/portainer-ce:latest
     container_name: defesa-portainer
     restart: always
     ports:
-      - "9000:9000"
-      - "9443:9443"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9443:9443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
 
 volumes:
-  postgres_data:
+  postgres_data_dev:
   portainer_data:
