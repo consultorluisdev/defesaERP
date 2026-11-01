@@ -20,6 +20,7 @@ export const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
         Baixa: "border-green-500/30 bg-green-500/10 text-green-400",
         Media: "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
         Alta: "border-orange-500/30 bg-orange-500/10 text-orange-400",
+        Urgente: "border-red-500/30 bg-red-500/10 text-red-400",
     };
 
     const statusClasses: Record<string, string> = {

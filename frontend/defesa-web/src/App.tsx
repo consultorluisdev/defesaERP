@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import SolicitacaoPage from "./pages/SolicitacaoPage";
+import { EquipePage } from "./pages/EquipesPage";
 import { OcorrenciaPage } from "./pages/OcorrenciaPage";
 import { AlertasPage } from "./pages/AlertasPage";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -39,9 +41,10 @@ function App() {
                             <Route path="/dashboard" element={<Dashboard />} />
                             <Route path="/ocorrencias" element={<OcorrenciaPage />} />
                             <Route path="/alertas" element={<AlertasPage />} />
+                            <Route path="/solicitacoes" element={<SolicitacaoPage />} />
                             <Route path="/radar" element={<Placeholder title="Radar" />} />
                             <Route path="/riscos" element={<Placeholder title="Riscos" />} />
-                            <Route path="/equipes" element={<Placeholder title="Equipes" />} />
+                            <Route path="/equipes" element={<EquipePage />} />
                             <Route path="/abrigo" element={<Placeholder title="Abrigos" />} />
                             <Route path="/viaturas" element={<Placeholder title="Viaturas" />} />
                             <Route path="/relatorios" element={<Placeholder title="Relatórios" />} />

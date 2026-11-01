@@ -16,7 +16,7 @@ export function EquipeForm({
     onClose,
     onSaved,
 }: EquipeFormProps) {
-    const [form, setForm] = useState<CreateEquipeDto>({
+    const [form] = useState<CreateEquipeDto>({
         nome: "",
         descricao: "",
         tipo: TiposEquipe.ATENDIMENTO,
