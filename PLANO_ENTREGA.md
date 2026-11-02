@@ -778,3 +778,68 @@ Criar migration:
 cd backend/DefesaCivil.Api
 dotnet ef migrations add NomeDaMigration
 ```
+
+---
+
+## 15. Plano da semana — 02 a 06/11/2026
+
+> **Branch de portfólio:** `chore/portfolio-cleanup`
+> **Meta:** fechar etapas 2, 3, 4, 6 e 7 + 5 telas.
+> **Bloqueio:** decisão sobre os segredos encontrados no histórico do Git.
+
+### Segunda — 02/11 — Segurança e organização
+
+- [ ] Decidir segurança: rotacionar `POSTGRES_PASSWORD` e `JWT_KEY` e seguir sem reescrever histórico.
+- [ ] Revisar `.gitignore`.
+- [ ] Criar `backend/DefesaCivil.Api/appsettings.Example.json`.
+- [ ] Mover `AUDITORIA.md` para `docs/`.
+- [ ] Confirmar se `CHECKLIST.md` e `PLANO_ENTREGA.md` também vão para `docs/`.
+- [ ] Commit: `chore: revisa ignorados e exemplos de configuracao`.
+
+### Terça — 03/11 — README em português
+
+- [ ] Reescrever o `README.md` com funcionalidades reais.
+- [ ] Usar `[x]` para pronto e `[ ]` para planejado.
+- [ ] Adicionar stack, Mermaid, comandos, variáveis por nome e roadmap.
+- [ ] Remover promessas que não existem: xUnit, rate limiting, health checks e refresh completo.
+- [ ] Commit: `docs: reescreve README em portugues`.
+
+### Quarta — 04/11 — CI e Vercel
+
+- [ ] Criar `.github/workflows/ci.yml`.
+- [ ] Backend: `dotnet restore`, `build` e `test` com .NET 10.
+- [ ] Frontend: `npm ci` e `npm run build` com Node 22.
+- [ ] Criar `frontend/defesa-web/vercel.json`.
+- [ ] Adicionar badge de CI no README.
+- [ ] Commit: `ci: adiciona pipeline de build e testes`.
+
+### Quinta — 05/11 — Solicitações e Vistorias
+
+- [ ] Criar backend de Solicitações.
+- [ ] Criar backend de Vistorias.
+- [ ] Criar migration.
+- [ ] Integrar as telas já prontas ao backend real.
+- [ ] Commit: `feat: adiciona backend de solicitacoes e vistorias`.
+
+### Sexta — 06/11 — Radar, Abrigos e Riscos
+
+- [ ] Criar backend do Radar.
+- [ ] Integrar o Radar ao backend.
+- [ ] Criar controller/service de Abrigos.
+- [ ] Criar MVP de Riscos.
+- [ ] Validar `dotnet build`, `npm run lint`, `tsc` e `npm run build`.
+- [ ] Commit: `feat: integra radar e evolui abrigos e riscos`.
+
+### Fora desta semana
+
+- README em inglês (somente frontend).
+- Relatórios, Análises, Perfis, Configurações e IA Predict.
+- Testes automatizados completos.
+
+### Critério de pronto da semana
+
+- [ ] Etapas 2, 3, 4, 6 e 7 concluídas.
+- [ ] 5 telas concluídas ou integradas.
+- [ ] Builds passando.
+- [ ] Commits separados por etapa.
+- [ ] Nenhum segredo novo commitado.
