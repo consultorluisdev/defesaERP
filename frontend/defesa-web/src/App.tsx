@@ -10,7 +10,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PrivateRoute } from "./routes/PrivateRoute";
 import VistoriaPage from "./pages/Vistorias/VistoriaPage";
-import { RadarPage } from "./pages/Radar/RadarPage";
+import RadarPage from "./pages/Radar/RadarPage";
 import { RiscosPage } from "./pages/Riscos/RiscosPage";
 import { AbrigosPage } from "./pages/Abrigos/AbrigosPage";
 import { ViaturasPage } from "./pages/Viaturas/ViaturasPage";
