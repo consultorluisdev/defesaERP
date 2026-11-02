@@ -1,4 +1,4 @@
-import { RadarHeader } from "../../components/Radar/RadarHeader";
+import RadarHeader from "../../components/Radar/RadarHeader";
 import { RadarFilters } from "../../components/Radar/RadarFilters";
 import { RadarMap } from "../../components/Radar/RadarMap";
 import { RadarPanel } from "../../components/Radar/RadarPanel";
