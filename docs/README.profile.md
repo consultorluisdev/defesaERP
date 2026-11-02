@@ -1,7 +1,6 @@
 <!--
 README de perfil do GitHub.
 Publicar no repositório especial: consultorluisdev/consultorluisdev
-TODO: substituir [e-mail] pelo endereço real antes de publicar.
 -->
 
 # Luís Fernando
@@ -37,4 +36,4 @@ Rust (agentes de IA) e React.
 
 ## Contato
 
-[LinkedIn](https://www.linkedin.com/in/luis-fernando-lopes-146763178/) · [e-mail]
+[LinkedIn](https://www.linkedin.com/in/luis-fernando-lopes-146763178/) · [luisfernandolopes0@gmail.com](mailto:luisfernandolopes0@gmail.com)
