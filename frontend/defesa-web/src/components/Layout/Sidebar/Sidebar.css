@@ -1,4 +1,4 @@
-.sidebar {
+﻿.sidebar {
     --sb-bg: linear-gradient(165deg, #18181b 0%, #0c0a09 55%, #0a0908 100%);
     --sb-accent: #f59e0b;
     --sb-accent-strong: #ea580c;
@@ -144,7 +144,6 @@
     justify-content: center;
     padding: 11px 10px;
 }
-
 .nav-item:hover {
     background: var(--sb-hover);
     color: var(--sb-text);
@@ -366,3 +365,4 @@ html:not(.dark) .nav::-webkit-scrollbar-thumb {
 html:not(.dark) .section-title {
     color: rgba(180, 83, 9, 0.55);
 }
+

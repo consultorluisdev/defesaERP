@@ -9,6 +9,15 @@ import { AlertasPage } from "./pages/AlertasPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { PrivateRoute } from "./routes/PrivateRoute";
+import VistoriaPage from "./pages/Vistorias/VistoriaPage";
+import { RadarPage } from "./pages/Radar/RadarPage";
+import { RiscosPage } from "./pages/Riscos/RiscosPage";
+import { AbrigosPage } from "./pages/Abrigos/AbrigosPage";
+import { ViaturasPage } from "./pages/Viaturas/ViaturasPage";
+import { RelatoriosPage } from "./pages/Relatorios/RelatoriosPage";
+import { AnalisesPage } from "./pages/Analises/AnalisesPage";
+import { PerfisPage } from "./pages/Perfis/PerfisPage";
+import { ConfiguracoesPage } from "./pages/Configuracoes/ConfiguracoesPage";
 import Layout from './components/Layout/Layout';
 
 function Placeholder({ title }: { title: string }) {
@@ -42,16 +51,17 @@ function App() {
                             <Route path="/ocorrencias" element={<OcorrenciaPage />} />
                             <Route path="/alertas" element={<AlertasPage />} />
                             <Route path="/solicitacoes" element={<SolicitacaoPage />} />
-                            <Route path="/radar" element={<Placeholder title="Radar" />} />
-                            <Route path="/riscos" element={<Placeholder title="Riscos" />} />
+                            <Route path="/radar" element={<RadarPage />} />
+                            <Route path="/riscos" element={<RiscosPage />} />
                             <Route path="/equipes" element={<EquipePage />} />
-                            <Route path="/abrigo" element={<Placeholder title="Abrigos" />} />
-                            <Route path="/viaturas" element={<Placeholder title="Viaturas" />} />
-                            <Route path="/relatorios" element={<Placeholder title="Relatórios" />} />
-                            <Route path="/analises" element={<Placeholder title="Análises" />} />
+                            <Route path="/abrigo" element={<AbrigosPage />} />
+                            <Route path="/viaturas" element={<ViaturasPage />} />
+                            <Route path="/relatorios" element={<RelatoriosPage />} />
+                            <Route path="/analises" element={<AnalisesPage />} />
                             <Route path="/ia-predict-ia" element={<Placeholder title="IA Predict" />} />
-                            <Route path="/perfis" element={<Placeholder title="Perfis" />} />
-                            <Route path="/configuracoes" element={<Placeholder title="Configurações" />} />
+                            <Route path="/perfis" element={<PerfisPage />} />
+                            <Route path="/configuracoes" element={<ConfiguracoesPage />} />
+                            <Route path="/vistorias" element={<VistoriaPage />} />
                         </Route>
                         <Route path="*" element={<h1 className="p-8 text-center text-gray-500">404 - Página não encontrada</h1>} />
                     </Routes>
