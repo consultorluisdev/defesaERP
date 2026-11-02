@@ -1,19 +1,25 @@
 # Segredos / ambiente
 .env
 .env.local
+.env.*.local
 *.pem
 *.key
+secrets.json
 !appsettings.Development.json
+!appsettings.Example.json
 
 # .NET build artifacts
 **/bin/
 **/obj/
 *.user
+*.suo
+*.rsuser
 
 # Python
 venv/
 __pycache__/
 *.pyc
+*.pyo
 
 # Frontend
 node_modules/
@@ -23,3 +29,5 @@ dist/
 # IDE
 .idea/
 *.swp
+.DS_Store
+Thumbs.db
