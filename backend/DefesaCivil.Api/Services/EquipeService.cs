@@ -165,9 +165,10 @@ namespace DefesaERP.Services
     public async Task<Dictionary<string, int>> GetEquipesPorMunicipio()
     {
       return await _context.Equipes
-        .GroupBy(e => e.Municipio)
+        .Where(e => e.Municipio != null)
+        .GroupBy(e => e.Municipio!)
         .Select(g => new { Municipio = g.Key, Count = g.Count() })
-        .ToDictionaryAsync(x => x.Municipio!, x => x.Count);
+        .ToDictionaryAsync(x => x.Municipio, x => x.Count);
     }
 
     public async Task<List<EquipesResponseDto>> GetUltimasEquipesPorMunicipio()

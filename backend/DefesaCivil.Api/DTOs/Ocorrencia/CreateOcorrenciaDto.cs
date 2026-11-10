@@ -2,12 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DefesaCivil.Api.DTOs.Ocorrencia
 {
-    public class CreateOcorrenciaDto
+    public class CreateOcorrenciaDto : IValidatableObject
     {
-        [Required]
-        [StringLength(20)]
-        public string NumeroProtocolo { get; set; } = string.Empty;
-
         [Required]
         [StringLength(50)]
         public string TipoOcorrencia { get; set; } = string.Empty;
@@ -17,7 +13,7 @@ namespace DefesaCivil.Api.DTOs.Ocorrencia
         public string Descricao { get; set; } = string.Empty;
 
         [Required]
-        public DateTime DataHora { get; set; }
+        public DateTime? DataHora { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -52,5 +48,15 @@ namespace DefesaCivil.Api.DTOs.Ocorrencia
 
         [StringLength(500)]
         public string? Observacoes { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validdationContext)
+        {
+            if(DataHora is null || DataHora.Value == default)
+            {
+                yield return new ValidationResult(
+                    "A data/hora da ocorrência é obrigatoria.",
+                    new[] {nameof(DataHora) });
+            }
+        }
     }
 }

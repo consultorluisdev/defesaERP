@@ -44,8 +44,7 @@ namespace DefesaERP.Entities
         public string? Nome {get; set;}
 
         [Column("Descricao")]
-        [Required]
-        [StringLength(200)]
+        [StringLength(500)]
         public string? Descricao { get; set; }
 
         [Column("Tipo")]
@@ -67,17 +66,14 @@ namespace DefesaERP.Entities
         public string? Telefone { get; set; }
 
         [Column("Email")]
-        [Required]
         [StringLength(100)]
         public string? Email { get; set; }
 
         [Column("Municipio")]
-        [Required]
         [StringLength(100)]
         public string? Municipio { get; set; }
 
         [Column("Endereco")]
-        [Required]
         [StringLength(200)]
         public string? Endereco { get; set; }
 
@@ -87,7 +83,6 @@ namespace DefesaERP.Entities
         public int? QuantidadeMembros { get; set; }
 
         [Column("LocalizacaoAtual")]
-        [Required]
         [StringLength(100)]
         public string? LocalizacaoAtual { get; set;}
 

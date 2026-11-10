@@ -20,15 +20,8 @@ namespace DefesaCivil.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<DashboardResponseDto>> GetDashboard()
         {
-            try
-            {
-                var dashboardData = await _dashboardService.GetDashboardDataAsync();
-                return Ok(dashboardData);
-            }
-            catch (System.Exception)
-            {
-                return StatusCode(500, new { Message = "Ocorreu um erro ao obter os dados do dashboard." });
-            }
+            var dashboardData = await _dashboardService.GetDashboardDataAsync();
+            return Ok(dashboardData);
         }
     }
 }

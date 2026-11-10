@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using DefesaCivil.Api.Common;
 using DefesaCivil.Api.DTOs;
 using DefesaCivil.Api.Entities;
 using DefesaCivil.Api.Data;
@@ -41,7 +42,7 @@ namespace DefesaCivil.Api.Services
         Cidade = dto.Cidade,
         Latitude = dto.Latitude,
         Longitude = dto.Longitude,
-        DataInicio = dto.DataInicio ?? DateTime.UtcNow,
+        DataInicio = DateTimeUtc.Normalize(dto.DataInicio) ?? DateTime.UtcNow,
         Responsavel = dto.Responsavel,
         Observacoes = dto.Observacoes,
         CreatedAt = DateTime.UtcNow
@@ -66,7 +67,7 @@ namespace DefesaCivil.Api.Services
       alerta.Cidade = dto.Cidade;
       alerta.Latitude = dto.Latitude;
       alerta.Longitude = dto.Longitude;
-      alerta.DataFim = dto.DataFim;
+      alerta.DataFim = DateTimeUtc.Normalize(dto.DataFim);
       alerta.Responsavel = dto.Responsavel;
       alerta.Observacoes = dto.Observacoes;
       alerta.UpdatedAt = DateTime.UtcNow;

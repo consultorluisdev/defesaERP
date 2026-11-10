@@ -23,6 +23,17 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasSequence<long>("ocorrencia_protocolo_seq")
+            .StartsAt(1)
+            .IncrementsBy(1);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.Property(u => u.Email).HasMaxLength(256).IsRequired();
+            entity.Property(u => u.Role).HasMaxLength(50).IsRequired();
+            entity.HasIndex(u => u.Email).IsUnique();
+        });
+
         modelBuilder.Entity<Ocorrencias>()
         .HasIndex(o => o.NumeroProtocolo)
         .IsUnique();

@@ -13,6 +13,8 @@ namespace DefesaCivil.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
+    private const string DefaultRole = "Usuario";
+
     private readonly AppDbContext _context;
     private readonly TokenService _tokenService;
 
@@ -26,23 +28,33 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
-            return BadRequest("Email e senha são obrigatórios");
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
 
-        if (dto.PasswordHash.Length < 6)
-            return BadRequest("A senha deve ter no mínimo 6 caracteres");
+        var email = NormalizeEmail(dto.Email);
 
-        if (await _context.Users.AnyAsync(x => x.Email == dto.Email))
-            return BadRequest("Email já registrado");
+        if (await _context.Users.AnyAsync(x => x.Email == email))
+            return Conflict(new { message = "E-mail já registrado." });
 
         var user = new User
         {
-            Email = dto.Email,
+            Email = email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash),
+            Role = DefaultRole,
+            Ativo = true,
+            CreatedAt = DateTime.UtcNow,
         };
 
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException)
+        {
+            return Conflict(new { message = "E-mail já registrado." });
+        }
 
         return Ok();
     }
@@ -51,14 +63,19 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
-            return BadRequest("Email e senha são obrigatórios");
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        var email = NormalizeEmail(dto.Email);
 
         var user = await _context.Users
-            .FirstOrDefaultAsync(x => x.Email == dto.Email);
+            .FirstOrDefaultAsync(x => x.Email == email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.PasswordHash, user.PasswordHash))
-            return Unauthorized("Credenciais inválidas");
+            return Unauthorized(new { message = "Credenciais inválidas." });
+
+        if (!user.Ativo)
+            return Unauthorized(new { message = "Usuário inativo." });
 
         var token = _tokenService.GenerateAccessToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken(user);
@@ -70,28 +87,30 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Refresh([FromBody] RefreshDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.RefreshToken))
-            return BadRequest("Refresh token é obrigatório");
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
 
         var principal = _tokenService.ValidateToken(dto.RefreshToken);
 
         if (principal == null)
-            return Unauthorized("Refresh token inválido ou expirado");
+            return Unauthorized(new { message = "Refresh token inválido ou expirado." });
 
         if (principal.FindFirst("token_type")?.Value != "refresh")
-            return Unauthorized("Token inválido");
+            return Unauthorized(new { message = "Token inválido." });
 
         var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId == null || !int.TryParse(userId, out var id))
-            return Unauthorized("Token inválido");
+            return Unauthorized(new { message = "Token inválido." });
 
         var user = await _context.Users.FindAsync(id);
-        if (user == null)
-            return Unauthorized("Usuário não encontrado");
+        if (user == null || !user.Ativo)
+            return Unauthorized(new { message = "Usuário não encontrado ou inativo." });
 
         var token = _tokenService.GenerateAccessToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken(user);
 
         return Ok(new { token, refreshToken });
     }
+
+    private static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
 }

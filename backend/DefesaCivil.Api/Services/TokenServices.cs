@@ -25,6 +25,7 @@ public class TokenService
         {
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Role, user.Role),
             new Claim(AccessTokenTypeClaim, AccessTokenTypeValue),
         };
 
