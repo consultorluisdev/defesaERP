@@ -36,8 +36,8 @@ type MenuItem = {
 
 const sections: Record<string, { title: string; order: number }> = {
     monitoramento: { title: "MONITORAMENTO", order: 1 },
-    operacoes: { title: "OPERAÃ‡Ã•ES", order: 2 },
-    relatorios: { title: "RELATÃ“RIOS", order: 3 },
+    operacoes: { title: "OPERAÇÕES", order: 2 },
+    relatorios: { title: "RELATÓRIOS", order: 3 },
     sistema: { title: "SISTEMA", order: 4 },
 };
 
@@ -46,17 +46,17 @@ const menuItems: MenuItem[] = [
     { Icon: FaBell, label: "Alertas", path: "/alertas", badge: "7", section: "monitoramento" },
     { Icon: FaBroadcastTower, label: "Radar", path: "/radar", section: "monitoramento" },
     { Icon: FaExclamationTriangle, label: "Riscos", path: "/riscos", badge: "12", section: "monitoramento" },
-    { Icon: FaClipboardList, label: "OcorrÃªncias", path: "/ocorrencias", badge: "3", section: "operacoes" },
+    { Icon: FaClipboardList, label: "Ocorrências", path: "/ocorrencias", badge: "3", section: "operacoes" },
     { Icon: FaUsers, label: "Equipes", path: "/equipes", section: "operacoes" },
     { Icon: FaWarehouse, label: "Abrigos", path: "/abrigo", section: "operacoes" },
     { Icon: FaTruck, label: "Viaturas", path: "/viaturas", section: "operacoes" },
-    { Icon: FaFileAlt, label: "RelatÃ³rios", path: "/relatorios", section: "relatorios" },
-    { Icon: FaChartBar, label: "AnÃ¡lises", path: "/analises", section: "relatorios" },
-    { Icon: FaRobot, label: "IA Predict", path: "/ia-predict-ia", section: "relatorios" },
-    { Icon: FaInbox, label: "SolicitaÃ§Ãµes", path: "/solicitacoes", section: "operacoes" },
+    { Icon: FaFileAlt, label: "Documentos", path: "/relatorios", section: "relatorios" },
+    { Icon: FaChartBar, label: "Análises", path: "/analises", section: "relatorios" },
+    { Icon: FaRobot, label: "Assistente de documentação IA", path: "/ia-predict-ia", section: "relatorios" },
+    { Icon: FaInbox, label: "Solicitações", path: "/solicitacoes", section: "operacoes" },
     { Icon: FaClipboardCheck, label: "Vistorias", path: "/vistorias", section: "operacoes" },
     { Icon: FaUserCog, label: "Perfis", path: "/perfis", section: "sistema" },
-    { Icon: FaCog, label: "ConfiguraÃ§Ãµes", path: "/configuracoes", section: "sistema" },
+    { Icon: FaCog, label: "Configurações", path: "/configuracoes", section: "sistema" },
 ];
 
 type SidebarProps = {
