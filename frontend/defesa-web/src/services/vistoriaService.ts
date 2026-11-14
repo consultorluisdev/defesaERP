@@ -5,9 +5,18 @@ import type {
     UpdateVistoriaDto,
 } from '../types/vistoria';
 
+export interface VistoriaFiltersParams {
+    search?: string;
+    tipo?: string;
+    status?: string;
+    prioridade?: string;
+}
+
 export const vistoriaService = {
-    async getAll(): Promise<Vistoria[]> {
-        const response = await api.get<Vistoria[]>('/Vistorias');
+    async getAll(filters?: VistoriaFiltersParams): Promise<Vistoria[]> {
+        const response = await api.get<Vistoria[]>('/Vistorias', {
+            params: filters,
+        });
         return response.data;
     },
 

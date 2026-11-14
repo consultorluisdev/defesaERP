@@ -4,6 +4,8 @@ import type { Vistoria } from "../../types/vistoria";
 interface VistoriaDetailsProps {
     vistoria: Vistoria;
     onClose: () => void;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
 const formatDate = (value?: string | null) => {
@@ -27,30 +29,30 @@ const formatDate = (value?: string | null) => {
 const getStatusClass = (status: string) => {
     switch (status) {
         case "Agendada":
-            return "bg-blue-500/20 text-blue-400";
+            return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
         case "EmAndamento":
-            return "bg-yellow-500/20 text-yellow-400";
+            return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
         case "Concluida":
-            return "bg-green-500/20 text-green-400";
+            return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
         case "Cancelada":
-            return "bg-red-500/20 text-red-400";
+            return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
         default:
-            return "bg-gray-500/20 text-gray-400";
+            return "bg-gray-100 text-gray-700 dark:bg-gray-700/40 dark:text-gray-300";
     }
 };
 
 const getPriorityClass = (prioridade: string) => {
     switch (prioridade) {
         case "Urgente":
-            return "bg-red-500/20 text-red-400";
+            return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
         case "Alta":
-            return "bg-orange-500/20 text-orange-400";
+            return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
         case "Media":
-            return "bg-yellow-500/20 text-yellow-400";
+            return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
         case "Baixa":
-            return "bg-green-500/20 text-green-400";
+            return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
         default:
-            return "bg-gray-500/20 text-gray-400";
+            return "bg-gray-100 text-gray-700 dark:bg-gray-700/40 dark:text-gray-300";
     }
 };
 
@@ -84,6 +86,8 @@ function InfoItem({ label, value }: InfoItemProps) {
 export function VistoriaDetails({
     vistoria,
     onClose,
+    onEdit,
+    onDelete,
 }: VistoriaDetailsProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
@@ -122,7 +126,7 @@ export function VistoriaDetails({
                     <button
                         type="button"
                         onClick={onClose}
-                        className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                        className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                         aria-label="Fechar"
                     >
                         ✕
@@ -280,7 +284,23 @@ export function VistoriaDetails({
                 </div>
 
                 {/* Footer */}
-                <div className="flex justify-end border-t border-gray-200 p-6 dark:border-gray-700">
+                <div className="flex flex-wrap justify-end gap-3 border-t border-gray-200 p-6 dark:border-gray-700">
+                    <button
+                        type="button"
+                        onClick={onDelete}
+                        className="rounded-lg border border-red-300 px-5 py-2.5 text-sm font-medium text-red-700 transition hover:bg-red-50 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-950/30"
+                    >
+                        Excluir
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={onEdit}
+                        className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+                    >
+                        Editar
+                    </button>
+
                     <button
                         type="button"
                         onClick={onClose}

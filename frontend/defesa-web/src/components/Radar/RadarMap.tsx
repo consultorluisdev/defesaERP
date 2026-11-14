@@ -24,14 +24,7 @@ export default function RadarMap({
     return (
         <div className="relative min-h-[500px] overflow-hidden rounded-xl border border-gray-200 bg-gray-100 shadow-sm dark:border-gray-700 dark:bg-gray-900">
             <div className="absolute inset-0 opacity-40">
-                <div
-                    className="h-full w-full"
-                    style={{
-                        backgroundImage:
-                            "linear-gradient(rgba(100,116,139,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(100,116,139,.18) 1px, transparent 1px)",
-                        backgroundSize: "40px 40px",
-                    }}
-                />
+                <div className="radar-grid h-full w-full" />
             </div>
 
             <div className="absolute left-4 top-4 rounded-lg border border-gray-200 bg-white/90 px-3 py-2 shadow-sm backdrop-blur dark:border-gray-700 dark:bg-gray-800/90">
@@ -71,7 +64,7 @@ export default function RadarMap({
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm dark:bg-gray-900/60">
                     <div className="flex items-center gap-3 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm dark:bg-gray-800 dark:text-gray-200">
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-gray-700 dark:border-t-blue-400" />
                         Carregando eventos...
                     </div>
                 </div>
@@ -80,7 +73,7 @@ export default function RadarMap({
             {!loading && events.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="max-w-sm text-center">
-                        <FaMapMarkerAlt className="mx-auto mb-3 text-3xl text-gray-400" />
+                        <FaMapMarkerAlt className="mx-auto mb-3 text-3xl text-gray-400 dark:text-gray-500" />
 
                         <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
                             Nenhum evento no radar

@@ -5,7 +5,8 @@ import { SolicitacaoForm } from '../components/Solicitacoes/SolicitacaoForm';
 import { SolicitacaoDetails } from '../components/Solicitacoes/SolicitacaoDetails';
 import { solicitacaoService } from '../services/solicitacaoService';
 import {
-    CreateSolicitacaoDto,
+    SolicitacaoFormValues,
+    UpdateSolicitacaoDto,
     Solicitacao,
 } from '../types/solicitacao';
 
@@ -22,6 +23,8 @@ const SolicitacaoPage: React.FC = () => {
 
     const [showForm, setShowForm] = useState(false);
     const [selectedSolicitacao, setSelectedSolicitacao] =
+        useState<Solicitacao | null>(null);
+    const [editingSolicitacao, setEditingSolicitacao] =
         useState<Solicitacao | null>(null);
 
     const carregarSolicitacoes = async () => {
@@ -70,20 +73,59 @@ const SolicitacaoPage: React.FC = () => {
         });
     }, [solicitacoes, busca, tipo, status, prioridade]);
 
-    const handleCreate = async (data: CreateSolicitacaoDto) => {
+    const handleSalvar = async (data: SolicitacaoFormValues) => {
         try {
             setSaving(true);
             setError(null);
 
-            await solicitacaoService.create(data);
+            if (editingSolicitacao) {
+                await solicitacaoService.update(
+                    editingSolicitacao.id,
+                    data as UpdateSolicitacaoDto,
+                );
+            } else {
+                await solicitacaoService.create(data);
+            }
 
             setShowForm(false);
+            setEditingSolicitacao(null);
+            setSelectedSolicitacao(null);
             await carregarSolicitacoes();
         } catch {
-            setError('Não foi possível criar a solicitação.');
+            setError(
+                editingSolicitacao
+                    ? 'Não foi possível atualizar a solicitação.'
+                    : 'Não foi possível criar a solicitação.',
+            );
         } finally {
             setSaving(false);
         }
+    };
+
+    const handleEditar = (solicitacao: Solicitacao) => {
+        setError(null);
+        setEditingSolicitacao(solicitacao);
+        setSelectedSolicitacao(null);
+        setShowForm(true);
+    };
+
+    const handleExcluir = async (solicitacao: Solicitacao) => {
+        if (!window.confirm(`Excluir a solicitação ${solicitacao.protocolo}?`)) return;
+
+        try {
+            setError(null);
+            await solicitacaoService.delete(solicitacao.id);
+            setSelectedSolicitacao(null);
+            await carregarSolicitacoes();
+        } catch {
+            setError('Não foi possível excluir a solicitação.');
+        }
+    };
+
+    const handleNova = () => {
+        setError(null);
+        setEditingSolicitacao(null);
+        setShowForm(true);
     };
 
     const handleSelect = (id: number) => {
@@ -100,39 +142,36 @@ const SolicitacaoPage: React.FC = () => {
     };
 
     return (
-        <div className='min-h-full bg-gray-950 p-4 text-white md:p-6'>
+        <div className='space-y-6'>
             <div className='mx-auto max-w-7xl'>
                 <div className='mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
                     <div>
-                        <h1 className='text-xl font-bold text-white'>
+                        <h1 className='text-xl font-bold text-gray-900 dark:text-white'>
                             Solicitações
                         </h1>
 
-                        <p className='mt-1 text-sm text-gray-400'>
+                        <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
                             Gerencie as solicitações recebidas pela Defesa Civil
                         </p>
                     </div>
 
                     <button
                         type='button'
-                        onClick={() => {
-                            setError(null);
-                            setShowForm(true);
-                        }}
-                        className='rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500'
+                        onClick={handleNova}
+                        className='rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700'
                     >
                         + Nova Solicitação
                     </button>
                 </div>
 
                 {error && (
-                    <div className='mb-6 flex items-center justify-between rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300'>
+                    <div className='mb-6 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300'>
                         <span>{error}</span>
 
                         <button
                             type='button'
                             onClick={carregarSolicitacoes}
-                            className='font-medium text-red-200 underline hover:text-white'
+                            className='font-medium text-red-600 underline hover:text-red-800 dark:text-red-200 dark:hover:text-white'
                         >
                             Tentar novamente
                         </button>
@@ -157,7 +196,7 @@ const SolicitacaoPage: React.FC = () => {
                     </div>
                 ) : (
                     <>
-                        <p className='mb-4 text-sm text-gray-400'>
+                        <p className='mb-4 text-sm text-gray-500 dark:text-gray-400'>
                             {solicitacoesFiltradas.length}{' '}
                             {solicitacoesFiltradas.length === 1
                                 ? 'solicitação encontrada'
@@ -174,8 +213,13 @@ const SolicitacaoPage: React.FC = () => {
 
             {showForm && (
                 <SolicitacaoForm
-                    onSubmit={handleCreate}
-                    onCancel={() => setShowForm(false)}
+                    initialData={editingSolicitacao}
+                    isEditing={Boolean(editingSolicitacao)}
+                    onSubmit={handleSalvar}
+                    onCancel={() => {
+                        setShowForm(false);
+                        setEditingSolicitacao(null);
+                    }}
                     loading={saving}
                     error={error}
                 />
@@ -185,6 +229,8 @@ const SolicitacaoPage: React.FC = () => {
                 <SolicitacaoDetails
                     solicitacao={selectedSolicitacao}
                     onClose={() => setSelectedSolicitacao(null)}
+                    onEdit={() => handleEditar(selectedSolicitacao)}
+                    onDelete={() => handleExcluir(selectedSolicitacao)}
                 />
             )}
         </div>

@@ -4,9 +4,11 @@ import type { Risco } from "../../types/risco";
 interface RiscoDetailsProps {
     risco: Risco;
     onClose: () => void;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
-export default function RiscoDetails({ risco, onClose }: RiscoDetailsProps) {
+export default function RiscoDetails({ risco, onClose, onEdit, onDelete }: RiscoDetailsProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
             <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl dark:bg-gray-800">
@@ -20,7 +22,7 @@ export default function RiscoDetails({ risco, onClose }: RiscoDetailsProps) {
                         </h2>
                     </div>
 
-                    <button type="button" onClick={onClose} aria-label="Fechar" className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <button type="button" onClick={onClose} aria-label="Fechar" className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700">
                         <FaTimes />
                     </button>
                 </div>
@@ -78,7 +80,23 @@ export default function RiscoDetails({ risco, onClose }: RiscoDetailsProps) {
                     )}
                 </div>
 
-                <div className="mt-6 flex justify-end">
+                <div className="mt-6 flex flex-wrap justify-end gap-3">
+                    <button
+                        type="button"
+                        onClick={onDelete}
+                        className="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-400 dark:hover:bg-red-950/30"
+                    >
+                        Excluir
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={onEdit}
+                        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                    >
+                        Editar
+                    </button>
+
                     <button type="button" onClick={onClose} className="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white dark:bg-gray-700">
                         Fechar
                     </button>

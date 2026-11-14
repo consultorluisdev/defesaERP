@@ -5,7 +5,8 @@ import VistoriaForm from "../../components/Vistorias/VistoriaForm";
 import VistoriaList from "../../components/Vistorias/VistoriaList";
 import type {
     Vistoria,
-    CreateVistoriaDto,
+    VistoriaFormValues,
+    UpdateVistoriaDto,
 } from "../../types/vistoria";
 import { vistoriaService } from "../../services/vistoriaService";
 
@@ -15,6 +16,8 @@ export default function VistoriaPage() {
         useState<Vistoria | null>(null);
 
     const [showForm, setShowForm] = useState(false);
+    const [editingVistoria, setEditingVistoria] =
+        useState<Vistoria | null>(null);
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -81,21 +84,61 @@ export default function VistoriaPage() {
         setPrioridade("");
     };
 
-    const handleCriar = async (data: CreateVistoriaDto) => {
+    const handleSalvar = async (data: VistoriaFormValues) => {
         try {
             setSaving(true);
             setError(null);
 
-            await vistoriaService.create(data);
+            if (editingVistoria) {
+                await vistoriaService.update(
+                    editingVistoria.id,
+                    data as UpdateVistoriaDto,
+                );
+            } else {
+                await vistoriaService.create(data);
+            }
 
             setShowForm(false);
+            setEditingVistoria(null);
+            setSelectedVistoria(null);
             await carregarVistorias();
         } catch (err) {
             console.error(err);
-            setError("Não foi possível criar a vistoria.");
+            setError(
+                editingVistoria
+                    ? "Não foi possível atualizar a vistoria."
+                    : "Não foi possível criar a vistoria.",
+            );
         } finally {
             setSaving(false);
         }
+    };
+
+    const handleEditar = (vistoria: Vistoria) => {
+        setError(null);
+        setEditingVistoria(vistoria);
+        setSelectedVistoria(null);
+        setShowForm(true);
+    };
+
+    const handleExcluir = async (vistoria: Vistoria) => {
+        if (!window.confirm(`Excluir a vistoria ${vistoria.protocolo}?`)) return;
+
+        try {
+            setError(null);
+            await vistoriaService.delete(vistoria.id);
+            setSelectedVistoria(null);
+            await carregarVistorias();
+        } catch (err) {
+            console.error(err);
+            setError("Não foi possível excluir a vistoria.");
+        }
+    };
+
+    const handleNova = () => {
+        setError(null);
+        setEditingVistoria(null);
+        setShowForm(true);
     };
 
     const handleSelect = async (vistoria: Vistoria) => {
@@ -136,10 +179,7 @@ export default function VistoriaPage() {
 
                 <button
                     type="button"
-                    onClick={() => {
-                        setError(null);
-                        setShowForm(true);
-                    }}
+                    onClick={handleNova}
                     className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
                 >
                     + Nova Vistoria
@@ -163,7 +203,7 @@ export default function VistoriaPage() {
                         Agendadas
                     </p>
 
-                    <p className="mt-2 text-2xl font-bold text-blue-600">
+                    <p className="mt-2 text-2xl font-bold text-blue-600 dark:text-blue-400">
                         {agendadas}
                     </p>
                 </div>
@@ -173,7 +213,7 @@ export default function VistoriaPage() {
                         Em andamento
                     </p>
 
-                    <p className="mt-2 text-2xl font-bold text-yellow-600">
+                    <p className="mt-2 text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                         {emAndamento}
                     </p>
                 </div>
@@ -183,7 +223,7 @@ export default function VistoriaPage() {
                         Concluídas
                     </p>
 
-                    <p className="mt-2 text-2xl font-bold text-green-600">
+                    <p className="mt-2 text-2xl font-bold text-green-600 dark:text-green-400">
                         {concluidas}
                     </p>
                 </div>
@@ -215,7 +255,7 @@ export default function VistoriaPage() {
                 {loading ? (
                     <div className="flex min-h-48 items-center justify-center p-6">
                         <div className="text-center">
-                            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+                            <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 dark:border-gray-700 dark:border-t-blue-400" />
 
                             <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                                 Carregando vistorias...
@@ -237,7 +277,7 @@ export default function VistoriaPage() {
                                 type="button"
                                 onClick={() => {
                                     limparFiltros();
-                                    setShowForm(true);
+                                    handleNova();
                                 }}
                                 className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
                             >
@@ -256,8 +296,13 @@ export default function VistoriaPage() {
             {/* Formulário */}
             {showForm && (
                 <VistoriaForm
-                    onSubmit={handleCriar}
-                    onCancel={() => setShowForm(false)}
+                    initialData={editingVistoria}
+                    isEditing={Boolean(editingVistoria)}
+                    onSubmit={handleSalvar}
+                    onCancel={() => {
+                        setShowForm(false);
+                        setEditingVistoria(null);
+                    }}
                     loading={saving}
                     error={error}
                 />
@@ -268,6 +313,8 @@ export default function VistoriaPage() {
                 <VistoriaDetails
                     vistoria={selectedVistoria}
                     onClose={() => setSelectedVistoria(null)}
+                    onEdit={() => handleEditar(selectedVistoria)}
+                    onDelete={() => handleExcluir(selectedVistoria)}
                 />
             )}
         </div>

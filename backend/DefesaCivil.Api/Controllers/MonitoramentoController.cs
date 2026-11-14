@@ -6,17 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 public class MonitoramentoController : ControllerBase
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly string _defesaIAUrl;
+    private readonly string? _defesaIAUrl;
 
     public MonitoramentoController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
     {
         _httpClientFactory = httpClientFactory;
-        _defesaIAUrl = configuration["Services:DefesaIAUrl"] ?? "http://defesa-ia:8000";
+        _defesaIAUrl = configuration["Services:DefesaIAUrl"];
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
+        if (string.IsNullOrWhiteSpace(_defesaIAUrl))
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = "Serviço de IA não configurado" });
+
         var http = _httpClientFactory.CreateClient();
         http.Timeout = TimeSpan.FromSeconds(10);
 

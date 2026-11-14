@@ -18,12 +18,23 @@ public class AppDbContext : DbContext
     public DbSet<Equipe> Equipes { get; set; }
     public DbSet<Abrigo> Abrigos { get; set; }
     public DbSet<Cidade> Cidades { get; set; }
+    public DbSet<Vistoria> Vistorias { get; set; }
+    public DbSet<Solicitacao> Solicitacoes { get; set; }
+    public DbSet<Risco> Riscos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.HasSequence<long>("ocorrencia_protocolo_seq")
+            .StartsAt(1)
+            .IncrementsBy(1);
+
+        modelBuilder.HasSequence<long>("vistoria_protocolo_seq")
+            .StartsAt(1)
+            .IncrementsBy(1);
+
+        modelBuilder.HasSequence<long>("solicitacao_protocolo_seq")
             .StartsAt(1)
             .IncrementsBy(1);
 
@@ -72,6 +83,42 @@ public class AppDbContext : DbContext
             entity.Property(a => a.Tipo).HasConversion<string>();
             entity.Property(a => a.Nivel).HasConversion<string>();
             entity.Property(a => a.Status).HasConversion<string>();
+        });
+
+        modelBuilder.Entity<Vistoria>(entity =>
+        {
+            entity.Property(v => v.Tipo).HasConversion<string>();
+            entity.Property(v => v.Status).HasConversion<string>();
+            entity.Property(v => v.Prioridade).HasConversion<string>();
+
+            entity.HasIndex(v => v.Protocolo).IsUnique();
+            entity.HasIndex(v => v.Status);
+            entity.HasIndex(v => v.Prioridade);
+            entity.HasIndex(v => v.Municipio);
+        });
+
+        modelBuilder.Entity<Solicitacao>(entity =>
+        {
+            entity.Property(s => s.Tipo).HasConversion<string>();
+            entity.Property(s => s.Status).HasConversion<string>();
+            entity.Property(s => s.Prioridade).HasConversion<string>();
+
+            entity.HasIndex(s => s.Protocolo).IsUnique();
+            entity.HasIndex(s => s.Status);
+            entity.HasIndex(s => s.Prioridade);
+            entity.HasIndex(s => s.Municipio);
+        });
+
+        modelBuilder.Entity<Risco>(entity =>
+        {
+            entity.Property(r => r.Tipo).HasConversion<string>();
+            entity.Property(r => r.Nivel).HasConversion<string>();
+            entity.Property(r => r.Status).HasConversion<string>();
+
+            entity.HasIndex(r => r.Status);
+            entity.HasIndex(r => r.Nivel);
+            entity.HasIndex(r => r.Tipo);
+            entity.HasIndex(r => r.Municipio);
         });
     }
 }

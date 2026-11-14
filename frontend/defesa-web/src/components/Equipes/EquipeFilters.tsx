@@ -50,13 +50,13 @@ export const EquipeFilters: React.FC<EquipeFiltersProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4"
+      className="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800"
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="md:col-span-2">
           <label
             htmlFor="equipe-search"
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             <Search size={16} className="mr-1 inline" />
             Buscar
@@ -68,14 +68,14 @@ export const EquipeFilters: React.FC<EquipeFiltersProps> = ({
             value={filters.search}
             onChange={handleChange}
             placeholder="Nome, responsável ou município..."
-            className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           />
         </div>
 
         <div>
           <label
             htmlFor="equipe-status"
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             Status
           </label>
@@ -84,7 +84,7 @@ export const EquipeFilters: React.FC<EquipeFiltersProps> = ({
             name="status"
             value={filters.status}
             onChange={handleChange}
-            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           >
             <option value="">Todos</option>
             {Object.entries(StatusEquipe).map(([key, value]) => (
@@ -98,7 +98,7 @@ export const EquipeFilters: React.FC<EquipeFiltersProps> = ({
         <div>
           <label
             htmlFor="equipe-tipo"
-            className="mb-1 block text-sm font-medium text-gray-700"
+            className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
           >
             Tipo
           </label>
@@ -107,7 +107,7 @@ export const EquipeFilters: React.FC<EquipeFiltersProps> = ({
             name="tipo"
             value={filters.tipo}
             onChange={handleChange}
-            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
           >
             <option value="">Todos</option>
             {Object.entries(TiposEquipe).map(([key, value]) => (
@@ -130,7 +130,7 @@ export const EquipeFilters: React.FC<EquipeFiltersProps> = ({
           <button
             type="button"
             onClick={handleClear}
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             Limpar
           </button>

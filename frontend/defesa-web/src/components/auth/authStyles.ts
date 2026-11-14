@@ -5,7 +5,7 @@ export const authLabelClass =
 
 const INPUT_BASE =
     "w-full rounded-xl border py-2.5 pl-10 transition-all focus:outline-none disabled:opacity-60 " +
-    "border-orange-300/60 bg-white text-zinc-900 shadow-sm placeholder:text-zinc-400 " +
+    "border-orange-300/60 bg-white text-zinc-900 shadow-sm placeholder:text-zinc-500 " +
     "focus:border-amber-500 focus:ring-2 focus:ring-amber-400/35 " +
     "dark:border-orange-200/30 dark:bg-white/10 dark:text-white dark:shadow-none " +
     "dark:placeholder:text-amber-200/70 dark:focus:border-amber-400 dark:focus:ring-amber-400/25";
@@ -27,7 +27,7 @@ export const authDismissBtnClass =
     "shrink-0 rounded-lg p-1 text-red-600 transition hover:bg-red-500/15 hover:text-red-900 dark:text-red-300 dark:hover:bg-red-500/20 dark:hover:text-white";
 
 export const authSubmitClass =
-    "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-600 py-2.5 font-semibold text-white transition hover:opacity-95 disabled:opacity-50";
+    "flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-300 to-orange-500 py-2.5 font-semibold text-orange-950 transition hover:opacity-90 disabled:opacity-50";
 
 export const authFooterLinkClass =
     "text-sm text-orange-800 transition hover:text-orange-950 dark:text-amber-200 dark:hover:text-white";

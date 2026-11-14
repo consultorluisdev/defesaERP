@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import {
     PrioridadesVistoria,
+    StatusVistoria,
     TiposVistoria,
-    type CreateVistoriaDto,
+    type Vistoria,
+    type VistoriaFormValues,
 } from "../../types/vistoria";
 
 interface VistoriaFormProps {
-    onSubmit: (data: CreateVistoriaDto) => Promise<void>;
+    initialData?: Vistoria | null;
+    isEditing?: boolean;
+    onSubmit: (data: VistoriaFormValues) => Promise<void>;
     onCancel: () => void;
     loading?: boolean;
     error?: string | null;
 }
 
-const initialFormData: CreateVistoriaDto = {
+const initialFormData: VistoriaFormValues = {
     solicitante: "",
     telefone: "",
     tipo: TiposVistoria.PREVENTIVA,
@@ -25,6 +29,42 @@ const initialFormData: CreateVistoriaDto = {
     responsavel: "",
     observacoes: "",
     dataAgendamento: "",
+    status: StatusVistoria.AGENDADA,
+    dataRealizacao: "",
+};
+
+const pad = (value: number) => String(value).padStart(2, "0");
+
+const toDateTimeLocal = (value?: string | null) => {
+    if (!value) return "";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "";
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+        date.getDate(),
+    )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+const toFormValues = (vistoria?: Vistoria | null): VistoriaFormValues => {
+    if (!vistoria) return { ...initialFormData };
+
+    return {
+        solicitante: vistoria.solicitante,
+        telefone: vistoria.telefone,
+        tipo: vistoria.tipo,
+        descricao: vistoria.descricao,
+        endereco: vistoria.endereco,
+        bairro: vistoria.bairro ?? "",
+        municipio: vistoria.municipio,
+        prioridade: vistoria.prioridade,
+        responsavel: vistoria.responsavel ?? "",
+        observacoes: vistoria.observacoes ?? "",
+        dataAgendamento: toDateTimeLocal(vistoria.dataAgendamento),
+        status: vistoria.status,
+        dataRealizacao: toDateTimeLocal(vistoria.dataRealizacao),
+    };
 };
 
 const inputClassName =
@@ -34,13 +74,20 @@ const labelClassName =
     "mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300";
 
 export default function VistoriaForm({
+    initialData = null,
+    isEditing = false,
     onSubmit,
     onCancel,
     loading = false,
     error = null,
 }: VistoriaFormProps) {
-    const [formData, setFormData] =
-        useState<CreateVistoriaDto>(initialFormData);
+    const [formData, setFormData] = useState<VistoriaFormValues>(() =>
+        toFormValues(initialData),
+    );
+
+    useEffect(() => {
+        setFormData(toFormValues(initialData));
+    }, [initialData]);
 
     const handleChange = (
         event: ChangeEvent<
@@ -58,12 +105,19 @@ export default function VistoriaForm({
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const payload: CreateVistoriaDto = { ...formData };
-
-        if (!payload.bairro) delete payload.bairro;
-        if (!payload.responsavel) delete payload.responsavel;
-        if (!payload.observacoes) delete payload.observacoes;
-        if (!payload.dataAgendamento) delete payload.dataAgendamento;
+        const payload: VistoriaFormValues = {
+            ...formData,
+            bairro: formData.bairro?.trim() || undefined,
+            responsavel: formData.responsavel?.trim() || undefined,
+            observacoes: formData.observacoes?.trim() || undefined,
+            dataAgendamento: formData.dataAgendamento
+                ? new Date(formData.dataAgendamento).toISOString()
+                : undefined,
+            dataRealizacao: formData.dataRealizacao
+                ? new Date(formData.dataRealizacao).toISOString()
+                : undefined,
+            status: isEditing ? formData.status : undefined,
+        };
 
         await onSubmit(payload);
     };
@@ -74,18 +128,20 @@ export default function VistoriaForm({
                 <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                            Nova Vistoria
+                            {isEditing ? "Editar Vistoria" : "Nova Vistoria"}
                         </h2>
 
                         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Preencha os dados para agendar uma nova vistoria.
+                            {isEditing
+                                ? "Atualize os dados da vistoria."
+                                : "Preencha os dados para agendar uma nova vistoria."}
                         </p>
                     </div>
 
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                        className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                         aria-label="Fechar"
                     >
                         ✕
@@ -174,6 +230,28 @@ export default function VistoriaForm({
                             </select>
                         </div>
 
+                        {isEditing && (
+                            <div>
+                                <label htmlFor="status" className={labelClassName}>
+                                    Status
+                                </label>
+
+                                <select
+                                    id="status"
+                                    name="status"
+                                    value={formData.status ?? StatusVistoria.AGENDADA}
+                                    onChange={handleChange}
+                                    className={inputClassName}
+                                >
+                                    {Object.values(StatusVistoria).map((status) => (
+                                        <option key={status} value={status}>
+                                            {status}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+
                         <div>
                             <label htmlFor="municipio" className={labelClassName}>
                                 Município
@@ -249,6 +327,26 @@ export default function VistoriaForm({
                                 className={inputClassName}
                             />
                         </div>
+
+                        {isEditing && (
+                            <div>
+                                <label
+                                    htmlFor="dataRealizacao"
+                                    className={labelClassName}
+                                >
+                                    Data de realização
+                                </label>
+
+                                <input
+                                    id="dataRealizacao"
+                                    name="dataRealizacao"
+                                    type="datetime-local"
+                                    value={formData.dataRealizacao ?? ""}
+                                    onChange={handleChange}
+                                    className={inputClassName}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <div>
@@ -306,7 +404,11 @@ export default function VistoriaForm({
                             disabled={loading}
                             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            {loading ? "Salvando..." : "Salvar vistoria"}
+                            {loading
+                                ? "Salvando..."
+                                : isEditing
+                                  ? "Salvar alterações"
+                                  : "Salvar vistoria"}
                         </button>
                     </div>
                 </form>

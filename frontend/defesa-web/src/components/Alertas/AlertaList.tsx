@@ -12,7 +12,7 @@ export function AlertaList({ alertas, loading, erro, onSelect }: Props) {
   if (loading) {
     return (
       <div
-        className="bg-[#111a2c] border border-[#1e293b] rounded-xl p-8 text-center text-red-400 text-sm"
+        className="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 text-sm dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-gray-400"
       >
         Carregando alertas...
       </div>
@@ -22,7 +22,7 @@ export function AlertaList({ alertas, loading, erro, onSelect }: Props) {
   if (erro) {
     return (
       <div
-        className="bg-[#111a2c] border border-[#1e293b] rounded-xl p-8 text-center text-red-400 text-sm"
+        className="bg-red-50 border border-red-200 rounded-xl p-8 text-center text-red-700 text-sm dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-red-400"
       >
         {erro}
       </div>
@@ -32,7 +32,7 @@ export function AlertaList({ alertas, loading, erro, onSelect }: Props) {
   if (alertas.length === 0) {
     return (
       <div
-        className="bg-[#111a2c] border border-[#1e293b] rounded-xl p-8 text-center text-red-400 text-sm"
+        className="bg-white border border-gray-200 rounded-xl p-8 text-center text-gray-500 text-sm dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-gray-400"
       >
         Nenhum alerta encontrado para esse filtro.
       </div>
@@ -40,7 +40,7 @@ export function AlertaList({ alertas, loading, erro, onSelect }: Props) {
   }
 
   return (
-    <div className="bg-[#111a2c] border border-[#1e293b] rounded-xl overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden dark:bg-[#111a2c] dark:border-[#1e293b]">
       {alertas.map((a) => (
         <AlertaCard key={a.id} alerta={a} onClick={onSelect} />
       ))}

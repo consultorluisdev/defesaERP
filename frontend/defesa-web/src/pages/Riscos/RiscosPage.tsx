@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     FaExclamationTriangle,
     FaPlus,
@@ -12,9 +12,11 @@ import RiscoForm from "../../components/Riscos/RiscoForm";
 import RiscoMap from "../../components/Riscos/RiscoMap";
 import RiscoList from "../../components/Riscos/RiscoList";
 
+import { riscoService } from "../../services/riscoService";
 import type {
     Risco,
     CreateRiscoDto,
+    UpdateRiscoDto,
     RiscoFilters as RiscoFiltersType,
 } from "../../types/risco";
 
@@ -31,8 +33,28 @@ export default function RiscosPage() {
     const [filters, setFilters] = useState<RiscoFiltersType>(initialFilters);
     const [selectedRisco, setSelectedRisco] = useState<Risco | null>(null);
     const [showForm, setShowForm] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [editingRisco, setEditingRisco] = useState<Risco | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const carregarRiscos = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const data = await riscoService.getAll();
+            setRiscos(data);
+        } catch {
+            setError("Não foi possível carregar as áreas de risco.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        carregarRiscos();
+    }, []);
 
     const filteredRiscos = useMemo(() => {
         const search = filters.busca.trim().toLowerCase();
@@ -68,24 +90,56 @@ export default function RiscosPage() {
         0,
     );
 
-    const handleCreate = (data: CreateRiscoDto) => {
-        setLoading(true);
+    const handleSalvar = async (data: CreateRiscoDto) => {
+        try {
+            setSaving(true);
+            setError(null);
+
+            if (editingRisco) {
+                await riscoService.update(editingRisco.id, data as UpdateRiscoDto);
+            } else {
+                await riscoService.create(data);
+            }
+
+            setShowForm(false);
+            setEditingRisco(null);
+            setSelectedRisco(null);
+            await carregarRiscos();
+        } catch {
+            setError(
+                editingRisco
+                    ? "Não foi possível atualizar a área de risco."
+                    : "Não foi possível cadastrar a área de risco.",
+            );
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleEditar = (risco: Risco) => {
         setError(null);
+        setEditingRisco(risco);
+        setSelectedRisco(null);
+        setShowForm(true);
+    };
+
+    const handleExcluir = async (risco: Risco) => {
+        if (!window.confirm(`Excluir a área de risco "${risco.nome}"?`)) return;
 
         try {
-            const newRisco: Risco = {
-                ...data,
-                id: Date.now(),
-                createdAt: new Date().toISOString(),
-            };
-
-            setRiscos((current) => [newRisco, ...current]);
-            setShowForm(false);
+            setError(null);
+            await riscoService.delete(risco.id);
+            setSelectedRisco(null);
+            await carregarRiscos();
         } catch {
-            setError("Não foi possível cadastrar a área de risco.");
-        } finally {
-            setLoading(false);
+            setError("Não foi possível excluir a área de risco.");
         }
+    };
+
+    const handleNova = () => {
+        setError(null);
+        setEditingRisco(null);
+        setShowForm(true);
     };
 
     const handleClear = () => {
@@ -113,7 +167,7 @@ export default function RiscosPage() {
 
                 <button
                     type="button"
-                    onClick={() => setShowForm(true)}
+                    onClick={handleNova}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
                     <FaPlus />
@@ -147,6 +201,26 @@ export default function RiscosPage() {
                 </div>
             </div>
 
+            {error && (
+                <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
+                    <span>{error}</span>
+
+                    <button
+                        type="button"
+                        onClick={carregarRiscos}
+                        className="font-medium underline hover:no-underline"
+                    >
+                        Tentar novamente
+                    </button>
+                </div>
+            )}
+
+            {loading && (
+                <div className="flex h-32 items-center justify-center">
+                    <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500" />
+                </div>
+            )}
+
             <RiscoFilters
                 filters={filters}
                 onChange={setFilters}
@@ -175,9 +249,14 @@ export default function RiscosPage() {
 
             {showForm && (
                 <RiscoForm
-                    onSubmit={handleCreate}
-                    onCancel={() => setShowForm(false)}
-                    loading={loading}
+                    initialData={editingRisco}
+                    isEditing={Boolean(editingRisco)}
+                    onSubmit={handleSalvar}
+                    onCancel={() => {
+                        setShowForm(false);
+                        setEditingRisco(null);
+                    }}
+                    loading={saving}
                     error={error}
                 />
             )}
@@ -186,6 +265,8 @@ export default function RiscosPage() {
                 <RiscoDetails
                     risco={selectedRisco}
                     onClose={() => setSelectedRisco(null)}
+                    onEdit={() => handleEditar(selectedRisco)}
+                    onDelete={() => handleExcluir(selectedRisco)}
                 />
             )}
         </div>

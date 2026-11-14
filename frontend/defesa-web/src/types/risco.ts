@@ -76,7 +76,20 @@ export interface CreateRiscoDto {
     observacoes?: string;
 }
 
-export interface UpdateRiscoDto extends CreateRiscoDto {}
+export interface UpdateRiscoDto {
+    nome?: string;
+    descricao?: string;
+    tipo?: TipoRisco;
+    nivel?: NivelRisco;
+    status?: StatusRisco;
+    municipio?: string;
+    bairro?: string;
+    endereco?: string;
+    coordenadas?: CoordenadasRisco | null;
+    populacaoAfetada?: number;
+    responsavel?: string | null;
+    observacoes?: string | null;
+}
 
 export interface RiscoFilters {
     busca: string;

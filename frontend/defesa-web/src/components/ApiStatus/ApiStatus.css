@@ -49,7 +49,7 @@ html:not(.dark) .api-status-dot {
 }
 
 html:not(.dark) .api-status-label {
-    color: #16a34a;
+    color: #15803d;
 }
 
 .api-status-dot--collapsed {

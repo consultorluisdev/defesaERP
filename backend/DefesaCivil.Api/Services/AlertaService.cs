@@ -59,21 +59,27 @@ namespace DefesaCivil.Api.Services
       var alerta = await _context.Alertas.FindAsync(id);
       if(alerta is null) return null;
 
-      alerta.Titulo = dto.Titulo;
-      alerta.Descricao = dto.Descricao;
-      alerta.Tipo = dto.Tipo;
-      alerta.Nivel = dto.Nivel;
-      alerta.Status = dto.Status;
-      alerta.Cidade = dto.Cidade;
-      alerta.Latitude = dto.Latitude;
-      alerta.Longitude = dto.Longitude;
-      alerta.DataFim = DateTimeUtc.Normalize(dto.DataFim);
-      alerta.Responsavel = dto.Responsavel;
-      alerta.Observacoes = dto.Observacoes;
-      alerta.UpdatedAt = DateTime.UtcNow;
+      alerta.Titulo = dto.Titulo ?? alerta.Titulo;
+      alerta.Descricao = dto.Descricao ?? alerta.Descricao;
+      alerta.Tipo = dto.Tipo ?? alerta.Tipo;
+      alerta.Nivel = dto.Nivel ?? alerta.Nivel;
+      alerta.Status = dto.Status ?? alerta.Status;
+      alerta.Cidade = dto.Cidade ?? alerta.Cidade;
+      alerta.Latitude = dto.Latitude ?? alerta.Latitude;
+      alerta.Longitude = dto.Longitude ?? alerta.Longitude;
+      alerta.Responsavel = dto.Responsavel ?? alerta.Responsavel;
+      alerta.Observacoes = dto.Observacoes ?? alerta.Observacoes;
 
-      if(dto.Status == StatusAlerta.Encerrado && alerta.DataFim is null)
+      if(dto.DataInicio.HasValue)
+        alerta.DataInicio = DateTimeUtc.Normalize(dto.DataInicio.Value);
+
+      if(dto.DataFim.HasValue)
+        alerta.DataFim = DateTimeUtc.Normalize(dto.DataFim.Value);
+
+      if(alerta.Status == StatusAlerta.Encerrado && alerta.DataFim is null)
         alerta.DataFim = DateTime.UtcNow;
+
+      alerta.UpdatedAt = DateTime.UtcNow;
 
       await _context.SaveChangesAsync();
       return AlertaResponseDto.FromEntity(alerta);

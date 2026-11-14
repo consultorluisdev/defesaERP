@@ -13,8 +13,8 @@ export const SolicitacaoList: React.FC<SolicitacaoListProps> = ({
 }) => {
     if(solicitacoes.length === 0){
         return (
-            <div className="rounded-lg border border-gray-700 bg-[#111827] p-8 text-center">
-                <p className="text-gray-400">
+            <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center dark:border-gray-700 dark:bg-gray-800">
+                <p className="text-gray-500 dark:text-gray-400">
                     Nenhuma solicitação encontrada.
                 </p>
             </div>

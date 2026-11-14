@@ -31,18 +31,23 @@ export interface CreateSolicitacaoDto {
 }
 
 export interface UpdateSolicitacaoDto {
-  solicitante: string;
-  telefone: string;
+  solicitante?: string;
+  telefone?: string;
   email?: string | null;
-  tipo: string;
-  descricao: string;
-  endereco: string;
+  tipo?: string;
+  descricao?: string;
+  endereco?: string;
   bairro?: string | null;
-  municipio: string;
-  status: string;
-  prioridade: string;
+  municipio?: string;
+  status?: string;
+  prioridade?: string;
   responsavel?: string | null;
   observacoes?: string | null;
+}
+
+export interface SolicitacaoFormValues extends CreateSolicitacaoDto {
+  status?: string;
+  responsavel?: string | null;
 }
 
 export const TiposSolicitacao = {

@@ -6,10 +6,18 @@
 ## Status atual
 
 - Ambiente local operacional: PostgreSQL 5436, backend 8080, frontend 5173 (`C:\Users\10392692902\.defesaERP\start.ps1`).
-- Migration `20261110013323_EquipeOptionalFields` aplicada; 3 migrations no histórico, 0 pendentes.
+- Migrations no histórico: 5 aplicadas (`AddVistorias` e `AddSolicitacoesRiscos` incluídas), 0 pendentes.
 - **Lote 1 — Ocorrência** concluído (contrato `createdAt/updatedAt` + validação de `DataHora`).
 - **Lote 2 — Equipe** concluído (campos opcionais + `Descricao` 500 + migration aplicada).
-- Build do backend: **0 erros**; avisos restantes de pacotes (`NU1902`/`NU1903`) e `ForwardedHeaders` (`ASPDEPR005`).
+- **Lote 3 — Alerta** concluído (update parcial + validações + `DataInicio`/`DataFim`; smoke ok).
+- **Lote 4 — Program/segurança** concluído (HTTPS só fora de Development, rate limit configurável, `public partial class Program`, `ASPDEPR005` resolvido).
+- **Fase 2 — Fechar backend P0** concluída.
+- **Lote 5 — Vistorias** concluído (tabela `Vistorias` + sequence, protocolo `VT-AAAAMMDD-0001` em um único `SaveChanges`, update parcial, auto `DataRealizacao` ao concluir, CRUD completo no frontend; migration `AddVistorias` aplicada).
+- **Lote 6 — Solicitações e Riscos** concluído (entidades/DTOs/services/controllers, protocolo `SC-AAAAMMDD-0001`, Riscos com `Latitude`/`Longitude` ↔ `coordenadas`, rota `/Riscos`; CRUD completo no frontend; migration `AddSolicitacoesRiscos` aplicada).
+- **Python/IA removido do compose** (`defesa-ia`); `MonitoramentoController` retorna 503 quando `Services:DefesaIAUrl` não está configurado.
+- **Fase 3 — CRUD Solicitações/Vistorias/Riscos** concluída.
+- **Próximo**: Fase 4 — Robustez/segurança (paginação, `CancellationToken`, pacotes vulneráveis).
+- Build do backend: **0 erros**; avisos restantes apenas de pacotes (`NU1902`/`NU1903` — Fase 4).
 - Auditoria backend concluída (P0/P1) e plano de 8 fases definido.
 
 ## Decisões já tomadas
@@ -26,10 +34,7 @@
 1. **Escopo do frontend**: (recomendado) somente módulos com backend — Ocorrências, Alertas, Equipes, Solicitações, Vistorias, Riscos, Dashboard e Auth. Abrigos, Viaturas, Relatórios, Análises, Perfis, Configurações e Radar ficam para depois.
 2. **“Vistorias” do agente**: auditorias do nosso trabalho (recomendado) ou o módulo Vistorias (CRUD)?
 3. **Agente de documentos**: gerador determinístico (recomendado: offline, barato, reproduzível) ou LLM via Ollama local?
-4. **Monitoramento/Radar sem agente de monitoramento**:
-   - A) Remover do escopo agora (recomendado, coerente com “só doc agent”);
-   - B) Implementar clima direto no .NET (OpenWeatherMap) e aposentar o Python;
-   - C) Manter o Python provisoriamente apenas para monitoramento.
+4. **Monitoramento/Radar sem agente de monitoramento**: resolvido parcialmente — Python removido do compose; backend responde 503 quando `Services:DefesaIAUrl` não está configurado. Clima direto no .NET (OpenWeatherMap) fica para depois, se necessário.
 
 ## Fase 1 — Fundação/ambiente (concluída)
 
@@ -37,22 +42,22 @@
 - Fail-fast de configuração (`ConnectionStrings__Default`, `Jwt__Key`).
 - `/health`, `ProblemDetails`, `ForwardedHeaders`.
 
-## Fase 2 — Fechar backend P0 (em andamento)
+## Fase 2 — Fechar backend P0 (concluída)
 
-### Lote 3 — Alerta (próximo)
+### Lote 3 — Alerta (concluído)
 
-- `DTOs/Alerta/AlertaDtos.cs`: `UpdateAlertaDto` com `Status?`, `DataInicio?`, `[Required]`/`[MaxLength]`.
-- `Services/AlertaService.cs`: update parcial (aplicar apenas campos enviados), preservar regra de `DataFim`.
-- Smoke: criar alerta, atualizar só `Status`, atualizar `DataInicio`, listar.
+- [x] `DTOs/Alerta/AlertaDtos.cs`: `UpdateAlertaDto` com `Status?`, `DataInicio?`, `[Required]`/`[StringLength]`/`[Range]`.
+- [x] `Services/AlertaService.cs`: update parcial (aplicar apenas campos enviados), preservar regra de `DataFim`.
+- [x] Smoke: criar alerta, atualizar só `Status`, atualizar `DataInicio`, listar, remover.
 - **Pronto**: build 0 erros + smoke ok.
 
-### Lote 4 — Program/segurança
+### Lote 4 — Program/segurança (concluído)
 
-- `Program.cs`: `UseHttpsRedirection` somente fora de Development.
-- Rate limit configurável (`RateLimit:AuthPermitLimit`, padrão 5).
-- Adicionar `public partial class Program { }` (necessário para testes de integração).
-- Revisar `ForwardedHeaders` (aviso `ASPDEPR005`).
-- **Pronto**: build 0 erros; `/health` 200; auth sem 429 indevido.
+- [x] `Program.cs`: `UseHttpsRedirection` somente fora de Development.
+- [x] Rate limit configurável (`RateLimit:AuthPermitLimit`, padrão 5).
+- [x] Adicionar `public partial class Program { }` (necessário para testes de integração).
+- [x] Revisar `ForwardedHeaders` (`KnownNetworks` → `KnownIPNetworks`, `ASPDEPR005` resolvido).
+- **Pronto**: build 0 erros; `/health` 200; smoke de auth/alerta ok.
 
 ## Fase 3 — CRUD Solicitações / Vistorias / Riscos
 
@@ -79,9 +84,30 @@
 ### Persistência
 
 - `Data/AppDbContext.cs`: DbSets, sequences e índices.
-- Migration `AddSolicitacoesVistoriasRiscos` + `database update`.
+- Migration `AddVistorias` + `AddSolicitacoesRiscos` + `database update`.
 - Smoke por módulo (create/list/update/delete).
-- **Pronto**: 3 CRUDs funcionando via API + migration aplicada.
+- **Pronto**: 3 CRUDs funcionando via API + migrations aplicadas.
+
+### Lote 5 — Vistorias (concluído)
+
+- [x] `Entities/Vistorias.cs`: tabela `Vistorias`, enums alinhados ao frontend, `CreatedAt/UpdatedAt` em UTC.
+- [x] `DTOs/Vistoria/VistoriaDtos.cs`: validação de `DataAgendamento` corrigida; update parcial.
+- [x] `Services/VistoriaService.cs`: busca `ILike` "contém", protocolo via `vistoria_protocolo_seq` em um único `SaveChanges`, auto `DataRealizacao` ao concluir.
+- [x] `Controllers/VistoriasController.cs` → `api/Vistorias` (`[Authorize]`).
+- [x] Frontend: `types/vistoria.ts`, `VistoriaForm.tsx`, `VistoriaPage.tsx`, `VistoriaDetails.tsx` com criar/editar/excluir.
+- [x] Migration `AddVistorias` criada; `dotnet build`, `tsc --noEmit`, `lint` e `build` ok.
+- [x] Migration aplicada no banco local (`dotnet ef database update`).
+
+### Lote 6 — Solicitações e Riscos (concluído)
+
+- [x] `Entities/Solicitacoes.cs` e `Entities/Riscos.cs` (enums alinhados ao frontend; `Risco` com `Latitude`/`Longitude`).
+- [x] DTOs `Solicitacao` (Create/Update parcial/Response) e `Risco` (com `coordenadas` aninhado).
+- [x] `SolicitacaoService` (protocolo `SC-AAAAMMDD-0001`, `Status=Aberta`) e `RiscoService` (CRUD + filtros), ambos com `ILike`.
+- [x] `SolicitacoesController` → `api/Solicitacoes`; `RiscosController` → `api/Riscos` (`[Authorize]`).
+- [x] `AppDbContext` (DbSets, sequence `solicitacao_protocolo_seq`, índices/conversões) e `Program.cs`.
+- [x] Frontend Solicitações: `SolicitacaoForm` (edição/status/responsável), `SolicitacaoPage` e `SolicitacaoDetails` com editar/excluir.
+- [x] Frontend Riscos: `RiscosPage` ligada ao service, `RiscoForm` (edição/coordenadas/responsável/observações), `RiscoDetails` com editar/excluir; `riscoService` → `/Riscos`.
+- [x] Migration `AddSolicitacoesRiscos` aplicada; `dotnet build`, `tsc --noEmit`, `lint` e `build` ok.
 
 ## Fase 4 — Robustez/segurança
 
@@ -102,8 +128,8 @@
 ## Fase 7 — Infra
 
 - `.env` real local; revisar `docker-compose.dev.yml`; healthchecks; Nginx proxy `/api`.
-- CORS/portas; `Services__DefesaIAUrl`; `OPENWEATHER_API_KEY` no `.env.example` (se monitoramento ficar).
-- Python permanece até a Fase 6.
+- CORS/portas; `OPENWEATHER_API_KEY` no `.env.example` (se monitoramento ficar).
+- Python removido do compose; monitoramento responde 503 até definir o provedor.
 - **Pronto**: `start.ps1` e compose dev sobem tudo.
 
 ### Teste no celular (S24 FE) em casa
@@ -113,7 +139,7 @@
 - `docker compose up --build`.
 - Liberar a porta **3000** no firewall (perfil Private).
 - Acessar `http://<IP-do-PC>:3000` no celular.
-- Observações: o compose ainda builda o serviço Python `defesa-ia` (se falhar, o backend não sobe por causa do `depends_on`); Postgres do compose de produção usa a porta **5435** (a local usa 5436).
+- Observações: o serviço Python `defesa-ia` foi removido do compose; Postgres do compose de produção usa a porta **5435** (a local usa 5436).
 
 ## Fase 8 — Testes
 

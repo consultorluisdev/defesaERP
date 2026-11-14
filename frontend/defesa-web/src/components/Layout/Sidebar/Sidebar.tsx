@@ -158,15 +158,6 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
             </nav>
 
             <div className="sidebar-footer">
-                {showExpandedNav ? (
-                    <ApiStatus />
-                ): (
-                    <span className="api-status-dot api-status-dot--collapsed"
-                    title="Status da API"
-                    aria-hidden="true"
-                    />
-                )}
-                
                 <div className="user-avatar">{initials}</div>
                 {showExpandedNav ? (
                     <div className="user-info">
@@ -185,6 +176,14 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
                         <span className="logout-btn-label">Sair</span>
                     ) : null}
                 </button>
+                 {showExpandedNav ? (
+                    <ApiStatus />
+                ): (
+                    <span className="api-status-dot api-status-dot--collapsed"
+                    title="Status da API"
+                    aria-hidden="true"
+                    />
+                )}
             </div>
         </aside>
     );

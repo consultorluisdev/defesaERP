@@ -1,41 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  CreateSolicitacaoDto,
   PrioridadesSolicitacao,
+  StatusSolicitacao,
   TiposSolicitacao,
+  type Solicitacao,
+  type SolicitacaoFormValues,
 } from "../../types/solicitacao";
 
 interface SolicitacaoFormProps {
-  onSubmit: (data: CreateSolicitacaoDto) => Promise<void>;
+  initialData?: Solicitacao | null;
+  isEditing?: boolean;
+  onSubmit: (data: SolicitacaoFormValues) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
   error?: string | null;
 }
 
-const initialFormData: CreateSolicitacaoDto = {
+const initialFormData: SolicitacaoFormValues = {
   solicitante: "",
   telefone: "",
   email: "",
-  tipo: "",
+  tipo: TiposSolicitacao.INFORMACAO,
   descricao: "",
   endereco: "",
   bairro: "",
   municipio: "",
   prioridade: PrioridadesSolicitacao.MEDIA,
   observacoes: "",
+  status: StatusSolicitacao.ABERTA,
+  responsavel: "",
+};
+
+const toFormValues = (solicitacao?: Solicitacao | null): SolicitacaoFormValues => {
+  if (!solicitacao) return { ...initialFormData };
+
+  return {
+    solicitante: solicitacao.solicitante,
+    telefone: solicitacao.telefone,
+    email: solicitacao.email ?? "",
+    tipo: solicitacao.tipo,
+    descricao: solicitacao.descricao,
+    endereco: solicitacao.endereco,
+    bairro: solicitacao.bairro ?? "",
+    municipio: solicitacao.municipio,
+    prioridade: solicitacao.prioridade,
+    observacoes: solicitacao.observacoes ?? "",
+    status: solicitacao.status,
+    responsavel: solicitacao.responsavel ?? "",
+  };
 };
 
 const inputClassName =
-  "w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-blue-500";
+  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white";
 
 export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
+  initialData = null,
+  isEditing = false,
   onSubmit,
   onCancel,
   loading = false,
   error = null,
 }) => {
-  const [formData, setFormData] =
-    useState<CreateSolicitacaoDto>(initialFormData);
+  const [formData, setFormData] = useState<SolicitacaoFormValues>(() =>
+    toFormValues(initialData),
+  );
+
+  useEffect(() => {
+    setFormData(toFormValues(initialData));
+  }, [initialData]);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -46,17 +78,30 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await onSubmit(formData);
+
+    const payload: SolicitacaoFormValues = {
+      ...formData,
+      email: formData.email?.trim() || undefined,
+      bairro: formData.bairro?.trim() || undefined,
+      observacoes: formData.observacoes?.trim() || undefined,
+      responsavel: formData.responsavel?.trim() || undefined,
+      status: isEditing ? formData.status : undefined,
+    };
+
+    await onSubmit(payload);
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-lg border border-gray-700 bg-gray-900 p-6"
+      className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
     >
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+        {isEditing ? "Editar Solicitação" : "Nova Solicitação"}
+      </h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label htmlFor="solicitante" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="solicitante" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Solicitante
           </label>
           <input
@@ -70,7 +115,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="telefone" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="telefone" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Telefone
           </label>
           <input
@@ -84,7 +129,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             E-mail
           </label>
           <input
@@ -98,7 +143,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="municipio" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="municipio" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Município
           </label>
           <input
@@ -112,7 +157,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="tipo" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="tipo" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Tipo
           </label>
           <select
@@ -133,7 +178,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="prioridade" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="prioridade" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Prioridade
           </label>
           <select
@@ -152,8 +197,29 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
           </select>
         </div>
 
+        {isEditing && (
+          <div>
+            <label htmlFor="status" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Status
+            </label>
+            <select
+              id="status"
+              name="status"
+              value={formData.status ?? StatusSolicitacao.ABERTA}
+              onChange={handleChange}
+              className={inputClassName}
+            >
+              {Object.entries(StatusSolicitacao).map(([label, value]) => (
+                <option key={value} value={value}>
+                  {label.replace(/_/g, " ")}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div>
-          <label htmlFor="endereco" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="endereco" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Endereço
           </label>
           <input
@@ -167,7 +233,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="bairro" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="bairro" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Bairro
           </label>
           <input
@@ -178,10 +244,25 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
             className={inputClassName}
           />
         </div>
+
+        {isEditing && (
+          <div>
+            <label htmlFor="responsavel" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Responsável
+            </label>
+            <input
+              id="responsavel"
+              name="responsavel"
+              value={formData.responsavel ?? ""}
+              onChange={handleChange}
+              className={inputClassName}
+            />
+          </div>
+        )}
       </div>
 
       <div>
-        <label htmlFor="descricao" className="mb-2 block text-sm font-medium text-gray-300">
+        <label htmlFor="descricao" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Descrição
         </label>
         <textarea
@@ -196,7 +277,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="observacoes" className="mb-2 block text-sm font-medium text-gray-300">
+        <label htmlFor="observacoes" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Observações
         </label>
         <textarea
@@ -210,7 +291,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       )}
@@ -220,16 +301,20 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
           type="button"
           onClick={onCancel}
           disabled={loading}
-          className="rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-gray-300 transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           Cancelar
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading ? "Salvando..." : "Salvar solicitação"}
+          {loading
+            ? "Salvando..."
+            : isEditing
+              ? "Salvar alterações"
+              : "Salvar solicitação"}
         </button>
       </div>
     </form>

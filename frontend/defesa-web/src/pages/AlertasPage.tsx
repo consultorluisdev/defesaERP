@@ -57,14 +57,14 @@ export function AlertasPage() {
   };
 
   return (
-    <div className="p-8 min-h-screen bg-[#0b1222] text-gray-200">
+    <div className="space-y-6">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <Bell size={22} className="text-amber-400" />
-            <h1 className="text-xl font-bold text-gray-100">Alertas</h1>
+            <Bell size={22} className="text-amber-500 dark:text-amber-400" />
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Alertas</h1>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Monitoramento de alertas de Defesa Civil
           </p>
         </div>
@@ -83,7 +83,7 @@ export function AlertasPage() {
       <AlertaFilters filtros={filtros} onChange={setFiltros} />
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-4 text-red-400 text-sm">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 text-red-700 text-sm dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400">
           {error}
         </div>
       )}
@@ -105,8 +105,8 @@ export function AlertasPage() {
 
       {showForm && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#111a2c] rounded-lg border border-[#1e293b] max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <h2 className="text-lg font-bold text-gray-100 mb-4">
+          <div className="bg-white rounded-lg border border-gray-200 dark:bg-[#111a2c] dark:border-[#1e293b] max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
               {editando ? "Editar Alerta" : "Novo Alerta"}
             </h2>
             <AlertaForm

@@ -167,6 +167,14 @@ VITE_API_URL=http://localhost:8080/api npm run dev
 
 ## Testes e validação
 
+### Build completo (raiz)
+
+```powershell
+./build.ps1
+```
+
+Roda o build do backend (Release) e, no frontend, `npm ci` + `lint` + `typecheck` + `build`.
+
 ### Backend
 
 ```bash
@@ -181,11 +189,11 @@ Ainda não existe projeto de testes no backend, então `dotnet test` não execut
 cd frontend/defesa-web
 npm ci
 npm run lint
-npx tsc -p tsconfig.app.json --noEmit
+npm run typecheck
 npm run build
 ```
 
-O build do Vite gera a pasta `dist/`.
+O `npm run build` executa o `typecheck` (TypeScript) antes do Vite, então erros de tipo quebram o build. O build do Vite gera a pasta `dist/`.
 
 ## Variáveis de ambiente
 

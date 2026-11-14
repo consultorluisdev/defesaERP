@@ -12,7 +12,7 @@ export function AlertaFilters({filtros, onChange }: Props){
         value={filtros.busca ?? ""}
         onChange={(e) => onChange({ ...filtros, busca: e.target.value })}
         placeholder="Buscar por titulo ou cidade"
-        className="bg-[#111a2c] border border-[#1e293b] rounded-lg px-3 py-2 text-sm"
+        className="bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-gray-200 dark:placeholder:text-gray-500 rounded-lg px-3 py-2 text-sm outline-none focus:border-amber-500"
       />
       <select
         value={filtros.status ?? "Todos"}
@@ -22,7 +22,7 @@ export function AlertaFilters({filtros, onChange }: Props){
             status: e.target.value as AlertaFiltros["status"],
           })
         }
-        className="bg-[#111a2c] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 w-64 outline-none focus:border-amber-500"
+        className="bg-white border border-gray-300 text-gray-900 dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-gray-200 rounded-lg px-3 py-2 text-sm w-64 outline-none focus:border-amber-500"
       >
         <option value="Todos">Todos os status</option>
         <option value="Ativo">Ativo</option>
@@ -36,7 +36,7 @@ export function AlertaFilters({filtros, onChange }: Props){
         onChange={(e) =>
           onChange({ ...filtros, nivel: e.target.value as AlertaFiltros["nivel"] })
         }
-        className="bg-[#111a2c] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 w-64 outline-none focus:border-amber-500"
+        className="bg-white border border-gray-300 text-gray-900 dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-gray-200 rounded-lg px-3 py-2 text-sm w-64 outline-none focus:border-amber-500"
       >
         <option value="Todos">Todos os niveis</option>
         <option value="Baixo">Baixo</option>
@@ -50,7 +50,7 @@ export function AlertaFilters({filtros, onChange }: Props){
         onChange={(e) =>
           onChange({ ...filtros, tipo: e.target.value as AlertaFiltros["tipo"] })
         }
-        className="bg-[#111a2c] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 outline-none cursor-pointer"
+        className="bg-white border border-gray-300 text-gray-900 dark:bg-[#111a2c] dark:border-[#1e293b] dark:text-gray-200 rounded-lg px-3 py-2 text-sm outline-none cursor-pointer focus:border-amber-500"
       >
         <option value="Todos">Todos os tipos</option>
         <option value="ChuvaIntensa">Chuva Intensa</option>

@@ -32,8 +32,25 @@ export interface CreateVistoriaDto {
   dataAgendamento?: string;
 }
 
-export interface UpdateVistoriaDto extends CreateVistoriaDto {
-  status: string;
+export interface UpdateVistoriaDto {
+  solicitante?: string;
+  telefone?: string;
+  tipo?: string;
+  descricao?: string;
+  endereco?: string;
+  bairro?: string | null;
+  municipio?: string;
+  status?: string;
+  prioridade?: string;
+  responsavel?: string | null;
+  observacoes?: string | null;
+  dataAgendamento?: string | null;
+  dataRealizacao?: string | null;
+}
+
+export interface VistoriaFormValues extends CreateVistoriaDto {
+  status?: string;
+  dataRealizacao?: string | null;
 }
 
 export const TiposVistoria = {

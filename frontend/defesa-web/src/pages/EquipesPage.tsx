@@ -78,18 +78,18 @@ export function EquipePage() {
     });
 
     return(
-        <div className="min-h-screen bg-[#0b1222] p-8 text-gray-200">
+        <div className="space-y-6">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <div className="flex items-center gap-2">
-                        <Users size={22} className="text-blue-400" />
+                        <Users size={22} className="text-blue-500 dark:text-blue-400" />
 
-                        <h1 className="text-xl font-bold text-gray-100">
+                        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                             Equipes
                         </h1>
                     </div>
 
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                         Gerenciamento das equipes da Defesa Civil
                     </p>
                 </div>
@@ -110,7 +110,7 @@ export function EquipePage() {
             />
 
             {error && (
-                <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+                <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
                     {error}
                 </div>
             )}
@@ -118,7 +118,6 @@ export function EquipePage() {
             {loading ? (
                 <div className="flex h-64 items-center justify-center">
                     <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500" />
-                    {error}
                 </div>
                 ): (
                     <EquipeList

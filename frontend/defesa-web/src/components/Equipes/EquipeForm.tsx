@@ -46,16 +46,16 @@ export function EquipeForm({
     };
     return(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-[#1e203b] bg-[#111a2C] p-6">
+            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-gray-200 bg-white p-6 dark:border-[#1e203b] dark:bg-[#111a2C]">
                 <div className="mb-5 flex items-center justify-between">
-                    <h2 className="text-base font-bold text-gray-100">
+                    <h2 className="text-base font-bold text-gray-900 dark:text-white">
                         Nova Equipe
                     </h2>
 
                     <button
                     type="button"
                     onClick={onClose}
-                    className="text-gray-400 hover:text-gray-200"
+                    className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                         <X size={18} />
                     </button>
@@ -67,7 +67,7 @@ export function EquipeForm({
                         <button
                         type="button"
                         onClick={onClose}
-                        className="flex-1 rounded-lg border border-[#1e293b] py-2 text-sm text-gray-400 hover:text-gray-200"
+                        className="flex-1 rounded-lg border border-gray-300 py-2 text-sm text-gray-700 hover:text-gray-900 dark:border-[#1e293b] dark:text-gray-400 dark:hover:text-gray-200"
                         >
                             Cancelar
                         </button>
@@ -75,7 +75,7 @@ export function EquipeForm({
                         <button
                         type="submit"
                         disabled={saving}
-                        className="flex-1 rounded-lg bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disable:opacity-50"
+                        className="flex-1 rounded-lg bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                         >
                             {saving ? "Salvando.." : "Salvar"}
                         </button>

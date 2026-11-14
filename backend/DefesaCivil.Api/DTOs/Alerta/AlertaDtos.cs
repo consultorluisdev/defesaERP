@@ -1,43 +1,73 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using DefesaCivil.Api.Entities;
 
 namespace DefesaCivil.Api.DTOs
 {
   public class CreatedAlertaDto
   {
+    [Required]
+    [StringLength(150)]
     public string Titulo { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(1000)]
     public string Descricao { get; set; } = string.Empty;
+
     public TipoAlerta Tipo { get; set; }
+
     public NivelAlerta Nivel { get; set; }
 
+    [Required]
+    [StringLength(100)]
     public string Cidade { get; set; } = string.Empty;
+
+    [Range(-90, 90)]
     public double? Latitude { get; set; }
+
+    [Range(-180, 180)]
     public double? Longitude { get; set; }
+
     public DateTime? DataInicio { get; set; }
+
+    [StringLength(100)]
     public string? Responsavel { get; set; }
+
+    [StringLength(1000)]
     public string? Observacoes { get; set; }
   }
 
   public class UpdateAlertaDto
   {
-    public string Titulo { get; set; } = string.Empty;
-    public string Descricao { get; set; } = string.Empty;
+    [StringLength(150)]
+    public string? Titulo { get; set; }
 
-    public TipoAlerta Tipo { get; set; }
+    [StringLength(1000)]
+    public string? Descricao { get; set; }
 
-    public NivelAlerta Nivel { get; set; }
-    public StatusAlerta Status { get; set; }
+    public TipoAlerta? Tipo { get; set; }
 
-    public string Cidade { get; set; } = string.Empty;
+    public NivelAlerta? Nivel { get; set; }
 
+    public StatusAlerta? Status { get; set; }
+
+    [StringLength(100)]
+    public string? Cidade { get; set; }
+
+    [Range(-90, 90)]
     public double? Latitude { get; set; }
 
+    [Range(-180, 180)]
     public double? Longitude { get; set; }
+
+    public DateTime? DataInicio { get; set; }
 
     public DateTime? DataFim { get; set; }
 
+    [StringLength(100)]
     public string? Responsavel { get; set; }
 
+    [StringLength(1000)]
     public string? Observacoes { get; set; }
   }
 

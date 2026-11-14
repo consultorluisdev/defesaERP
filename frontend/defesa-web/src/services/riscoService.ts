@@ -8,27 +8,27 @@ import type {
 
 export const riscoService = {
     async getAll(): Promise<Risco[]>{
-        const response = await api.get<Risco[]>("/Risco");
+        const response = await api.get<Risco[]>("/Riscos");
         return response.data;
     },
 
     async getById(id: number): Promise<Risco>{
-        const response = await api.get<Risco>(`/Risco/${id}`);
+        const response = await api.get<Risco>(`/Riscos/${id}`);
         return response.data;
 
     },
 
     async create(data: CreateRiscoDto): Promise<Risco>{
-        const response = await api.post<Risco>("/Risco", data);
+        const response = await api.post<Risco>("/Riscos", data);
         return response.data;
     },
 
     async update(id: number, data: UpdateRiscoDto): Promise<Risco>{
-        const response = await api.put<Risco>(`/Risco/${id}`, data)
+        const response = await api.put<Risco>(`/Riscos/${id}`, data)
         return response.data;
     },
 
     async delete(id: number): Promise<void>{
-        await api.delete(`/Risco/${id}`);
+        await api.delete(`/Riscos/${id}`);
     },
 }
