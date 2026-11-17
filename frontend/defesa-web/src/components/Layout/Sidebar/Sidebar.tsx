@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { IconType } from "react-icons/lib";
 import {
@@ -24,7 +24,6 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../../../contexts/AuthContext";
 import "./Sidebar.css";
-import ApiStatus from "../../ApiStatus/ApiStatus";
 
 type MenuItem = {
     Icon: IconType;
@@ -32,6 +31,10 @@ type MenuItem = {
     path: string;
     section: string;
     badge?: string;
+};
+
+type HealthResponse = {
+    status?: string;
 };
 
 const sections: Record<string, { title: string; order: number }> = {
@@ -60,7 +63,7 @@ const menuItems: MenuItem[] = [
 ];
 
 type SidebarProps = {
-    /** Drawer aberto em viewport mobile (â‰¤768px). */
+    /** Drawer aberto em viewport mobile (≤768px). */
     mobileOpen?: boolean;
 };
 
@@ -68,9 +71,60 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
+    const [apiOnline, setApiOnline] = useState<boolean | null>(null);
+
+    const healthUrl = useMemo(() => {
+        const url = new URL(import.meta.env.VITE_API_URL || "/api", window.location.origin);
+        url.pathname = `${url.pathname.replace(/\/api\/?$/, "").replace(/\/$/, "")}/health`;
+        url.search = "";
+        url.hash = "";
+        return url.toString();
+    }, []);
 
     /** No drawer mobile, sempre mostrar labels ainda que desktop esteja colapsado. */
     const showExpandedNav = !collapsed || mobileOpen;
+
+    useEffect(() => {
+        let disposed = false;
+        let activeController: AbortController | undefined;
+
+        const checkHealth = async () => {
+            activeController?.abort();
+            const controller = new AbortController();
+            activeController = controller;
+            const timeoutId = window.setTimeout(() => controller.abort(), 5000);
+
+            try {
+                const response = await fetch(healthUrl, {
+                    cache: "no-store",
+                    signal: controller.signal,
+                });
+                if (!response.ok) {
+                    throw new Error(`Health check failed with status ${response.status}`);
+                }
+
+                const health = await response.json() as HealthResponse;
+                if (health.status !== "ok") {
+                    throw new Error("Health check returned an unhealthy status");
+                }
+
+                if (!disposed) setApiOnline(true);
+            } catch {
+                if (!disposed) setApiOnline(false);
+            } finally {
+                window.clearTimeout(timeoutId);
+            }
+        };
+
+        void checkHealth();
+        const intervalId = window.setInterval(() => void checkHealth(), 30000);
+
+        return () => {
+            disposed = true;
+            activeController?.abort();
+            window.clearInterval(intervalId);
+        };
+    }, [healthUrl]);
 
     const sortedSections = useMemo(
         () =>
@@ -83,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
         navigate("/login");
     };
 
-    const displayName = user?.name ?? user?.email ?? "UsuÃ¡rio";
+    const displayName = user?.name ?? user?.email ?? "Usuário";
     const initials =
         displayName
             .split(/\s+/)
@@ -93,6 +147,16 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
             .join("") || "?";
 
     const CollapseIcon = collapsed ? FaChevronRight : FaChevronLeft;
+    const apiStatusLabel = apiOnline === null
+        ? "Verificando API..."
+        : apiOnline
+            ? "C# DotNet API on-line"
+            : "API indisponível";
+    const apiStatusState = apiOnline === null
+        ? "checking"
+        : apiOnline
+            ? "online"
+            : "offline";
 
     return (
         <aside
@@ -107,7 +171,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
                 {showExpandedNav ? (
                     <div className="logo-text">
                         <h1>Defesa Civil</h1>
-                        <p>Brusque Â· SC</p>
+                        <p>Brusque · SC</p>
                     </div>
                 ) : null}
                 <button
@@ -158,32 +222,36 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
             </nav>
 
             <div className="sidebar-footer">
-                <div className="user-avatar">{initials}</div>
-                {showExpandedNav ? (
-                    <div className="user-info">
-                        <h4>{displayName}</h4>
-                        {user?.role ? <p>{user.role}</p> : null}
-                    </div>
-                ) : null}
-                <button
-                    type="button"
-                    className="logout-btn"
-                    onClick={handleLogout}
-                    title="Sair"
-                >
-                    <FaSignOutAlt aria-hidden />
+                <div className="sidebar-footer-main">
+                    <div className="user-avatar">{initials}</div>
                     {showExpandedNav ? (
-                        <span className="logout-btn-label">Sair</span>
+                        <div className="user-info">
+                            <h4>{displayName}</h4>
+                            {user?.role ? <p>{user.role}</p> : null}
+                        </div>
                     ) : null}
-                </button>
-                 {showExpandedNav ? (
-                    <ApiStatus />
-                ): (
-                    <span className="api-status-dot api-status-dot--collapsed"
-                    title="Status da API"
-                    aria-hidden="true"
-                    />
-                )}
+                    <button
+                        type="button"
+                        className="logout-btn"
+                        onClick={handleLogout}
+                        title="Sair"
+                    >
+                        <FaSignOutAlt aria-hidden />
+                        {showExpandedNav ? (
+                            <span className="logout-btn-label">Sair</span>
+                        ) : null}
+                    </button>
+                </div>
+                <div
+                    className={`sidebar-api-status sidebar-api-status--${apiStatusState}`}
+                    title={`C# / Dotnet: ${apiStatusLabel}`}
+                    role="status"
+                    aria-live="polite"
+                    aria-label={`C# / Dotnet: ${apiStatusLabel}`}
+                >
+                    <span className="sidebar-api-status-dot" aria-hidden />
+                    {showExpandedNav ? <span>{apiStatusLabel}</span> : null}
+                </div>
             </div>
         </aside>
     );

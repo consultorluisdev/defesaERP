@@ -213,9 +213,64 @@
     padding: 16px 14px;
     border-top: 1px solid var(--sb-border);
     display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-footer-main {
+    display: flex;
     align-items: center;
     gap: 12px;
-    background: rgba(0, 0, 0, 0.2);
+    min-width: 0;
+}
+
+.sidebar-api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px 10px;
+    border-top: 1px solid var(--sb-border);
+    border-radius: 8px;
+    font-size: 11px;
+}
+
+.sidebar-api-status--online {
+    color: #22c55e;
+}
+
+.sidebar-api-status--offline {
+    color: #f43f5e;
+}
+
+.sidebar-api-status--checking {
+    color: #94a3b8;
+}
+
+.sidebar-api-status--online .sidebar-api-status-dot {
+    background: #22c55e;
+}
+
+.sidebar-api-status--offline .sidebar-api-status-dot {
+    background: #f43f5e;
+}
+
+.sidebar-api-status--checking .sidebar-api-status-dot {
+    background: #64748b;
+}
+
+.sidebar-api-status-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+}
+
+.sidebar.collapsed .sidebar-api-status {
+    justify-content: center;
+    padding: 8px 0;
 }
 
 .user-avatar {
