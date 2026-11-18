@@ -95,9 +95,9 @@
 }
 
 .datetime {
-    font-family: ui-monospace, monospace;
     font-size: 14px;
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
     color: rgba(254, 243, 199, 0.85);
 }
 

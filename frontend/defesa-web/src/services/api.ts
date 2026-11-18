@@ -1,5 +1,13 @@
 import axios from "axios";
 
+export function ensureApiList<T>(data: unknown, resource: string): T[] {
+    if (!Array.isArray(data)) {
+        throw new TypeError(`Resposta inválida ao carregar ${resource}.`);
+    }
+
+    return data as T[];
+}
+
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || "/api",
     timeout: 10000,

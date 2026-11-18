@@ -2,6 +2,78 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Adapt legacy dark-only utility colors when the light theme is active. */
+html:not(.dark) [class~="bg-[#0b1222]"] {
+  background-color: #f8fafc;
+}
+
+html:not(.dark) [class~="bg-[#0b1220]"] {
+  background-color: #fff;
+}
+
+html:not(.dark) [class~="bg-[#111a2c]"],
+html:not(.dark) [class~="bg-[#111a2C]"],
+html:not(.dark) [class~="bg-[#111827]"] {
+  background-color: #fff;
+}
+
+html:not(.dark) [class~="bg-[#1a2332]"] {
+  background-color: #f4f4f5;
+}
+
+html:not(.dark) [class~="border-[#1e293b]"] {
+  border-color: #e4e4e7;
+}
+
+html:not(.dark) [class~="text-gray-100"] {
+  color: #18181b;
+}
+
+html:not(.dark) [class~="text-gray-200"],
+html:not(.dark) [class~="text-gray-300"] {
+  color: #3f3f46;
+}
+
+html:not(.dark) [class~="text-gray-400"],
+html:not(.dark) [class~="text-gray-500"] {
+  color: #52525b;
+}
+
+html:not(.dark) input[class~="bg-[#0b1220]"],
+html:not(.dark) select[class~="bg-[#0b1220]"],
+html:not(.dark) textarea[class~="bg-[#0b1220]"] {
+  color: #18181b;
+}
+
+html:not(.dark) [class~="hover:bg-[#0f1729]"]:hover,
+html:not(.dark) [class~="hover:bg-[#151f33]"]:hover {
+  background-color: #f4f4f5;
+}
+
+html:not(.dark) [class~="bg-gray-950"][class~="text-white"] {
+  background-color: #f8fafc;
+  color: #18181b;
+}
+
+html:not(.dark) [class~="bg-gray-950"] [class~="text-white"] {
+  color: #18181b;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

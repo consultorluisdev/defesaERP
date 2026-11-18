@@ -1,4 +1,4 @@
-import api from "./api";
+import api, { ensureApiList } from "./api";
 import {
   Ocorrencia,
   CriarOcorrenciaDto,
@@ -7,8 +7,8 @@ import {
 
 export const ocorrenciaService = {
   async lista(): Promise<Ocorrencia[]> {
-    const { data } = await api.get<Ocorrencia[]>("/Ocorrencias");
-    return data;
+    const { data } = await api.get<unknown>("/Ocorrencias");
+    return ensureApiList<Ocorrencia>(data, "ocorrências");
   },
 
   async buscarPorId(id: number): Promise<Ocorrencia | null> {
@@ -35,17 +35,17 @@ export const ocorrenciaService = {
   },
 
   async buscarPorStatus(status: string): Promise<Ocorrencia[]> {
-    const { data } = await api.get<Ocorrencia[]>(`/Ocorrencias/status/${status}`);
-    return data;
+    const { data } = await api.get<unknown>(`/Ocorrencias/status/${status}`);
+    return ensureApiList<Ocorrencia>(data, "ocorrências");
   },
 
   async buscarPorPrioridade(prioridade: string): Promise<Ocorrencia[]> {
-    const { data } = await api.get<Ocorrencia[]>(`/Ocorrencias/prioridade/${prioridade}`);
-    return data;
+    const { data } = await api.get<unknown>(`/Ocorrencias/prioridade/${prioridade}`);
+    return ensureApiList<Ocorrencia>(data, "ocorrências");
   },
 
   async buscarAbertas(): Promise<Ocorrencia[]> {
-    const { data } = await api.get<Ocorrencia[]>("/Ocorrencias/dashboard/abertas");
-    return data;
+    const { data } = await api.get<unknown>("/Ocorrencias/dashboard/abertas");
+    return ensureApiList<Ocorrencia>(data, "ocorrências abertas");
   },
 };

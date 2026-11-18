@@ -19,6 +19,16 @@ export default defineConfig({
       usePolling: true,
       interval: 500,
     },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/health': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
     hmr: {
       overlay: true,
     },

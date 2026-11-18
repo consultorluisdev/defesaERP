@@ -26,11 +26,11 @@
     flex-direction: column;
     min-height: 0;
     padding: 24px;
-    background: #fafaf9;
+    background: #f8fafc;
 }
 
 html.dark .page-content {
-    background: #0c0a09;
+    background: #0f172a;
 }
 
 @media (max-width: 768px) {

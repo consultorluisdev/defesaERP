@@ -52,10 +52,54 @@ html:not(.dark) .api-status-label {
     color: #16a34a;
 }
 
-.api-status-dot--collapsed {
+.api-status--offline {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.api-status--offline .api-status-dot,
+.api-status--offline .api-status-label {
+    background: #ef4444;
+    color: #ef4444;
+}
+
+.api-status--checking {
+    background: rgba(148, 163, 184, 0.12);
+    border-color: rgba(148, 163, 184, 0.35);
+}
+
+.api-status--checking .api-status-dot,
+.api-status--checking .api-status-label {
+    background: #94a3b8;
+    color: #94a3b8;
+}
+
+html:not(.dark) .api-status--offline {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+html:not(.dark) .api-status--offline .api-status-dot,
+html:not(.dark) .api-status--offline .api-status-label {
+    background: #dc2626;
+    color: #dc2626;
+}
+
+.api-status--compact {
     width: 10px;
     height: 10px;
-    margin: 0 auto;
-    flex-shrink: 0;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.api-status--compact .api-status-dot {
+    width: 10px;
+    height: 10px;
+}
+
+.api-status--compact .api-status-label {
+    display: none;
 }
 

@@ -1,11 +1,11 @@
-import api from './api';
+import api, { ensureApiList } from './api';
 import { Equipe, CreateEquipeDto, UpdateEquipeDto } from '../types/equipe';
 
 export const equipeService = {
   getAll: async (search?: string): Promise<Equipe[]> => {
     const params = search ?  `?search=${encodeURIComponent(search)}` : '';
-    const response = await api.get(`/Equipes${params}`);
-    return response.data;
+    const response = await api.get<unknown>(`/Equipes${params}`);
+    return ensureApiList<Equipe>(response.data, "equipes");
   },
 
   getById: async (id: number): Promise<Equipe> => {
@@ -28,12 +28,12 @@ export const equipeService = {
   },
 
   getByStatus: async (status: string): Promise<Equipe[]> => {
-    const response = await api.get(`/Equipes/status/${status}`);
-    return response.data;
+    const response = await api.get<unknown>(`/Equipes/status/${status}`);
+    return ensureApiList<Equipe>(response.data, "equipes por status");
   },
   getByTipo: async (tipo: string): Promise<Equipe[]> => {
-    const reponse = await api.get(`/Equipes/tipo/${tipo}`);
-    return reponse.data;
+    const response = await api.get<unknown>(`/Equipes/tipo/${tipo}`);
+    return ensureApiList<Equipe>(response.data, "equipes por tipo");
   }
 
 };

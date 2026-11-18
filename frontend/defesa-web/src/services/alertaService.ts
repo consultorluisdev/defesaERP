@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api, ensureApiList } from "./api";
 import {
   Alerta,
   CreateAlertaDto,
@@ -11,8 +11,8 @@ const BASE_URL = "/alertas";
 
 export const alertaService = {
   async listar(): Promise<Alerta[]> {
-    const { data } = await api.get<Alerta[]>(BASE_URL);
-    return data;
+    const { data } = await api.get<unknown>(BASE_URL);
+    return ensureApiList<Alerta>(data, "alertas");
   },
 
   async buscarPorId(id: number): Promise<Alerta> {
@@ -35,22 +35,22 @@ export const alertaService = {
   },
 
   async listaAtivos(): Promise<Alerta[]> {
-    const { data } = await api.get<Alerta[]>(`${BASE_URL}/ativos`);
-    return data;
+    const { data } = await api.get<unknown>(`${BASE_URL}/ativos`);
+    return ensureApiList<Alerta>(data, "alertas ativos");
   },
 
   async listaPorCidade(cidade: string): Promise<Alerta[]> {
-    const { data } = await api.get<Alerta[]>(`${BASE_URL}/cidade/${cidade}`);
-    return data;
+    const { data } = await api.get<unknown>(`${BASE_URL}/cidade/${cidade}`);
+    return ensureApiList<Alerta>(data, "alertas da cidade");
   },
 
   async listaPorNivel(nivel: NivelAlerta): Promise<Alerta[]> {
-    const { data } = await api.get<Alerta[]>(`${BASE_URL}/nivel/${nivel}`);
-    return data;
+    const { data } = await api.get<unknown>(`${BASE_URL}/nivel/${nivel}`);
+    return ensureApiList<Alerta>(data, "alertas por nível");
   },
 
   async listarEncerrados(): Promise<Alerta[]> {
-    const { data } = await api.get<Alerta[]>(`${BASE_URL}/encerrados`);
-    return data;
+    const { data } = await api.get<unknown>(`${BASE_URL}/encerrados`);
+    return ensureApiList<Alerta>(data, "alertas encerrados");
   },
 };

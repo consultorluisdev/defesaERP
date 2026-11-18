@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../services/api';
+import api, { ensureApiList } from '../services/api';
 import {
   AlertTriangle,
   MapPin,
@@ -39,23 +39,38 @@ const Dashboard: React.FC = () => {
   const [cidades, setCidades] = useState<CidadeMonitoramento[]>([]);
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [monitoramentoError, setMonitoramentoError] = useState<string | null>(null);
+  const [dashboardError, setDashboardError] = useState<string | null>(null);
 
   useEffect(() => {
     api.get('/Monitoramento')
-      .then(res => setCidades(res.data))
-      .catch(() => {
-        setCidades([
-          { cidade: "Brusque", risco: "Crítico" },
-          { cidade: "Itajaí", risco: "Alto" },
-          { cidade: "Blumenau", risco: "Moderado" },
-        ]);
+      .then(res => setCidades(ensureApiList<CidadeMonitoramento>(res.data, "monitoramento")))
+      .catch((error: unknown) => {
+        console.error("Erro ao carregar monitoramento.", error);
+        setCidades([]);
+        setMonitoramentoError("Não foi possível carregar o monitoramento.");
       });
   }, []);
 
   useEffect(() => {
     api.get('/Dashboard')
-      .then(res => setDashboard(res.data))
-      .catch(() => setDashboard(null))
+      .then(res => {
+        const data: unknown = res.data;
+        if (!data || typeof data !== "object" || Array.isArray(data)) {
+          throw new TypeError("Resposta inválida ao carregar o dashboard.");
+        }
+
+        const dashboardData = data as DashboardData;
+        if (!Array.isArray(dashboardData.equipes) || !Array.isArray(dashboardData.ultimosAlertas)) {
+          throw new TypeError("Resposta inválida ao carregar o dashboard.");
+        }
+        setDashboard(dashboardData);
+      })
+      .catch((error: unknown) => {
+        console.error("Erro ao carregar dashboard.", error);
+        setDashboard(null);
+        setDashboardError("Não foi possível carregar os dados do dashboard.");
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -69,30 +84,18 @@ const Dashboard: React.FC = () => {
     "Risco Normal": "Baixo",
   };
 
-  const getRiscoBadge = (risco: string) => {
-    const configs: Record<string, { bg: string; text: string; border: string }> = {
-      Alto: { bg: 'bg-yellow-500', text: 'text-yellow-600', border: 'border-yellow-200' },
-      Moderado: { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' },
-      Baixo: { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' },
+  const getRiskBadge = (level: string) => {
+    const styles: Record<string, string> = {
+      "Crítico": "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300",
+      "Critico": "border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300",
+      "Alto": "border-orange-200 bg-orange-50 text-orange-800 dark:border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-200",
+      "Moderado": "border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-200",
+      "Baixo": "border-green-200 bg-green-50 text-green-800 dark:border-green-500/20 dark:bg-green-500/10 dark:text-green-200",
     };
-    const config = configs[risco as keyof typeof configs] || { bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-200' };
+    const style = styles[level] ?? "border-gray-200 bg-gray-50 text-gray-700 dark:border-gray-600 dark:bg-gray-700/40 dark:text-gray-200";
     return (
-      <span className={[`px-2 py-1 rounded-full text-xs font-semibold`, config.bg, config.text, config.border].join(' ')}>
-        {risco}
-      </span>
-    );
-  };
-
-  const getNivelBadge = (nivel: string) => {
-    const configs: Record<string, { bg: string; text: string; border: string }> = {
-      Crítico: { bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-200' },
-      Alto: { bg: 'bg-yellow-500', text: 'text-yellow-600', border: 'border-yellow-200' },
-      Moderado: { bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-200' },
-    };
-    const config = configs[nivel as keyof typeof configs] || { bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200' };
-    return (
-      <span className={[`px-2 py-1 rounded-full text-xs font-semibold`, config.bg, config.text, config.border].join(' ')}>
-        {nivel}
+      <span className={`inline-flex rounded-full border px-2 py-1 text-xs font-semibold ${style}`}>
+        {level}
       </span>
     );
   };
@@ -106,18 +109,32 @@ const Dashboard: React.FC = () => {
   }
 
   const d = dashboard;
+  const dataUnavailable = Boolean(dashboardError || monitoramentoError);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Home</h1>
-        <p className="text-sm text-gray-500">
+    <div className="space-y-6 text-zinc-900 dark:text-gray-100">
+      {dashboardError && (
+        <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
+          {dashboardError}
+        </p>
+      )}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-gray-100">Dashboard</h1>
+        <p className="text-sm text-zinc-600 dark:text-gray-400">
           Monitoramento em tempo real dos alertas da defesa civil
         </p>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 px-4 py-1.5 bg-green-500 rounded-lg">
-            <div className="w-2 h-2 rounded-full bg-green-600 animate-pulse"></div>
-            <span className="text-xs font-medium text-green-600 dark:text-green-500">Sistema Online</span>
+          <div className={`flex items-center gap-2 rounded-lg border px-4 py-1.5 ${
+            dataUnavailable
+              ? "border-red-200 bg-red-50 dark:border-red-500/25 dark:bg-red-500/10"
+              : "border-green-200 bg-green-50 dark:border-green-500/25 dark:bg-green-500/10"
+          }`}>
+            <div className={`h-2 w-2 animate-pulse rounded-full ${dataUnavailable ? "bg-red-500" : "bg-green-500"}`}></div>
+            <span className={`text-xs font-medium ${
+              dataUnavailable ? "text-red-800 dark:text-red-300" : "text-green-800 dark:text-green-300"
+            }`}>
+              {dataUnavailable ? "Dados indisponíveis" : "Sistema Online"}
+            </span>
           </div>
         </div>
       </div>
@@ -171,7 +188,7 @@ const Dashboard: React.FC = () => {
             <span className="text-2xl font-bold text-gray-900 dark:text-white">{d?.riscoGeral ?? '--'}</span>
           </div>
           <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Risco Geral</h3>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Indice: {d?.indiceRisco ?? '--'}/10</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Índice: {d?.indiceRisco ?? '--'}/10</p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
@@ -202,7 +219,7 @@ const Dashboard: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-gray-600" />
+                <Activity className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Monitoramento por cidade</h2>
               </div>
               <button className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
@@ -218,10 +235,16 @@ const Dashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {cidades.map((item, index) => (
+                  {monitoramentoError ? (
+                    <tr>
+                      <td colSpan={2} className="px-4 py-6 text-center text-sm text-zinc-600 dark:text-gray-400">
+                        {monitoramentoError}
+                      </td>
+                    </tr>
+                  ) : cidades.map((item, index) => (
                     <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">{item.cidade}</td>
-                      <td className="px-4 py-3 text-sm">{getRiscoBadge(nivelMap[item.risco] || item.risco)}</td>
+                      <td className="px-4 py-3 text-sm">{getRiskBadge(nivelMap[item.risco] || item.risco)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -255,7 +278,7 @@ const Dashboard: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-gray-600" />
+                <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Últimos Alertas</h2>
               </div>
             </div>
@@ -268,7 +291,7 @@ const Dashboard: React.FC = () => {
                       <p className="text-xs text-gray-500 dark:text-gray-400">{alerta.alerta}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      {getNivelBadge(nivelMap[alerta.nivel] || alerta.nivel)}
+                      {getRiskBadge(nivelMap[alerta.nivel] || alerta.nivel)}
                       <span className="text-xs text-gray-400">{alerta.tempo}</span>
                     </div>
                   </div>

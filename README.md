@@ -282,6 +282,8 @@ npm run lint
 npm run build
 ```
 
+Em desenvolvimento local, o Vite encaminha `/api` e `/health` para a API em `http://localhost:8080`.
+
 Verificação TypeScript:
 
 ```bash

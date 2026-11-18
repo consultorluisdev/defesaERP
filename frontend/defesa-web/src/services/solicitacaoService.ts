@@ -1,4 +1,4 @@
-import api from "./api";
+import api, { ensureApiList } from "./api";
 import {
     CreateSolicitacaoDto,
     Solicitacao,
@@ -9,8 +9,8 @@ const BASE_URL = '/Solicitacoes';
 
 export const solicitacaoService = {
     async getAll(): Promise<Solicitacao[]> {
-        const response = await api.get<Solicitacao[]>(BASE_URL);
-        return response.data;
+        const response = await api.get<unknown>(BASE_URL);
+        return ensureApiList<Solicitacao>(response.data, "solicitações");
     },
 
     async getById(id: number): Promise<Solicitacao> {

@@ -363,6 +363,6 @@ html:not(.dark) .nav::-webkit-scrollbar-thumb {
 }
 
 html:not(.dark) .section-title {
-    color: rgba(180, 83, 9, 0.55);
+    color: rgba(180, 83, 9, 0.85);
 }
 

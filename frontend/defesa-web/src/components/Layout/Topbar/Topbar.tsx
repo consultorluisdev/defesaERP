@@ -12,6 +12,7 @@ const PAGE_NAMES: Record<string, string> = {
     "/dashboard": "Dashboard",
     "/ocorrencias": "Ocorrências",
     "/alertas": "Alertas",
+    "/solicitacoes": "Solicitações",
     "/radar": "Radar",
     "/riscos": "Riscos",
     "/equipes": "Equipes",
@@ -22,6 +23,7 @@ const PAGE_NAMES: Record<string, string> = {
     "/ia-predict-ia": "IA Predict",
     "/perfis": "Perfis",
     "/configuracoes": "Configurações",
+    "/vistorias": "Vistorias",
 };
 
 const Topbar: React.FC<TopbarProps> = ({ onOpenMobileNav }) => {
@@ -68,7 +70,7 @@ const Topbar: React.FC<TopbarProps> = ({ onOpenMobileNav }) => {
                 <div className="page-info">
                     <h2>{pageName}</h2>
                     <p className="page-info-sub">
-                        {formatDate(currentTime)} — {formatTime(currentTime)}
+                        {formatDate(currentTime)}
                     </p>
                 </div>
             </div>

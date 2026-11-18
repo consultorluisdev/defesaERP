@@ -1,4 +1,4 @@
-import api from './api';
+import api, { ensureApiList } from './api';
 import type {
     Vistoria,
     CreateVistoriaDto,
@@ -7,8 +7,8 @@ import type {
 
 export const vistoriaService = {
     async getAll(): Promise<Vistoria[]> {
-        const response = await api.get<Vistoria[]>('/Vistorias');
-        return response.data;
+        const response = await api.get<unknown>('/Vistorias');
+        return ensureApiList<Vistoria>(response.data, "vistorias");
     },
 
     async getById(id: number): Promise<Vistoria> {

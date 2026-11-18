@@ -12,7 +12,7 @@ type AuthShellProps = {
 export function AuthShell({ header, children }: AuthShellProps) {
     return (
         <div
-            className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-orange-50 via-amber-100 to-orange-100 p-4 pt-20 dark:from-zinc-950 dark:via-orange-600 dark:to-red-700"
+            className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-stone-50 via-amber-50 to-orange-100 p-4 pt-20 dark:from-gray-950 dark:via-gray-900 dark:to-stone-950"
         >
             <div className="absolute right-4 top-4 z-10">
                 <ThemeToggle />
