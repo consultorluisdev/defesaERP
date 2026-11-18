@@ -18,6 +18,5 @@ COPY --from=build /app .
 # Expor porta
 EXPOSE 8080
 
-ENV ASPNETCORE_URLS=http://+:8080
-
-ENTRYPOINT ["dotnet", "DefesaCivil.Api.dll"]
+# Render injeta PORT (padrão 10000); localmente cai no 8080
+ENTRYPOINT ["sh", "-c", "ASPNETCORE_URLS=http://+:${PORT:-8080} exec dotnet DefesaCivil.Api.dll"]

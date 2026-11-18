@@ -109,6 +109,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// health check (usado pelo Render e por monitoramento)
+app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

@@ -1,0 +1,48 @@
+# Blueprint do Render — DefesaERP (backend .NET + serviço Python)
+# Deploy: Render Dashboard > New > Blueprint > selecione este repositório
+
+databases:
+  - name: defesa-db
+    databaseName: defesa_db
+    user: defesa
+    plan: free
+
+services:
+  # ---------------- API .NET ----------------
+  - type: web
+    name: defesa-api
+    runtime: docker
+    dockerfilePath: ./backend/DefesaCivil.Api/Dockerfile
+    dockerContext: ./backend/DefesaCivil.Api
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__Default
+        fromDatabase:
+          name: defesa-db
+          property: connectionString
+      - key: Jwt__Key
+        generateValue: true
+      - key: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+        value: 'true'
+      # domínio do front na Vercel (ex.: https://defesa-web.vercel.app)
+      - key: Cors__AllowedOrigins
+        sync: false
+      # URL pública do serviço defesa-ia abaixo
+      - key: Services__DefesaIAUrl
+        sync: false
+
+  # ---------------- serviço Python (monitoramento) ----------------
+  - type: web
+    name: defesa-ia
+    runtime: python
+    rootDir: backend/DefesaIA-api
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: '3.12'
