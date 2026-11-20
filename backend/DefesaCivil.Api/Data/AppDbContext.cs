@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<Equipe> Equipes { get; set; }
     public DbSet<Abrigo> Abrigos { get; set; }
     public DbSet<Cidade> Cidades { get; set; }
+    public DbSet<Solicitacao> Solicitacoes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -61,6 +62,18 @@ public class AppDbContext : DbContext
             entity.Property(a => a.Tipo).HasConversion<string>();
             entity.Property(a => a.Nivel).HasConversion<string>();
             entity.Property(a => a.Status).HasConversion<string>();
+        });
+
+        // Configuracoes de Solicitacao
+        modelBuilder.Entity<Solicitacao>(entity =>
+        {
+            entity.HasIndex(s => s.Protocolo).IsUnique();
+            entity.HasIndex(s => s.Status);
+            entity.HasIndex(s => s.Prioridade);
+
+            entity.Property(s => s.Tipo).HasConversion<string>();
+            entity.Property(s => s.Status).HasConversion<string>();
+            entity.Property(s => s.Prioridade).HasConversion<string>();
         });
     }
 }

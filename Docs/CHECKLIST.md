@@ -27,14 +27,87 @@
 - [ ] **Validação de input** com FluentValidation ou DataAnnotations + filtro de validação
 - [ ] **Health checks** — endpoint `/health` para o Docker/compose
 - [ ] **Serilog ou ILogger** estruturado (hoje usa `Console.WriteLine`)
-- [ ] **Migrations** — `EnsureCreated()` no lugar de migrations; usar `dotnet ef migrations` + `database migrate`
+- [x] **Migrations PostgreSQL** — `Database.Migrate()` no startup e migration `AddSolicitacoes` criada.
+- [ ] **SQLite de desenvolvimento** — ainda usa `EnsureCreated()` + upgrades idempotentes; avaliar migrations SQLite para os próximos módulos.
 - [ ] **DTOs de response** (hoje retorna `Ok(token)` direto sem envelope padronizado)
 - [ ] **Modelo User** — adicionar campos: Nome, Role, Ativo, DataCriacao, etc.
 
 ### Testes
 
 - [ ] **Projeto de teste unitário** (xUnit) para `TokenService` e `AuthService`
-- [ ] **Projeto de teste de integração** para controllers com WebApplicationFactory + banco de teste
+- [x] **Projeto de teste de integração** para controllers com WebApplicationFactory + banco de teste — implementado para **Solicitações** (15 testes)
+
+## 🧭 Backend — Status dos Módulos (19/11/2026)
+
+### ✅ Concluído
+
+- [x] **Solicitações** — CRUD completo em `/api/Solicitacoes`
+  - Entidade, DTOs, service e controller protegido com `[Authorize]`
+  - Protocolo único `SOL-{timestamp}-{guid}` com índice único e retry
+  - `CreatedAt`/`UpdatedAt` em UTC; enums persistidos e retornados como string
+  - Migration PostgreSQL `AddSolicitacoes`
+  - SQLite de desenvolvimento atualizado com `CREATE TABLE IF NOT EXISTS` + índices, sem apagar dados
+  - 15 testes xUnit: criação, validação, 404, update, delete, protocolo único e ordenação
+  - Build Release: **0 erros / 0 avisos**
+
+### 🎯 Próximo plantão — Vistorias
+
+- [ ] Entidade `Vistoria` + enums `TipoVistoria`, `StatusVistoria`, `PrioridadeVistoria`
+- [ ] `DbSet<Vistoria>` + índice único em `Protocolo` + enums como string
+- [ ] DTOs de criação, atualização e resposta
+- [ ] `VistoriaService` com listagem ordenada, busca por ID, criação, update e delete
+- [ ] Protocolo único gerado no servidor; status inicial `Agendada`
+- [ ] `CreatedAt`/`UpdatedAt` em UTC
+- [ ] Controller `/api/Vistorias` com `[Authorize]`
+- [ ] Migration PostgreSQL `AddVistorias`
+- [ ] Upgrade idempotente do SQLite de desenvolvimento
+- [ ] Testes de criação, validação, 404, update e delete
+- [ ] Campos específicos: `dataAgendamento` e `dataRealizacao`
+
+### 📋 Depois de Vistorias
+
+- [ ] **Abrigos** — expandir a entidade atual (endereço, bairro, cidade, ocupação, status, responsável, telefone, observações) + DTOs, service, controller e migration
+- [ ] **Viaturas** — CRUD + migration (prefixo, modelo, marca, placa, tipo, status, km, manutenção, responsável, base)
+- [ ] **Riscos** — CRUD + migration (título, tipo, nível, status, cidade, bairro, coordenadas, data, descrição, responsável)
+- [ ] **Relatórios** — definir se o backend só guarda metadados ou também gera PDF/CSV/XLSX
+- [ ] **Análises** — endpoints de agregação usando ocorrências, equipes e alertas
+- [ ] **Perfis** — roles/permissões (hoje `User` não tem role)
+- [ ] **Configurações** — persistência das configurações geral/notificações/segurança/sistema
+- [ ] **Monitoramento/Radar/IA Predict** — depende do serviço Rust `defesa-ia`; hoje `/api/Monitoramento` retorna 502
+- [ ] Integrar os services mock do frontend (`abrigoService`, `viaturaService`, `riscoService`, `relatorioService`, `analiseService`, `perfilService`, `configuracaoService`) aos endpoints reais
+- [ ] Ajustar os tipos de ID no frontend (`string` vs `number`) ao integrar os módulos que hoje usam mock
+
+### 🗓️ Meta da semana — tudo menos testes
+
+- [ ] Fechar todos os módulos operacionais (Vistorias, Abrigos, Viaturas, Riscos, Configurações, Relatórios e Análises)
+- [ ] Perfis/roles e permissões
+- [ ] Relatórios em PDF/CSV/XLSX
+- [ ] Monitoramento real
+- [ ] IA Predict / Radar
+- [ ] Paginação e filtros server-side
+- [ ] Tratamento global de erros
+- [ ] Deploy PostgreSQL
+- [ ] Integração do frontend com as APIs reais
+- [ ] Testes automatizados ficam para a etapa seguinte
+
+**Dependências externas**
+
+- Serviço Rust `defesa-ia` para IA Predict/Radar
+- Biblioteca e layout para geração de PDF/XLSX
+- API/chave de clima para monitoramento real
+- Matriz de permissões para Perfis/roles
+
+### 🤝 Fluxo combinado
+
+- [ ] Você codifica o módulo
+- [ ] Eu reviso contrato, validação, EF, migration, respostas HTTP e testes
+- [ ] Eu corrijo os pontos encontrados
+- [ ] Rodo `dotnet build -c Release` e `dotnet test -c Release` sem parar a API da 8080
+
+### ⚠️ Observações do ambiente
+
+- [ ] Subir a API com o build novo para carregar `/api/Solicitacoes` (a instância anterior foi encerrada)
+- [ ] `/api/Monitoramento` retorna 502 enquanto `defesa-ia:8000` não existir; o Dashboard trata como indisponível. Definir fallback local ou aguardar o serviço Rust
 
 ## 🧾 Notas de Revisão do Backend — 12/08/2026
 
@@ -59,16 +132,19 @@
   - Access token agora expira em 30 min → usuário será deslogado sem renovação
   - Fazer: guardar `refreshToken`, interceptor no Axios para tentar `/Auth/refresh` ao receber 401 e repetir a requisição original
 - [ ] **Refresh token stateless** — sem revogação/rotação persistida; para controle real, criar tabela `RefreshTokens` + migração
-- [ ] **Migrations** — `EnsureCreated()` não altera tabelas existentes (colunas/tabelas novas não são aplicadas em DB já criado)
+- [x] **Migration `AddSolicitacoes`** criada para PostgreSQL; o SQLite de desenvolvimento recebeu a tabela via SQL idempotente no startup, sem apagar dados.
+- [ ] **Demais tabelas** — `EnsureCreated()` ainda não altera tabelas existentes; aplicar o mesmo padrão ou migrations SQLite conforme os próximos módulos.
 
 ### Pontos de atenção levantados
 
 - [ ] **JWT Key hardcoded** como fallback em `Program.cs:30` e `TokenServices.cs:20` — mover 100% para ENV/user secrets
 - [ ] **Namespaces misturados** — `DefesaERP.*` (Equipes) vs `DefesaCivil.Api.*`; padronizar
-- [ ] **`GerarNumeroProtocolo`** usa `Count() + 1` — quebra sob concorrência; usar sequence do Postgres
+- [x] **Protocolo de Solicitações** — gerado no servidor com timestamp + GUID, índice único e retry (sem `Count() + 1`).
+- [ ] **Protocolo de Ocorrências** — `GerarNumeroProtocolo` ainda usa `Count() + 1`; corrigir com sequence/retry.
 - [ ] **Dados mock** no DashboardService (cidades, equipes, clima) — falta integrar com `DefesaIA-api`
 - [ ] **`AuthController.Register`** recebe senha no campo `PasswordHash` — renomear para `Password`
-- [ ] **Sem testes** no backend
+- [x] **Testes de Solicitações** — 15 testes xUnit cobrindo criação, validação, 404, update, delete, protocolo único e ordenação.
+- [ ] **Testes dos demais módulos** — Ocorrências, Alertas, Equipes, Vistorias etc.
 
 ## 🐍 Monitoramento API (Python/FastAPI)
 

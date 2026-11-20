@@ -64,12 +64,10 @@
 
 ### Testes
 
-- **Não existe projeto de testes no backend.**
-- `backend/backend.sln` contém apenas `DefesaCivil.Api`.
-- Não há referência a xUnit, NUnit ou MSTest.
+- **Solicitações:** projeto `backend/DefesaCivil.Api.Tests` com 15 testes xUnit de integração e validação.
+- **Demais módulos:** ainda sem testes automatizados.
 - O frontend não tem script `test`, Vitest, Jest ou Playwright.
-- O `README.md` menciona `dotnet test` e xUnit, mas isso ainda não existe na prática.
-- O teste em casa será **smoke test manual**.
+- O teste em casa continua sendo **smoke test manual** para os fluxos não cobertos.
 
 ---
 
@@ -147,6 +145,8 @@ Criar a primeira conta em `/register`.
 ## 5. Backend - P0
 
 ### 5.1 Criar módulo de Solicitações
+
+> **Status (19/11/2026): concluído.** CRUD em `/api/Solicitacoes`, migration `AddSolicitacoes`, upgrade do SQLite de desenvolvimento e 15 testes xUnit.
 
 Criar:
 
@@ -232,6 +232,8 @@ DELETE /api/Solicitacoes/{id}
 ```
 
 ### 5.2 Criar módulo de Vistorias
+
+> **Status (19/11/2026): pendente — próximo plantão.**
 
 Criar:
 

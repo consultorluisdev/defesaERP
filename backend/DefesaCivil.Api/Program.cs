@@ -38,6 +38,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<OcorrenciaService>();
 builder.Services.AddScoped<AlertaService>();
 builder.Services.AddScoped<EquipeService>();
+builder.Services.AddScoped<SolicitacaoService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -138,6 +139,38 @@ using (var scope = app.Services.CreateScope())
     if (useSqlite)
     {
         db.Database.EnsureCreated();
+
+        // EnsureCreated nao adiciona tabelas novas a um banco ja existente.
+        // Estes comandos idempotentes garantem a evolucao do banco de desenvolvimento
+        // sem apagar dados.
+        db.Database.ExecuteSqlRaw("""
+            CREATE TABLE IF NOT EXISTS "Solicitacoes" (
+                "Id" INTEGER NOT NULL CONSTRAINT "PK_Solicitacoes" PRIMARY KEY AUTOINCREMENT,
+                "Protocolo" TEXT NOT NULL,
+                "Solicitante" TEXT NOT NULL,
+                "Telefone" TEXT NOT NULL,
+                "Email" TEXT NULL,
+                "Tipo" TEXT NOT NULL,
+                "Descricao" TEXT NOT NULL,
+                "Endereco" TEXT NOT NULL,
+                "Bairro" TEXT NULL,
+                "Municipio" TEXT NOT NULL,
+                "Status" TEXT NOT NULL,
+                "Prioridade" TEXT NOT NULL,
+                "Responsavel" TEXT NULL,
+                "Observacoes" TEXT NULL,
+                "CreatedAt" TEXT NOT NULL,
+                "UpdatedAt" TEXT NULL
+            );
+            """);
+
+        db.Database.ExecuteSqlRaw(
+            "CREATE UNIQUE INDEX IF NOT EXISTS \"IX_Solicitacoes_Protocolo\" ON \"Solicitacoes\" (\"Protocolo\");");
+        db.Database.ExecuteSqlRaw(
+            "CREATE INDEX IF NOT EXISTS \"IX_Solicitacoes_Status\" ON \"Solicitacoes\" (\"Status\");");
+        db.Database.ExecuteSqlRaw(
+            "CREATE INDEX IF NOT EXISTS \"IX_Solicitacoes_Prioridade\" ON \"Solicitacoes\" (\"Prioridade\");");
+
         logger.LogInformation("Banco SQLite de desenvolvimento pronto.");
 
         if (!db.Users.Any())
@@ -177,3 +210,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+public partial class Program { }
+
