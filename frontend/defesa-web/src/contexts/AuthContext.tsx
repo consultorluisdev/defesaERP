@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { isAxiosError } from "axios";
 import api from "../services/api";
 
 interface User {
@@ -72,8 +73,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             setUser({ id: email, email, name: email });
             return { success: true };
-        } catch (error: any) {
-            const message = error.response?.data?.message || error.response?.data || 'Erro ao fazer login';
+        } catch (error: unknown) {
+            const message = isAxiosError<{ message?: string }>(error)
+                ? error.response?.data?.message || 'Erro ao fazer login'
+                : 'Erro ao fazer login';
             setError(message);
             return { success: false, error: message };
         }
@@ -87,8 +90,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 passwordHash: userData.password,
             });
             return { success: true };
-        } catch (error: any) {
-            const message = error.response?.data?.message || error.response?.data || 'Erro ao registrar';
+        } catch (error: unknown) {
+            const message = isAxiosError<{ message?: string }>(error)
+                ? error.response?.data?.message || 'Erro ao registrar'
+                : 'Erro ao registrar';
             setError(message);
             return { success: false, error: message };
         }

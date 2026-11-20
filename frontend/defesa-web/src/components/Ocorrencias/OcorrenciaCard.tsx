@@ -26,10 +26,10 @@ export function OcorrenciaCard({ ocorrencia: o, onClick }: Props) {
     return (
         <button
             onClick={onClick}
-            className="bg-[#111a2c] border border-[#1e293b] rounded-xl p-4 text-left hover:border-blue-500/50 transition-colors w-full"
+            className="bg-white border border-gray-200 rounded-xl p-4 text-left hover:border-blue-500/50 transition-colors w-full dark:bg-gray-900 dark:border-gray-700"
         >
             <div className="flex items-start justify-between mb-2">
-                <h3 className="text-sm font-semibold text-gray-100 line-clamp-1">{o.numeroProtocolo}</h3>
+                <h3 className="text-sm font-semibold text-gray-900 line-clamp-1 dark:text-gray-100">{o.numeroProtocolo}</h3>
                 <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${PRIORIDADE_STYLES[o.prioridade] ?? "bg-gray-500/20 text-gray-400"}`}>
                     {o.prioridade}
                 </span>

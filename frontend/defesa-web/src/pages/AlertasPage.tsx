@@ -57,12 +57,12 @@ export function AlertasPage() {
   };
 
   return (
-    <div className="p-8 min-h-screen bg-[#0b1222] text-gray-200">
+    <div className="min-h-screen p-8 text-zinc-900 dark:text-gray-100">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <div className="flex items-center gap-2">
             <Bell size={22} className="text-amber-400" />
-            <h1 className="text-xl font-bold text-gray-100">Alertas</h1>
+            <h1 className="text-xl font-bold text-zinc-900 dark:text-gray-100">Alertas</h1>
           </div>
           <p className="text-xs text-gray-500 mt-1">
             Monitoramento de alertas de Defesa Civil
@@ -104,11 +104,35 @@ export function AlertasPage() {
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#111a2c] rounded-lg border border-[#1e293b] max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <h2 className="text-lg font-bold text-gray-100 mb-4">
-              {editando ? "Editar Alerta" : "Novo Alerta"}
-            </h2>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="alerta-modal-title"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setShowForm(false);
+              setEditando(null);
+            }
+          }}
+        >
+          <div className="relative max-h-[calc(100dvh-24px)] w-full max-w-2xl overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 shadow-2xl sm:p-6 dark:border-gray-700 dark:bg-gray-900">
+            <div className="mb-4 flex items-center justify-between gap-3 border-b border-gray-200 pb-4 dark:border-gray-700">
+              <h2 id="alerta-modal-title" className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                {editando ? "Editar Alerta" : "Novo Alerta"}
+              </h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForm(false);
+                  setEditando(null);
+                }}
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-gray-200 text-xl leading-none text-gray-600 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                aria-label="Fechar modal"
+              >
+                ×
+              </button>
+            </div>
             <AlertaForm
               alerta={editando}
               onSuccess={async () => {

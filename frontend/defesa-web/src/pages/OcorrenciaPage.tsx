@@ -56,12 +56,12 @@ export function OcorrenciaPage() {
     };
 
     return (
-        <div className="p-8 min-h-screen bg-[#0b1222] text-gray-200">
+        <div className="min-h-screen p-8 text-zinc-900 dark:text-gray-100">
             <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
                 <div>
                     <div className="flex items-center gap-2">
                         <AlertTriangle size={22} className="text-orange-400" />
-                        <h1 className="text-xl font-bold text-gray-100">Ocorrências</h1>
+                        <h1 className="text-xl font-bold text-zinc-900 dark:text-gray-100">Ocorrências</h1>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                         Registro e acompanhamento de ocorrências de Defesa Civil

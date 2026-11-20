@@ -15,11 +15,23 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
+var useSqlite = string.IsNullOrWhiteSpace(connectionString) && builder.Environment.IsDevelopment();
+
 if (string.IsNullOrWhiteSpace(connectionString))
-    throw new InvalidOperationException("Connection string 'Default' não configurada. Defina em appsettings ou ConnectionStrings__Default (ENV).");
+{
+    if (!useSqlite)
+        throw new InvalidOperationException("Connection string 'Default' não configurada. Defina em appsettings ou ConnectionStrings__Default (ENV).");
+
+    connectionString = "Data Source=defesa-dev.db";
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+{
+    if (useSqlite)
+        options.UseSqlite(connectionString);
+    else
+        options.UseNpgsql(connectionString);
+});
 
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -33,6 +45,12 @@ builder.Services.AddSwaggerGen();
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "DefesaCivilApi";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "DefesaCivilApiUsers";
+
+if (string.IsNullOrWhiteSpace(jwtKey) && builder.Environment.IsDevelopment())
+{
+    jwtKey = "defesa-dev-only-jwt-key-com-32-caracteres";
+    builder.Configuration["Jwt:Key"] = jwtKey;
+}
 
 if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
     throw new InvalidOperationException("Jwt:Key não configurada ou muito curta (mínimo 32 caracteres). Defina via ENV Jwt__Key.");
@@ -116,26 +134,46 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    var migrated = false;
 
-    for (int i = 0; i < 10; i++)
+    if (useSqlite)
     {
-        try
+        db.Database.EnsureCreated();
+        logger.LogInformation("Banco SQLite de desenvolvimento pronto.");
+
+        if (!db.Users.Any())
         {
-            db.Database.Migrate();
-            migrated = true;
-            logger.LogInformation("Banco conectado e migrations aplicadas com sucesso.");
-            break;
-        }
-        catch (Exception ex)
-        {
-            logger.LogWarning(ex, "Tentativa {Tentativa} de conexão/migração do banco falhou.", i + 1);
-            Thread.Sleep(3000);
+            db.Users.Add(new DefesaCivil.Api.Models.User
+            {
+                Email = "admin@defesa.sc",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("defesa123")
+            });
+            db.SaveChanges();
+            logger.LogInformation("Usuário demo criado: admin@defesa.sc / defesa123");
         }
     }
+    else
+    {
+        var migrated = false;
 
-    if (!migrated)
-        throw new InvalidOperationException("Não foi possível conectar ao banco ou aplicar as migrations após 10 tentativas.");
+        for (int i = 0; i < 10; i++)
+        {
+            try
+            {
+                db.Database.Migrate();
+                migrated = true;
+                logger.LogInformation("Banco conectado e migrations aplicadas com sucesso.");
+                break;
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Tentativa {Tentativa} de conexão/migração do banco falhou.", i + 1);
+                Thread.Sleep(3000);
+            }
+        }
+
+        if (!migrated)
+            throw new InvalidOperationException("Não foi possível conectar ao banco ou aplicar as migrations após 10 tentativas.");
+    }
 }
 
 app.Run();

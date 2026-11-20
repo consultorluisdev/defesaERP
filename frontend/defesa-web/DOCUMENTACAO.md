@@ -27,9 +27,6 @@ O **DefesaERP** e um sistema operacional para a Defesa Civil de Brusque/SC, proj
 ├─────────────────┴───────────────────────────────┤
 │                    DATABASE                      │
 │              PostgreSQL 17                       │
-├─────────────────────────────────────────────────┤
-│                  IA / PYTHON                     │
-│        FastAPI Monitor Agent (port 8001)         │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -244,7 +241,6 @@ defesaERP/
 | postgres | postgres:17 | 5432 | Banco de dados |
 | backend | .NET 8 build | 8080 | API REST |
 | frontend | Node + Nginx | 3000 | SPA + proxy reverso |
-| defesa-ia | Python FastAPI | 8001 | Servico de IA |
 | portainer | portainer-ce | 9000 | Gerenciador de containers |
 
 ### Comandos

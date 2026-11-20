@@ -60,11 +60,11 @@ export function AlertaCard({ alerta: a, onClick }: Props) {
   return (
     <div
       onClick={() => onClick(a)}
-      className="flex justify-between items-center gap-4 px-5 py-4 border-b border-[#1e293b] last:border-0 hover:bg-[#0f1729] cursor-pointer"
+      className="flex justify-between items-center gap-4 px-5 py-4 border-b border-gray-200 last:border-0 hover:bg-gray-50 cursor-pointer dark:border-gray-700 dark:hover:bg-gray-800"
     >
       <div className="flex-1 min-w-0">
         <span className="flex items-center gap-2 mb-1.5">{a.titulo}</span>
-        <span className="text-xs bg-[#1a2332] text-gray-400 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+        <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full whitespace-nowrap dark:bg-gray-800 dark:text-gray-300">
           {TIPO_LABEL[a.tipo]}
         </span>
       </div>

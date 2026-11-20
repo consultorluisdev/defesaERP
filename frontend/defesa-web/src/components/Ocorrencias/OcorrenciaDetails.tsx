@@ -17,10 +17,10 @@ const NEXT_STATUS: Record<StatusOcorrencia, StatusOcorrencia[]> = {
 export function OcorrenciaDetails({ ocorrencia: o, onClose, onChangeStatus }: Props) {
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <div className="bg-[#111a2c] border border-[#1e293b] rounded-xl w-full max-w-lg p-6">
+            <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg p-6 dark:bg-gray-900 dark:border-gray-700">
                 <div className="flex justify-between items-start mb-4">
                     <div>
-                        <h2 className="text-base font-bold text-gray-100">{o.numeroProtocolo}</h2>
+                        <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">{o.numeroProtocolo}</h2>
                         <p className="text-xs text-gray-500">{o.endereco} - {o.bairro}, {o.cidade}</p>
                     </div>
                     <button
@@ -54,7 +54,7 @@ export function OcorrenciaDetails({ ocorrencia: o, onClose, onChangeStatus }: Pr
                             <button
                                 key={s}
                                 onClick={() => onChangeStatus(o.id, s)}
-                                className="flex-1 bg-[#0b1220] border border-[#1e293b] hover:border-amber-500 rounded-lg py-2 text-xs font-semibold text-gray-200"
+                                className="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-amber-500 rounded-lg py-2 text-xs font-semibold text-gray-200"
                             >
                                 Marcar como {s}
                             </button>

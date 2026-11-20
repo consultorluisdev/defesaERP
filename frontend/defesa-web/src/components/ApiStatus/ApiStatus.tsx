@@ -38,16 +38,31 @@ const ApiStatus: React.FC<ApiStatusProps> = ({ compact = false }) => {
     };
   }, []);
 
-  const label = status === "online" ? "API ONLINE" : status === "offline" ? "API OFFLINE" : "API VERIFICANDO";
+  const apiLabel =
+    status === "online"
+      ? "API ONLINE · C# .NET"
+      : status === "offline"
+        ? "API OFFLINE · C# .NET"
+        : "API VERIFICANDO · C# .NET";
+  const agentLabel = "API PENDENTE - RUST";
 
   return (
-    <div
-      className={`api-status api-status--${status}${compact ? " api-status--compact" : ""}`}
-      title={label}
-      aria-live="polite"
-    >
-      <span className="api-status-dot" aria-hidden="true" />
-      {!compact && <span className="api-status-label">{label}</span>}
+    <div className={`api-status-stack${compact ? " api-status-stack--compact" : ""}`}>
+      <div
+        className={`api-status api-status--${status}${compact ? " api-status--compact" : ""}`}
+        title={apiLabel}
+        aria-live="polite"
+      >
+        <span className="api-status-dot" aria-hidden="true" />
+        {!compact && <span className="api-status-label">{apiLabel}</span>}
+      </div>
+      <div
+        className={`agent-status${compact ? " agent-status--compact" : ""}`}
+        title={agentLabel}
+      >
+        <span className="agent-status-dot" aria-hidden="true" />
+        {!compact && <span className="agent-status-label">{agentLabel}</span>}
+      </div>
     </div>
   );
 };

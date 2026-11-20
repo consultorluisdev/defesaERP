@@ -20,7 +20,7 @@ const PAGE_NAMES: Record<string, string> = {
     "/viaturas": "Viaturas",
     "/relatorios": "Relatórios",
     "/analises": "Análises",
-    "/ia-predict-ia": "IA Predict",
+    "/ia-predict": "IA Predict",
     "/perfis": "Perfis",
     "/configuracoes": "Configurações",
     "/vistorias": "Vistorias",
@@ -83,13 +83,6 @@ const Topbar: React.FC<TopbarProps> = ({ onOpenMobileNav }) => {
                 <div className="datetime">
                     <span className="time">{formatTime(currentTime)}</span>
                 </div>
-                <button type="button" className="icon-btn" aria-label="Notificações">
-                    🔔
-                    <span className="notification-badge">7</span>
-                </button>
-                <button type="button" className="icon-btn" aria-label="Idioma ou rede">
-                    🌐
-                </button>
             </div>
         </header>
     );

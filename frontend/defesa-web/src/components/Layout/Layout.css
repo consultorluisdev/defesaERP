@@ -54,3 +54,9 @@ html.dark .page-content {
         padding: 12px 14px;
     }
 }
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .main-wrapper {
+        margin-left: 84px;
+    }
+}

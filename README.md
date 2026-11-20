@@ -32,8 +32,7 @@ O projeto utiliza uma arquitetura separada entre frontend e backend:
 DefesaERP
 │
 ├── backend
-│   ├── DefesaCivil.Api
-│   └── DefesaIA-api
+│   └── DefesaCivil.Api
 │
 ├── frontend
 │   └── defesa-web
@@ -103,7 +102,6 @@ Acessos:
 |---------|-----|
 | Frontend | http://localhost:3000 |
 | API (.NET) | http://localhost:8080/api |
-| IA (FastAPI) | http://localhost:8001/docs |
 | Postgres | localhost:5435 |
 | Portainer | http://localhost:9001 |
 

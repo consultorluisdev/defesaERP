@@ -31,12 +31,9 @@ services:
       ConnectionStrings__Default: "Host=postgres;Port=5432;Database=defesa_db;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
       Jwt__Key: ${JWT_KEY:?Defina a variavel JWT_KEY no .env}
       Cors__AllowedOrigins: "${CORS_ALLOWED_ORIGINS:-http://localhost:3000;http://127.0.0.1:3000}"
-      Services__DefesaIAUrl: "${DEFESA_IA_URL:-http://defesa-ia:8000}"
     depends_on:
       postgres:
         condition: service_healthy
-      defesa-ia:
-        condition: service_started
 
   frontend:
     image: node:22-alpine
@@ -52,21 +49,6 @@ services:
       VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
     depends_on:
       - backend
-
-  defesa-ia:
-    build:
-      context: ./backend/DefesaIA-api
-      dockerfile: Dockerfile
-    container_name: defesa-ia
-    restart: unless-stopped
-    ports:
-      - "8001:8000"
-    healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
 
   portainer:
     image: portainer/portainer-ce:latest

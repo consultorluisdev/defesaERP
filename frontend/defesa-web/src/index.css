@@ -17,6 +17,51 @@ textarea {
   font-family: inherit;
 }
 
+html,
+body,
+#root {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .page-content [class~="p-8"] {
+    padding: 16px;
+  }
+
+  .page-content [class~="space-y-6"] {
+    row-gap: 16px;
+  }
+
+  .page-content [class~="gap-6"] {
+    gap: 16px;
+  }
+
+  .page-content input,
+  .page-content select,
+  .page-content textarea {
+    max-width: 100%;
+  }
+
+  .page-content [class~="max-h-[90vh]"] {
+    max-height: calc(100dvh - 24px);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .page-content [class~="p-8"] {
+    padding: 20px;
+  }
+
+  .page-content [class~="gap-6"] {
+    gap: 20px;
+  }
+}
+
 /* Adapt legacy dark-only utility colors when the light theme is active. */
 html:not(.dark) [class~="bg-[#0b1222]"] {
   background-color: #f8fafc;

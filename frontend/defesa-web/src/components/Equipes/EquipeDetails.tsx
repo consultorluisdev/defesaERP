@@ -12,10 +12,10 @@ export function EquipeDetails({
 }: EquipeDetailsProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-            <div className="w-full max-w-lg rounded-xl border border-[#1e293b] bg-[#111a2c] p-6">
+            <div className="w-full max-w-lg rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
                 <div className="mb-5 flex items-start justify-between">
                     <div>
-                        <h2 className="text-lg font-bold text-gray-100">
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                             {equipe.nome}
                         </h2>
 
@@ -83,7 +83,7 @@ export function EquipeDetails({
                 </div>
 
                 <div>
-                    <div className="mt-5 border-t border-[#1e293b] pt-4">
+                    <div className="mt-5 border-t border-gray-200 dark:border-gray-700 pt-4">
                         <div className="space-y-2 text-xs text-gray-400">
                             <p>
                                 <span className="font-medium text-gray-300">

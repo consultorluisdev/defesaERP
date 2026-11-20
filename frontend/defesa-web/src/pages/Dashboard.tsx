@@ -326,7 +326,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="p-4 bg-gray-50 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700">
               <button className="w-full text-center text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                Ver todas as equipes →
+                Ver todas as equipes â†’
               </button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import type { IconType } from "react-icons/lib";
 import {
@@ -52,7 +52,7 @@ const menuItems: MenuItem[] = [
     { Icon: FaTruck, label: "Viaturas", path: "/viaturas", section: "operacoes" },
     { Icon: FaFileAlt, label: "Relatórios", path: "/relatorios", section: "relatorios" },
     { Icon: FaChartBar, label: "Análises", path: "/analises", section: "relatorios" },
-    { Icon: FaRobot, label: "IA Predict", path: "/ia-predict-ia", section: "relatorios" },
+    { Icon: FaRobot, label: "IA Predict", path: "/ia-predict", section: "relatorios" },
     { Icon: FaInbox, label: "Solicitações", path: "/solicitacoes", section: "operacoes" },
     { Icon: FaClipboardCheck, label: "Vistorias", path: "/vistorias", section: "operacoes" },
     { Icon: FaUserCog, label: "Perfis", path: "/perfis", section: "sistema" },
@@ -158,26 +158,35 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false }) => {
             </nav>
 
             <div className="sidebar-footer">
-                <ApiStatus compact={!showExpandedNav} />
-                
-                <div className="user-avatar">{initials}</div>
                 {showExpandedNav ? (
-                    <div className="user-info">
-                        <h4>{displayName}</h4>
-                        {user?.role ? <p>{user.role}</p> : null}
+                    <ApiStatus compact={false} />
+                ) : (
+                    <ApiStatus compact />
+                )}
+
+                <div className="sidebar-user-row">
+                    <div className="user-avatar" title={displayName}>
+                        {initials}
                     </div>
-                ) : null}
-                <button
-                    type="button"
-                    className="logout-btn"
-                    onClick={handleLogout}
-                    title="Sair"
-                >
-                    <FaSignOutAlt aria-hidden />
                     {showExpandedNav ? (
-                        <span className="logout-btn-label">Sair</span>
+                        <div className="user-info">
+                            <h4>{displayName}</h4>
+                            {user?.role ? <p>{user.role}</p> : null}
+                        </div>
                     ) : null}
-                </button>
+                    <button
+                        type="button"
+                        className="logout-btn"
+                        onClick={handleLogout}
+                        title="Sair"
+                        aria-label="Sair"
+                    >
+                        <FaSignOutAlt aria-hidden />
+                        {showExpandedNav ? (
+                            <span className="logout-btn-label">Sair</span>
+                        ) : null}
+                    </button>
+                </div>
             </div>
         </aside>
     );

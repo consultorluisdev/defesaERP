@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { isAxiosError } from "axios";
 import {
   Alerta,
   UpdateAlertaDto,
@@ -123,8 +124,12 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
         await alertaService.criar(base);
       }
       onSuccess();
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Erro ao salvar alerta");
+    } catch (err: unknown) {
+      setError(
+        isAxiosError<{ message?: string }>(err)
+          ? err.response?.data?.message || "Erro ao salvar alerta"
+          : "Erro ao salvar alerta",
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -141,7 +146,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
             Título *
           </label>
           <input
@@ -150,12 +155,12 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
             value={formData.titulo}
             onChange={handleChange}
             required
-            className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+            className="w-full rounded-md bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
             Descrição *
           </label>
           <textarea
@@ -164,13 +169,13 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
             onChange={handleChange}
             required
             rows={3}
-            className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+            className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Tipo *
             </label>
             <select
@@ -178,7 +183,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               value={formData.tipo}
               onChange={handleChange}
               required
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Selecione...</option>
               {TiposAlerta.map((tipo) => (
@@ -190,7 +195,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Nível *
             </label>
             <select
@@ -198,7 +203,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               value={formData.nivel}
               onChange={handleChange}
               required
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">Selecione...</option>
               {NiveisAlerta.map((nivel) => (
@@ -211,7 +216,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
 
           {alerta && (
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                 Status *
               </label>
               <select
@@ -219,7 +224,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
                 value={formData.status || ""}
                 onChange={handleChange}
                 required
-                className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+                className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
               >
                 {StatusAlertaValues.map((status) => (
                   <option key={status} value={status}>
@@ -231,7 +236,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Cidade *
             </label>
             <input
@@ -240,12 +245,12 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               value={formData.cidade}
               onChange={handleChange}
               required
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Data Início
             </label>
             <input
@@ -253,13 +258,13 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               name="dataInicio"
               value={formData.dataInicio}
               onChange={handleChange}
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
           {alerta && (
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
                 Data Fim
               </label>
               <input
@@ -267,13 +272,13 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
                 name="dataFim"
                 value={formData.dataFim || ""}
                 onChange={handleChange}
-                className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+                className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Latitude
             </label>
             <input
@@ -282,12 +287,12 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               name="latitude"
               value={formData.latitude || ""}
               onChange={handleChange}
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Longitude
             </label>
             <input
@@ -296,12 +301,12 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               name="longitude"
               value={formData.longitude || ""}
               onChange={handleChange}
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Responsável
             </label>
             <input
@@ -309,12 +314,12 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               name="responsavel"
               value={formData.responsavel || ""}
               onChange={handleChange}
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
               Observações
             </label>
             <textarea
@@ -322,13 +327,13 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
               value={formData.observacoes || ""}
               onChange={handleChange}
               rows={2}
-              className="w-full rounded-md bg-[#0b1220] border-[#1e293b] text-white focus:border-blue-500 focus:ring-blue-500"
+              className="w-full rounded-md bg-white border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
       </div>
 
-      <div className="flex gap-2 mt-6 pt-4 border-t border-[#1e293b]">
+      <div className="flex gap-2 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
           type="submit"
           disabled={loading}
@@ -339,7 +344,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
         <button
           type="button"
           onClick={onCancel}
-          className="px-6 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          className="px-6 py-2 border border-gray-300 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
         >
           Cancelar
         </button>

@@ -13,7 +13,7 @@ export const EquipeList: React.FC<EquipeListProps> = ({
 }) => {
     if (equipes.length === 0) {
         return (
-            <div className="rounded-lg border border-gray-700 bg-[#111827] p-8 text-center">
+            <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
                 <p className="text-gray-400">
                     Nenhuma equipe encontrada.
                 </p>

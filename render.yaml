@@ -1,4 +1,4 @@
-# Blueprint do Render — DefesaERP (backend .NET + serviço Python)
+# Blueprint do Render — DefesaERP (backend .NET)
 # Deploy: Render Dashboard > New > Blueprint > selecione este repositório
 
 databases:
@@ -30,19 +30,6 @@ services:
       # domínio do front na Vercel (ex.: https://defesa-web.vercel.app)
       - key: Cors__AllowedOrigins
         sync: false
-      # URL pública do serviço defesa-ia abaixo
-      - key: Services__DefesaIAUrl
-        sync: false
 
-  # ---------------- serviço Python (monitoramento) ----------------
-  - type: web
-    name: defesa-ia
-    runtime: python
-    rootDir: backend/DefesaIA-api
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
-    plan: free
-    healthCheckPath: /health
-    envVars:
-      - key: PYTHON_VERSION
-        value: '3.12'
+  # ---------------- serviço Rust (agentes / IA) ----------------
+  # A ser adicionado quando o serviço em Rust estiver pronto.

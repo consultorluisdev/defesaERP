@@ -1,10 +1,24 @@
-import { AbrigoCard } from "./AbrigoCard";
+import type { Abrigo } from '../../types/abrigo';
+import { AbrigoCard } from './AbrigoCard';
 
-export function AbrigoList() {
+interface Props {
+  abrigos: Abrigo[];
+  onDetails: (a: Abrigo) => void;
+}
+
+export function AbrigoList({ abrigos, onDetails }: Props) {
+  if (abrigos.length === 0) {
     return (
-        <section className="space-y-3">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Lista de abrigos</h2>
-            <AbrigoCard />
-        </section>
+      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+        Nenhum abrigo encontrado com os filtros atuais.
+      </div>
     );
+  }
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {abrigos.map((a) => (
+        <AbrigoCard key={a.id} abrigo={a} onDetails={onDetails} />
+      ))}
+    </div>
+  );
 }

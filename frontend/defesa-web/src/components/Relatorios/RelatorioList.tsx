@@ -1,10 +1,25 @@
-import { RelatorioCard } from "./RelatorioCard";
+import type { Relatorio } from '../../types/relatorio';
+import { RelatorioCard } from './RelatorioCard';
 
-export function RelatorioList() {
+interface Props {
+  relatorios: Relatorio[];
+  onDetails: (r: Relatorio) => void;
+  onBaixar: (r: Relatorio) => void;
+}
+
+export function RelatorioList({ relatorios, onDetails, onBaixar }: Props) {
+  if (relatorios.length === 0) {
     return (
-        <section className="space-y-3">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Lista de relatórios</h2>
-            <RelatorioCard />
-        </section>
+      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
+        Nenhum relatório encontrado.
+      </div>
     );
+  }
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {relatorios.map((r) => (
+        <RelatorioCard key={r.id} relatorio={r} onDetails={onDetails} onBaixar={onBaixar} />
+      ))}
+    </div>
+  );
 }

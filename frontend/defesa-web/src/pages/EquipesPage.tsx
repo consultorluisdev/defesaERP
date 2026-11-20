@@ -78,13 +78,13 @@ export function EquipePage() {
     });
 
     return(
-        <div className="min-h-screen bg-[#0b1222] p-8 text-gray-200">
+        <div className="min-h-screen p-8 text-zinc-900 dark:text-gray-100">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <div className="flex items-center gap-2">
                         <Users size={22} className="text-blue-400" />
 
-                        <h1 className="text-xl font-bold text-gray-100">
+                        <h1 className="text-xl font-bold text-zinc-900 dark:text-gray-100">
                             Equipes
                         </h1>
                     </div>

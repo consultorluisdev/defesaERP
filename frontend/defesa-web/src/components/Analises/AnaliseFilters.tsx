@@ -1,8 +1,4 @@
+// Reservado para filtros adicionais futuros. Mantido por compatibilidade com a estrutura.
 export function AnaliseFilters() {
-    return (
-        <section className="rounded-xl border border-dashed border-gray-300 p-4 dark:border-gray-700">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Filtros</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Implementação pendente.</p>
-        </section>
-    );
+  return null;
 }

@@ -17,17 +17,17 @@ export const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
     onClick,
 }) => {
     const prioridadeClasses: Record<string, string> = {
-        Baixa: "border-green-500/30 bg-green-500/10 text-green-400",
-        Media: "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
-        Alta: "border-orange-500/30 bg-orange-500/10 text-orange-400",
-        Urgente: "border-red-500/30 bg-red-500/10 text-red-400",
+        Baixa: "border-green-200 bg-green-50 text-green-700 dark:border-green-500/30 dark:bg-green-500/10 dark:text-green-400",
+        Media: "border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-500/30 dark:bg-yellow-500/10 dark:text-yellow-400",
+        Alta: "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-400",
+        Urgente: "border-red-200 bg-red-50 text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400",
     };
 
     const statusClasses: Record<string, string> = {
-        Aberta: "text-blue-400",
-        EmAnalise: "text-orange-400",
-        EmAtendimento: "text-green-400",
-        Concluida: "text-green-500",
+        Aberta: "text-blue-700 dark:text-blue-400",
+        EmAnalise: "text-orange-700 dark:text-orange-400",
+        EmAtendimento: "text-green-700 dark:text-green-400",
+        Concluida: "text-green-700 dark:text-green-500",
         Cancelada: "text-gray-500",
     };
 
@@ -35,28 +35,28 @@ export const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
         <button
             type="button"
             onClick={() => onClick(solicitacao.id)}
-            className="w-full rounded-xl border border-[#1e293b] bg-[#111a2c] p-5 text-left transition-colors hover:border-blue-500/40 hover:bg-[#151f33]"
+            className="w-full rounded-xl border border-gray-200 bg-white p-5 text-left transition-colors hover:border-blue-500/40 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800"
         >
             <div className="mb-4 flex items-start justify-between gap-3">
                 <div className="min-w-0">
                     <p className="text-xs text-gray-500">
                         {solicitacao.protocolo}
                     </p>
-                    <h3 className="mt-1 truncate text-sm font-semibold text-gray-100">
+                    <h3 className="mt-1 truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
                         {solicitacao.tipo}
                     </h3>
                 </div>
 
                 <span
                     className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${prioridadeClasses[solicitacao.prioridade] ??
-                        "border-gray-600 bg-gray-800 text-gray-300"
+                        "border-gray-300 bg-gray-100 text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
                         }`}
                 >
                     {solicitacao.prioridade}
                 </span>
             </div>
 
-            <p className="mb-4 line-clamp-2 text-sm text-gray-400">
+            <p className="mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
                 {solicitacao.descricao}
             </p>
 
@@ -86,7 +86,7 @@ export const SolicitacaoCard: React.FC<SolicitacaoCardProps> = ({
                 </div>
             </div>
             {solicitacao.prioridade === "Urgente" && (
-                <div className="mt-4 flex items-center gap-2 text-xs font-medium text-red-400">
+                <div className="mt-4 flex items-center gap-2 text-xs font-medium text-red-700 dark:text-red-400">
                     <AlertTriangle size={14} />
                     Atendimento prioritário
                 </div>

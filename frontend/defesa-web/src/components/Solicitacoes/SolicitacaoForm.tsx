@@ -26,7 +26,7 @@ const initialFormData: CreateSolicitacaoDto = {
 };
 
 const inputClassName =
-  "w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white outline-none transition focus:border-blue-500";
+  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white";
 
 export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
   onSubmit,
@@ -52,11 +52,11 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-lg border border-gray-700 bg-gray-900 p-6"
+      className="space-y-6 rounded-lg border border-gray-200 bg-white p-4 sm:p-6 dark:border-gray-700 dark:bg-gray-900"
     >
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label htmlFor="solicitante" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="solicitante" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Solicitante
           </label>
           <input
@@ -70,7 +70,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="telefone" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="telefone" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Telefone
           </label>
           <input
@@ -84,7 +84,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             E-mail
           </label>
           <input
@@ -98,7 +98,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="municipio" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="municipio" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Município
           </label>
           <input
@@ -112,7 +112,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="tipo" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="tipo" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Tipo
           </label>
           <select
@@ -133,7 +133,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="prioridade" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="prioridade" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Prioridade
           </label>
           <select
@@ -153,7 +153,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="endereco" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="endereco" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Endereço
           </label>
           <input
@@ -167,7 +167,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="bairro" className="mb-2 block text-sm font-medium text-gray-300">
+          <label htmlFor="bairro" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Bairro
           </label>
           <input
@@ -181,7 +181,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="descricao" className="mb-2 block text-sm font-medium text-gray-300">
+        <label htmlFor="descricao" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Descrição
         </label>
         <textarea
@@ -196,7 +196,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="observacoes" className="mb-2 block text-sm font-medium text-gray-300">
+        <label htmlFor="observacoes" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Observações
         </label>
         <textarea
@@ -210,7 +210,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
       </div>
 
       {error && (
-        <p role="alert" className="text-sm text-red-400">
+        <p role="alert" className="text-sm text-red-700 dark:text-red-400">
           {error}
         </p>
       )}
@@ -220,7 +220,7 @@ export const SolicitacaoForm: React.FC<SolicitacaoFormProps> = ({
           type="button"
           onClick={onCancel}
           disabled={loading}
-          className="rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 text-sm font-medium text-gray-300 transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           Cancelar
         </button>

@@ -100,15 +100,15 @@ const SolicitacaoPage: React.FC = () => {
     };
 
     return (
-        <div className='min-h-full bg-gray-950 p-4 text-white md:p-6'>
+        <div className='min-h-full p-4 text-gray-900 sm:p-6 dark:text-gray-100'>
             <div className='mx-auto max-w-7xl'>
                 <div className='mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
                     <div>
-                        <h1 className='text-xl font-bold text-white'>
+                        <h1 className='text-xl font-bold text-gray-900 dark:text-gray-100'>
                             Solicitações
                         </h1>
 
-                        <p className='mt-1 text-sm text-gray-400'>
+                        <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
                             Gerencie as solicitações recebidas pela Defesa Civil
                         </p>
                     </div>
@@ -126,13 +126,13 @@ const SolicitacaoPage: React.FC = () => {
                 </div>
 
                 {error && (
-                    <div className='mb-6 flex items-center justify-between rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300'>
+                    <div className='mb-6 flex items-center justify-between rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300'>
                         <span>{error}</span>
 
                         <button
                             type='button'
                             onClick={carregarSolicitacoes}
-                            className='font-medium text-red-200 underline hover:text-white'
+                            className='font-medium text-red-700 underline hover:text-red-900 dark:text-red-200 dark:hover:text-white'
                         >
                             Tentar novamente
                         </button>
@@ -157,7 +157,7 @@ const SolicitacaoPage: React.FC = () => {
                     </div>
                 ) : (
                     <>
-                        <p className='mb-4 text-sm text-gray-400'>
+                        <p className='mb-4 text-sm text-gray-600 dark:text-gray-400'>
                             {solicitacoesFiltradas.length}{' '}
                             {solicitacoesFiltradas.length === 1
                                 ? 'solicitação encontrada'

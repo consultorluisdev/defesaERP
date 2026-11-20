@@ -37,9 +37,9 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
 
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <div className="bg-[#111a2c] border border-[#1e293b] rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto dark:bg-gray-900 dark:border-gray-700">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-base font-bold text-gray-100">Nova Ocorrência</h2>
+                    <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">Nova Ocorrência</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-200">
                         <X size={18} />
                     </button>
@@ -54,7 +54,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                                 maxLength={20}
                                 value={form.numeroProtocolo}
                                 onChange={(e) => setForm({ ...form, numeroProtocolo: e.target.value })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
                             />
                         </div>
                         <div>
@@ -64,7 +64,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                                 type="datetime-local"
                                 value={form.dataHora}
                                 onChange={(e) => setForm({ ...form, dataHora: e.target.value })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             />
                         </div>
                     </div>
@@ -77,7 +77,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                             maxLength={500}
                             value={form.descricao}
                             onChange={(e) => setForm({ ...form, descricao: e.target.value })}
-                            className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                            className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                         />
                     </div>
 
@@ -87,7 +87,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                             <select
                                 value={form.tipoOcorrencia}
                                 onChange={(e) => setForm({ ...form, tipoOcorrencia: e.target.value as TipoOcorrencia })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             >
                                 {TIPOS.map((t) => <option key={t} value={t}>{t}</option>)}
                             </select>
@@ -97,7 +97,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                             <select
                                 value={form.prioridade}
                                 onChange={(e) => setForm({ ...form, prioridade: e.target.value as PrioridadeOcorrencia })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             >
                                 {PRIORIDADES.map((p) => <option key={p} value={p}>{p}</option>)}
                             </select>
@@ -111,7 +111,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                             maxLength={100}
                             value={form.cidade}
                             onChange={(e) => setForm({ ...form, cidade: e.target.value })}
-                            className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                            className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                         />
                     </div>
 
@@ -122,7 +122,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                                 maxLength={50}
                                 value={form.bairro}
                                 onChange={(e) => setForm({ ...form, bairro: e.target.value })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             />
                         </div>
                         <div>
@@ -131,7 +131,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                                 maxLength={200}
                                 value={form.endereco}
                                 onChange={(e) => setForm({ ...form, endereco: e.target.value })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             />
                         </div>
                     </div>
@@ -143,7 +143,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                                 maxLength={100}
                                 value={form.nomeSolicitante ?? ""}
                                 onChange={(e) => setForm({ ...form, nomeSolicitante: e.target.value })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             />
                         </div>
                         <div>
@@ -152,7 +152,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                                 maxLength={20}
                                 value={form.telefoneSolicitante ?? ""}
                                 onChange={(e) => setForm({ ...form, telefoneSolicitante: e.target.value })}
-                                className="w-full bg-[#0b1222] border border-[#1e293b] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500"
+                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
                             />
                         </div>
                     </div>
@@ -161,7 +161,7 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 border border-[#1e293b] rounded-lg py-2 text-sm text-gray-400 hover:text-gray-200"
+                            className="flex-1 border border-gray-200 dark:border-gray-700 rounded-lg py-2 text-sm text-gray-400 hover:text-gray-200"
                         >
                             Cancelar
                         </button>
