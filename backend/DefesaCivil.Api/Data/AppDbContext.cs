@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using DefesaCivil.Api.Entities;
 using DefesaCivil.Api.Models;
 using DefesaERP.Entities;
@@ -11,6 +12,24 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) :
     base(options)
     { }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+
+        // As migrations sao geradas com o provider Npgsql (producao). No SQLite
+        // de desenvolvimento/teste o snapshot difere apenas nas annotations do
+        // provider, entao suprimimos o aviso para permitir o Migrate() local.
+        var isSqlite = optionsBuilder.Options.Extensions.Any(extension =>
+            extension.Info.IsDatabaseProvider &&
+            extension.GetType().Name == "SqliteOptionsExtension");
+
+        if (isSqlite)
+        {
+            optionsBuilder.ConfigureWarnings(w =>
+                w.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
+    }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Ocorrencias> Ocorrencias { get; set; }

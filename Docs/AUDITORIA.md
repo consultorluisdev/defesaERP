@@ -35,19 +35,19 @@ Achado: <colar o bloco do achado>
 
 | ID | Severidade | Tema | Status |
 |---|---|---|---|
-| P0-01 | Crítica | Schema do banco divergente das entidades / `EnsureCreated` | Aberto |
-| P0-02 | Crítica | Datas sem UTC quebram gravação em `timestamptz` | Aberto |
-| P0-03 | Crítica | Atualização parcial de ocorrência retorna 400 | Aberto |
+| P0-01 | Crítica | Schema do banco divergente das entidades / `EnsureCreated` | Resolvido |
+| P0-02 | Crítica | Datas sem UTC quebram gravação em `timestamptz` | Resolvido |
+| P0-03 | Crítica | Atualização parcial de ocorrência retorna 400 | Resolvido |
 | P0-04 | Crítica | Integração de monitoramento quebrada (porta/endpoint) | Aberto |
-| P0-05 | Crítica | Geração de protocolo com `Count() + 1` | Aberto |
+| P0-05 | Crítica | Geração de protocolo com `Count() + 1` | Resolvido |
 | P1-06 | Alta | Módulo de Equipes incompleto no frontend | Aberto |
 | P1-07 | Alta | Refresh token ignorado pelo frontend | Aberto |
 | P1-08 | Alta | Rate limit global atrás do Nginx | Aberto |
 | P1-09 | Alta | Dashboard e indicadores com dados fictícios | Aberto |
 | P1-10 | Alta | Autenticação sem índice único/normalização de e-mail | Aberto |
 | P1-11 | Alta | Sem tratamento global de erros e health checks | Aberto |
-| P1-12 | Alta | Ordenação de prioridade lexicográfica | Aberto |
-| P2-13 | Média | Contratos frontend/backend inconsistentes | Aberto |
+| P1-12 | Alta | Ordenação de prioridade lexicográfica | Resolvido |
+| P2-13 | Média | Contratos frontend/backend inconsistentes | Resolvido |
 | P2-14 | Média | Build/lint não validam TypeScript | Aberto |
 | P2-15 | Média | Riscos de infraestrutura Docker/Nginx | Aberto |
 | P2-16 | Média | Falta de paginação e limites de consulta | Aberto |
@@ -81,10 +81,19 @@ O startup usa `db.Database.EnsureCreated()`. As migrations existentes são antig
 4. Falhar o startup se o banco não estiver acessível (hoje o loop engole o erro após 10 tentativas).
 
 **Critérios de aceite**
-- [ ] Banco novo sobe com todas as tabelas/colunas do modelo atual.
-- [ ] Banco existente é migrado sem perda de dados (ou recriado de forma documentada).
-- [ ] Startup falha explicitamente se o banco não responder.
-- [ ] `dotnet ef migrations add` a partir do estado atual não gera diferenças inesperadas.
+- [x] Banco novo sobe com todas as tabelas/colunas do modelo atual.
+- [x] Banco existente é migrado sem perda de dados (ou recriado de forma documentada).
+- [x] Startup falha explicitamente se o banco não responder.
+- [x] `dotnet ef migrations add` a partir do estado atual não gera diferenças inesperadas.
+
+**Resolução (2026-11-21)**
+- `Program.cs` não usa mais `EnsureCreated` nem SQL manual; o startup chama `DatabaseInitializer.InitializeAsync`, que executa `Database.MigrateAsync()` para SQLite e PostgreSQL.
+- O banco SQLite de desenvolvimento criado por `EnsureCreated` recebe um baseline automático das migrations `InitialCreate` e `AddSolicitacoes`, preservando os dados existentes.
+- As migrations existentes foram validadas contra o modelo atual: `dotnet ef migrations has-pending-model-changes` com provider Npgsql retorna “No changes”.
+- `ocorrencias.id` recebeu a annotation `Sqlite:Autoincrement` para o SQLite não reutilizar Id/protocolo após exclusão; o PostgreSQL continua usando identity.
+- `DatabaseInitializerTests` cobre banco novo, banco legado com dados preservados e execução idempotente.
+- O startup propaga a exceção se o banco ou as migrations falharem (o loop de retry que engolia o erro foi removido).
+- Observação: o baseline SQLite é exclusivo de desenvolvimento; em produção (`allowLegacySqliteBaseline: false`) apenas migrations são aplicadas.
 
 **Prompt para o ChatGPT**
 ```text
@@ -117,10 +126,16 @@ Provável erro 500 ao criar/editar alertas e ocorrências pela interface, mesmo 
 4. Adicionar testes de persistência para os dois fluxos.
 
 **Critérios de aceite**
-- [ ] Criar e editar alerta pela UI persiste sem erro.
-- [ ] Criar e editar ocorrência pela UI persiste sem erro.
-- [ ] Datas no banco ficam em UTC.
-- [ ] A API aceita ISO com e sem offset de forma controlada.
+- [x] Criar e editar alerta pela UI persiste sem erro.
+- [x] Criar e editar ocorrência pela UI persiste sem erro.
+- [x] Datas no banco ficam em UTC.
+- [x] A API aceita ISO com e sem offset de forma controlada.
+
+**Resolução (2026-11-21)**
+- `Common/DateTimeUtc.Normalize` centraliza a regra: `Unspecified` é tratado como UTC e `Local` é convertido para UTC.
+- `OcorrenciaService.Create/Update/ToResponseDto` e `AlertaService.Create/Update` + `AlertaResponseDto.FromEntity` normalizam entrada e saída.
+- Frontend (`OcorrenciaForm` e `AlertaForm`) envia ISO com `Z`; a exibição continua em horário local.
+- Testes: `DateTimeUtcTests` e `OcorrenciaUpdateParcialTests.Create_ComDataUnspecified_PersisteUtc`.
 
 **Prompt para o ChatGPT**
 ```text
@@ -150,9 +165,15 @@ A ação “Marcar como Em Andamento/Concluída/Cancelada” falha com 400 e nã
 3. Tratar erro no frontend com feedback ao usuário.
 
 **Critérios de aceite**
-- [ ] Alterar status funciona enviando apenas `{ status, dataOcorrencia }`.
-- [ ] Edição completa continua funcionando.
-- [ ] Erros aparecem na UI.
+- [x] Alterar status funciona enviando apenas `{ status, dataHora }`.
+- [x] Edição completa continua funcionando.
+- [x] Erros aparecem na UI.
+
+**Resolução (2026-11-21)**
+- `UpdateOcorrenciaDto` ficou totalmente opcional (sem `[Required]`), incluindo `DataHora?`.
+- `OcorrenciaService.Update` aplica somente os campos enviados e preserva o restante.
+- `OcorrenciaPage` envia `{ status, dataHora }` e exibe mensagem de erro no `catch`.
+- Testes de integração em `OcorrenciaUpdateParcialTests` cobrem status, data, preservação e criação com data `Unspecified`.
 
 **Prompt para o ChatGPT**
 ```text
@@ -223,10 +244,15 @@ Perda de requisições em uso concorrente e UX confusa: a UI exige um protocolo 
 4. Tratar conflito com retry seguro quando aplicável.
 
 **Critérios de aceite**
-- [ ] Criação concorrente não gera protocolo duplicado.
-- [ ] Exclusões não reutilizam protocolo.
-- [ ] UI não pede protocolo manual.
-- [ ] Teste de concorrência cobre o cenário.
+- [x] Criação concorrente não gera protocolo duplicado.
+- [x] Exclusões não reutilizam protocolo.
+- [x] UI não pede protocolo manual.
+- [x] Teste de concorrência cobre o cenário.
+
+**Resolução (2026-11-21)**
+- `OcorrenciaService.Create` abre transação, insere com protocolo temporário, usa o `Id` identity como contador atômico e grava `OC-{yyyyMMdd}-{Id:D4}` antes do commit.
+- `GerarNumeroProtocolo()` e o `Count() + 1` foram removidos.
+- `ProtocoloOcorrenciaTests` cobre exclusão/recriação e 10 POSTs paralelos usando SQLite em arquivo.
 
 **Prompt para o ChatGPT**
 ```text
@@ -467,9 +493,13 @@ Fila de ocorrências exibida em ordem incorreta, podendo esconder casos crítico
 3. Aplicar a mesma regra em outras listagens/filtros.
 
 **Critérios de aceite**
-- [ ] Lista “abertas” coloca Crítica primeiro.
-- [ ] Empate é resolvido por data de criação decrescente.
-- [ ] Teste cobre todas as prioridades.
+- [x] Lista “abertas” coloca Crítica primeiro.
+- [x] Empate é resolvido por data de criação decrescente.
+- [x] Teste cobre todas as prioridades.
+
+**Resolução (2026-11-21)**
+- `GetOcorrenciasAbertas` ordena por ranking de criticidade (Crítica=4, Alta=3, Média=2, Baixa=1) e desempata por `CreateAt` decrescente.
+- `OrdenacaoPrioridadeTests` cobre as quatro prioridades e o desempate.
 
 **Prompt para o ChatGPT**
 ```text
@@ -509,9 +539,16 @@ Campos silenciosamente ignorados, dados `undefined` e futuras falhas de integra�
 4. Compartilhar ou documentar enums.
 
 **Critérios de aceite**
-- [ ] Nenhum campo exibido na UI é ignorado pelo backend.
-- [ ] Tipos TypeScript refletem exatamente as respostas da API.
-- [ ] Enums de equipe alinhados.
+- [x] Nenhum campo exibido na UI é ignorado pelo backend.
+- [x] Tipos TypeScript refletem exatamente as respostas da API.
+- [x] Enums de equipe alinhados.
+
+**Resolução (2026-11-21)**
+- `OcorrenciaResponseDto` expõe `CreatedAt`/`UpdatedAt` e o frontend usa `createdAt`/`updatedAt`.
+- `UpdateOcorrenciaDto` usa `DataHora?`; o formulário e a página enviam `dataHora`.
+- `CriarOcorrenciaDto` e `OcorrenciaForm` não enviam mais protocolo/status (o backend gera o protocolo e define `Aberta`).
+- `UpdateAlertaDto` aceita `DataInicio` e o formulário envia a data em ISO.
+- `TiposEquipe`/`StatusEquipe` alinhados com `Entities/Equipes.cs`.
 
 **Prompt para o ChatGPT**
 ```text

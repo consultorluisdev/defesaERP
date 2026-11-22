@@ -11,26 +11,36 @@ interface Props {
 const TIPOS: TipoOcorrencia[] = ["Alagamento", "Deslizamento", "Incêndio", "Queda de Árvore", "Microexplosão", "Resgate", "Interdição", "Outros"];
 const PRIORIDADES: PrioridadeOcorrencia[] = ["Crítica", "Alta", "Média", "Baixa"];
 
+function toLocalInputValue(date: Date) {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export function OcorrenciaForm({ onClose, onSaved }: Props) {
     const [form, setForm] = useState<CriarOcorrenciaDto>({
-        numeroProtocolo: "",
         tipoOcorrencia: "Alagamento",
         descricao: "",
-        dataHora: new Date().toISOString().slice(0, 16),
+        dataHora: toLocalInputValue(new Date()),
         cidade: "",
         bairro: "",
         endereco: "",
         prioridade: "Média",
     });
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setSaving(true);
+        setError(null);
         try {
-            await ocorrenciaService.criar(form);
+            await ocorrenciaService.criar({
+                ...form,
+                dataHora: new Date(form.dataHora).toISOString(),
+            });
             onSaved();
         } catch {
+            setError("Não foi possível salvar a ocorrência. Verifique os campos e tente novamente.");
             setSaving(false);
         }
     };
@@ -46,27 +56,21 @@ export function OcorrenciaForm({ onClose, onSaved }: Props) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs text-gray-400 mb-1">Protocolo</label>
-                            <input
-                                required
-                                maxLength={20}
-                                value={form.numeroProtocolo}
-                                onChange={(e) => setForm({ ...form, numeroProtocolo: e.target.value })}
-                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
-                            />
+                    {error && (
+                        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-500">
+                            {error}
                         </div>
-                        <div>
-                            <label className="block text-xs text-gray-400 mb-1">Data/Hora</label>
-                            <input
-                                required
-                                type="datetime-local"
-                                value={form.dataHora}
-                                onChange={(e) => setForm({ ...form, dataHora: e.target.value })}
-                                className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
-                            />
-                        </div>
+                    )}
+
+                    <div>
+                        <label className="block text-xs text-gray-400 mb-1">Data/Hora</label>
+                        <input
+                            required
+                            type="datetime-local"
+                            value={form.dataHora}
+                            onChange={(e) => setForm({ ...form, dataHora: e.target.value })}
+                            className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 focus:outline-none focus:border-blue-500"
+                        />
                     </div>
 
                     <div>

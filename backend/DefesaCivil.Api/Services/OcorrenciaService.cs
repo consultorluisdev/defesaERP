@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DefesaCivil.Api.Common;
 
 namespace DefesaERP.Services
 {
@@ -33,16 +34,20 @@ namespace DefesaERP.Services
         {
             var ocorrencia = await _context.Ocorrencias
                 .FirstOrDefaultAsync(o => o.Id == id);
-            
-            if(ocorrencia == null)
+
+            if (ocorrencia == null)
                 return null;
             return ToResponseDto(ocorrencia);
         }
         public async Task<OcorrenciaResponseDto> Create(CreateOcorrenciaDto dto)
         {
+            var now = DateTime.UtcNow;
+
+            await using var tx = await _context.Database.BeginTransactionAsync();
+
             var ocorrencia = new Ocorrencias
             {
-                NumeroProtocolo = GerarNumeroProtocolo(),
+                NumeroProtocolo = "TMP-" + Guid.NewGuid().ToString("N")[..12],
                 TipoOcorrencia = dto.TipoOcorrencia,
                 Descricao = dto.Descricao,
                 Cidade = dto.Cidade,
@@ -56,13 +61,18 @@ namespace DefesaERP.Services
                 TelefoneSolicitante = dto.TelefoneSolicitante ?? string.Empty,
                 NomeSolicitante = dto.NomeSolicitante ?? string.Empty,
                 Observacoes = dto.Observacoes ?? string.Empty,
-                DataHora = dto.DataHora,
-                CreateAt = DateTime.UtcNow,
-                UpdateAt = DateTime.UtcNow
+                DataHora = DateTimeUtc.Normalize(dto.DataHora),
+                CreateAt = now,
+                UpdateAt = now
             };
 
             _context.Ocorrencias.Add(ocorrencia);
             await _context.SaveChangesAsync();
+
+            ocorrencia.NumeroProtocolo = $"OC-{now:yyyyMMdd}-{ocorrencia.Id:D4}";
+            await _context.SaveChangesAsync();
+
+            await tx.CommitAsync();
 
             return ToResponseDto(ocorrencia);
         }
@@ -71,7 +81,7 @@ namespace DefesaERP.Services
             var ocorrencia = await _context.Ocorrencias
             .FirstOrDefaultAsync(o => o.Id == id);
 
-            if(ocorrencia == null)
+            if (ocorrencia == null)
                 return null;
 
             ocorrencia.TipoOcorrencia = dto.TipoOcorrencia ?? ocorrencia.TipoOcorrencia;
@@ -85,9 +95,13 @@ namespace DefesaERP.Services
             ocorrencia.Prioridade = dto.Prioridade ?? ocorrencia.Prioridade;
             ocorrencia.Responsavel = dto.Responsavel ?? ocorrencia.Responsavel;
             ocorrencia.TelefoneSolicitante = dto.TelefoneSolicitante ?? ocorrencia.TelefoneSolicitante;
+
             ocorrencia.NomeSolicitante = dto.NomeSolicitante ?? ocorrencia.NomeSolicitante;
             ocorrencia.Observacoes = dto.Observacoes ?? ocorrencia.Observacoes;
-            ocorrencia.DataHora = dto.DataOcorrencia;
+
+            if (dto.DataHora.HasValue)
+                ocorrencia.DataHora = DateTimeUtc.Normalize(dto.DataHora.Value);
+
             ocorrencia.UpdateAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -99,7 +113,7 @@ namespace DefesaERP.Services
             var ocorrencia = await _context.Ocorrencias
                 .FirstOrDefaultAsync(o => o.Id == id);
 
-            if(ocorrencia == null)
+            if (ocorrencia == null)
                 return false;
 
             _context.Ocorrencias.Remove(ocorrencia);
@@ -132,22 +146,26 @@ namespace DefesaERP.Services
                 .Where(o => o.Prioridade == prioridade)
                 .OrderByDescending(o => o.CreateAt)
                 .ToListAsync();
-            
+
             return ocorrencias.Select(ToResponseDto).ToList();
         }
-         
+
         public async Task<List<OcorrenciaResponseDto>> GetOcorrenciasAbertas()
         {
             var ocorrencias = await _context.Ocorrencias
-                .Where(o => o.Status == OcorrenciaStatus.Aberta || 
+                .Where(o => o.Status == OcorrenciaStatus.Aberta ||
                             o.Status == OcorrenciaStatus.EmAndamento)
-                .OrderByDescending(o => o.Prioridade)
+                .OrderByDescending(o =>
+                    o.Prioridade == OcorrenciaPrioridade.Critica ? 4 :
+                    o.Prioridade == OcorrenciaPrioridade.Alta ? 3 :
+                    o.Prioridade == OcorrenciaPrioridade.Media ? 2 :
+                    o.Prioridade == OcorrenciaPrioridade.Baixa ? 1 : 0)
                 .ThenByDescending(o => o.CreateAt)
                 .ToListAsync();
 
             return ocorrencias.Select(ToResponseDto).ToList();
         }
-        
+
         public async Task<List<OcorrenciaResponseDto>> GetUltimasOcorrencias(int quantidade)
         {
             var ocorrencias = await _context.Ocorrencias
@@ -156,15 +174,6 @@ namespace DefesaERP.Services
                 .ToListAsync();
 
             return ocorrencias.Select(ToResponseDto).ToList();
-        }
-        private string GerarNumeroProtocolo()
-        {
-            var ano = DateTime.UtcNow.Year;
-            var mes = DateTime.UtcNow.Month.ToString("D2");
-            var dia = DateTime.UtcNow.Day.ToString("D2");
-            var sequencial = _context.Ocorrencias.Count() + 1;
-
-            return $"OC-{ano}{mes}{dia}-{sequencial.ToString("D4")}";
         }
         private OcorrenciaResponseDto ToResponseDto(Ocorrencias ocorrencia)
         {
@@ -185,12 +194,12 @@ namespace DefesaERP.Services
                 TelefoneSolicitante = ocorrencia.TelefoneSolicitante,
                 NomeSolicitante = ocorrencia.NomeSolicitante,
                 Observacoes = ocorrencia.Observacoes,
-                DataHora = ocorrencia.DataHora,
-                CreateAt = ocorrencia.CreateAt,
-                UpdateAt = ocorrencia.UpdateAt
+                DataHora = DateTimeUtc.Normalize(ocorrencia.DataHora),
+                CreatedAt = DateTimeUtc.Normalize(ocorrencia.CreateAt),
+                UpdatedAt = DateTimeUtc.Normalize(ocorrencia.UpdateAt)
             };
         }
-        
+
     }
 
 }

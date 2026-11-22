@@ -10,6 +10,10 @@
 **/obj/
 *.user
 
+# SQLite (arquivos temporarios do WAL)
+*.db-shm
+*.db-wal
+
 # Python
 venv/
 __pycache__/
@@ -23,3 +27,7 @@ dist/
 # IDE
 .idea/
 *.swp
+
+# Banco de dev local
+backend/DefesaCivil.Api/defesa-dev.db
+*.db

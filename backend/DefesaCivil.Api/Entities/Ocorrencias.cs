@@ -91,7 +91,7 @@ public static class OcorrenciaStatus
 }
 
 
-public class OcorrenciaPrioridade
+public static class OcorrenciaPrioridade
 {
     public const string Baixa = "Baixa";
     public const string Media = "Média";

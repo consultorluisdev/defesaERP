@@ -98,7 +98,8 @@ namespace DefesaCivil.Api.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Sqlite:Autoincrement", true),
                     numero_protocolo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     TipoOcorrencia = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),

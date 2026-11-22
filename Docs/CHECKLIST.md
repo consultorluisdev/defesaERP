@@ -97,6 +97,12 @@
 - API/chave de clima para monitoramento real
 - Matriz de permissões para Perfis/roles
 
+### 🚫 Guardrails
+
+- **Agente Rust `defesa-ia`:** não apagar, mover ou alterar. Está em outro perfil/máquina e fora do escopo deste workspace. Caminho a confirmar com o Luís.
+- **Serviço `defesa-ia`:** é dependência externa do Monitoramento/Radar/IA Predict; qualquer mudança precisa de confirmação.
+- **Banco de desenvolvimento:** não apagar `defesa-dev.db` nem os dados existentes.
+
 ### 🤝 Fluxo combinado
 
 - [ ] Você codifica o módulo

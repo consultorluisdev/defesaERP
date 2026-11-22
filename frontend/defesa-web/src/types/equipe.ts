@@ -53,9 +53,11 @@ export const TiposEquipe = {
     VISTORIA: 'Vistoria',
     LOGISTICA: 'Logistica',
     RESGATE: 'Resgate',
-    OPERACOES: 'Operacoes',
+    BOMBEIROS: 'Bombeiros',
+    DEFESA_CIVIL: 'DefesaCivil',
     VOLUNTARIOS: 'Voluntarios',
-    ADMINISTRATIVA: 'Administrativa'
+    ADMINISTRATIVA: 'Administrativa',
+    OUTROS: 'Outros'
 } as const;
 
 export const StatusEquipe = {
@@ -63,7 +65,10 @@ export const StatusEquipe = {
     EM_ATENDIMENTO: 'EmAtendimento',
     EM_DESLOCAMENTO: 'EmDeslocamento',
     EM_APOIO: 'EmApoio',
-    INDISPONIVEL: 'Indisponivel'
+    INDISPONIVEL: 'Indisponivel',
+    OCUPADA: 'Ocupada',
+    EM_MANUTENCAO: 'EmManutencao',
+    FORA_DE_SERVICO: 'ForaDeServico'
 } as const;
 
 export type TipoEquipeType = typeof TiposEquipe[keyof typeof TiposEquipe];

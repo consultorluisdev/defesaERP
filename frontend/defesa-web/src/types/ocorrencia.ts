@@ -30,11 +30,10 @@ export interface Ocorrencia {
     nomeSolicitante: string | null;
     observacoes: string | null;
     createdAt: string;
-    updateAt: string;
+    updatedAt: string;
 }
 
 export interface CriarOcorrenciaDto {
-    numeroProtocolo: string;
     tipoOcorrencia: TipoOcorrencia;
     descricao: string;
     dataHora: string;
@@ -43,7 +42,6 @@ export interface CriarOcorrenciaDto {
     endereco: string;
     latitude?: string;
     longitude?: string;
-    status?: StatusOcorrencia;
     prioridade?: PrioridadeOcorrencia;
     responsavel?: string;
     telefoneSolicitante?: string;
@@ -65,7 +63,7 @@ export interface AtualizarOcorrenciaDto {
     telefoneSolicitante?: string;
     nomeSolicitante?: string;
     observacoes?: string;
-    dataOcorrencia: string;
+    dataHora?: string;
 }
 
 export interface OcorrenciaFiltros {

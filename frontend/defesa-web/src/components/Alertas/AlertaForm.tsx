@@ -108,7 +108,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
       cidade: formData.cidade,
       latitude: formData.latitude ?? undefined,
       longitude: formData.longitude ?? undefined,
-      dataInicio: formData.dataInicio,
+      dataInicio: new Date(formData.dataInicio).toISOString(),
       responsavel: formData.responsavel,
       observacoes: formData.observacoes,
     };
@@ -118,7 +118,7 @@ export const AlertaForm: React.FC<AlertaFormProps> = ({
         await alertaService.update(alerta.id, {
           ...base,
           status: formData.status as UpdateAlertaDto["status"],
-          dataFim: formData.dataFim || undefined,
+          dataFim: formData.dataFim ? new Date(formData.dataFim).toISOString() : undefined,
         });
       } else {
         await alertaService.criar(base);

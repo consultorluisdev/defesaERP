@@ -4,9 +4,6 @@ namespace DefesaCivil.Api.DTOs.Ocorrencia
 {
     public class CreateOcorrenciaDto
     {
-        [Required]
-        [StringLength(20)]
-        public string NumeroProtocolo { get; set; } = string.Empty;
 
         [Required]
         [StringLength(50)]
@@ -34,9 +31,6 @@ namespace DefesaCivil.Api.DTOs.Ocorrencia
 
         [StringLength(20)]
         public string? Longitude { get; set; }
-
-        [StringLength(20)]
-        public string Status { get; set; } = "Aberta";
 
         [StringLength(20)]
         public string Prioridade { get; set; } = "Média";

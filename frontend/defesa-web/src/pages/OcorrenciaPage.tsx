@@ -47,12 +47,18 @@ export function OcorrenciaPage() {
     const handleChangeStatus = async (id: number, status: StatusOcorrencia) => {
         const ocorrencia = ocorrencias.find((o) => o.id === id);
         if (!ocorrencia) return;
-        await ocorrenciaService.atualizar(id, {
-            status,
-            dataOcorrencia: ocorrencia.dataHora,
-        });
-        await carregar();
-        setSelecionada(null);
+
+        setError(null);
+        try {
+            await ocorrenciaService.atualizar(id, {
+                status,
+                dataHora: ocorrencia.dataHora,
+            });
+            await carregar();
+            setSelecionada(null);
+        } catch {
+            setError("Não foi possível alterar o status da ocorrência.");
+        }
     };
 
     return (

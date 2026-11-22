@@ -1,3 +1,4 @@
+using DefesaCivil.Api.Common;
 using Microsoft.EntityFrameworkCore;
 using DefesaCivil.Api.DTOs;
 using DefesaCivil.Api.Entities;
@@ -41,7 +42,7 @@ namespace DefesaCivil.Api.Services
         Cidade = dto.Cidade,
         Latitude = dto.Latitude,
         Longitude = dto.Longitude,
-        DataInicio = dto.DataInicio ?? DateTime.UtcNow,
+        DataInicio = DateTimeUtc.Normalize(dto.DataInicio) ?? DateTime.UtcNow,
         Responsavel = dto.Responsavel,
         Observacoes = dto.Observacoes,
         CreatedAt = DateTime.UtcNow
@@ -56,7 +57,7 @@ namespace DefesaCivil.Api.Services
     public async Task<AlertaResponseDto?> Update(int id, UpdateAlertaDto dto)
     {
       var alerta = await _context.Alertas.FindAsync(id);
-      if(alerta is null) return null;
+      if (alerta is null) return null;
 
       alerta.Titulo = dto.Titulo;
       alerta.Descricao = dto.Descricao;
@@ -66,12 +67,17 @@ namespace DefesaCivil.Api.Services
       alerta.Cidade = dto.Cidade;
       alerta.Latitude = dto.Latitude;
       alerta.Longitude = dto.Longitude;
-      alerta.DataFim = dto.DataFim;
+
+      if (dto.DataInicio.HasValue)
+        alerta.DataInicio = DateTimeUtc.Normalize(dto.DataInicio.Value);
+
+      alerta.DataFim = DateTimeUtc.Normalize(dto.DataFim);
+
       alerta.Responsavel = dto.Responsavel;
       alerta.Observacoes = dto.Observacoes;
       alerta.UpdatedAt = DateTime.UtcNow;
 
-      if(dto.Status == StatusAlerta.Encerrado && alerta.DataFim is null)
+      if (dto.Status == StatusAlerta.Encerrado && alerta.DataFim is null)
         alerta.DataFim = DateTime.UtcNow;
 
       await _context.SaveChangesAsync();

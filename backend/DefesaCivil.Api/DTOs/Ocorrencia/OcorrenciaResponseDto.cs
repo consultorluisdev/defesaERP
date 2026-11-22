@@ -18,7 +18,7 @@ namespace DefesaCivil.Api.DTOs.Ocorrencia
         public string? TelefoneSolicitante { get; set; }
         public string? NomeSolicitante { get; set; }
         public string? Observacoes { get; set; }
-        public DateTime CreateAt { get; set; }
-        public DateTime UpdateAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

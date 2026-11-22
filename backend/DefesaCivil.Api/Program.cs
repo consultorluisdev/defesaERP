@@ -136,76 +136,21 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-    if (useSqlite)
+    // Aplica migrations em ambos os providers. O SQLite de desenvolvimento
+    // antigo (criado por EnsureCreated) recebe um baseline automatico.
+    await DatabaseInitializer.InitializeAsync(db, logger, allowLegacySqliteBaseline: useSqlite);
+
+    logger.LogInformation("Banco conectado e migrations aplicadas com sucesso.");
+
+    if (useSqlite && !db.Users.Any())
     {
-        db.Database.EnsureCreated();
-
-        // EnsureCreated nao adiciona tabelas novas a um banco ja existente.
-        // Estes comandos idempotentes garantem a evolucao do banco de desenvolvimento
-        // sem apagar dados.
-        db.Database.ExecuteSqlRaw("""
-            CREATE TABLE IF NOT EXISTS "Solicitacoes" (
-                "Id" INTEGER NOT NULL CONSTRAINT "PK_Solicitacoes" PRIMARY KEY AUTOINCREMENT,
-                "Protocolo" TEXT NOT NULL,
-                "Solicitante" TEXT NOT NULL,
-                "Telefone" TEXT NOT NULL,
-                "Email" TEXT NULL,
-                "Tipo" TEXT NOT NULL,
-                "Descricao" TEXT NOT NULL,
-                "Endereco" TEXT NOT NULL,
-                "Bairro" TEXT NULL,
-                "Municipio" TEXT NOT NULL,
-                "Status" TEXT NOT NULL,
-                "Prioridade" TEXT NOT NULL,
-                "Responsavel" TEXT NULL,
-                "Observacoes" TEXT NULL,
-                "CreatedAt" TEXT NOT NULL,
-                "UpdatedAt" TEXT NULL
-            );
-            """);
-
-        db.Database.ExecuteSqlRaw(
-            "CREATE UNIQUE INDEX IF NOT EXISTS \"IX_Solicitacoes_Protocolo\" ON \"Solicitacoes\" (\"Protocolo\");");
-        db.Database.ExecuteSqlRaw(
-            "CREATE INDEX IF NOT EXISTS \"IX_Solicitacoes_Status\" ON \"Solicitacoes\" (\"Status\");");
-        db.Database.ExecuteSqlRaw(
-            "CREATE INDEX IF NOT EXISTS \"IX_Solicitacoes_Prioridade\" ON \"Solicitacoes\" (\"Prioridade\");");
-
-        logger.LogInformation("Banco SQLite de desenvolvimento pronto.");
-
-        if (!db.Users.Any())
+        db.Users.Add(new DefesaCivil.Api.Models.User
         {
-            db.Users.Add(new DefesaCivil.Api.Models.User
-            {
-                Email = "admin@defesa.sc",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("defesa123")
-            });
-            db.SaveChanges();
-            logger.LogInformation("Usuário demo criado: admin@defesa.sc / defesa123");
-        }
-    }
-    else
-    {
-        var migrated = false;
-
-        for (int i = 0; i < 10; i++)
-        {
-            try
-            {
-                db.Database.Migrate();
-                migrated = true;
-                logger.LogInformation("Banco conectado e migrations aplicadas com sucesso.");
-                break;
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Tentativa {Tentativa} de conexão/migração do banco falhou.", i + 1);
-                Thread.Sleep(3000);
-            }
-        }
-
-        if (!migrated)
-            throw new InvalidOperationException("Não foi possível conectar ao banco ou aplicar as migrations após 10 tentativas.");
+            Email = "admin@defesa.sc",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("defesa123")
+        });
+        db.SaveChanges();
+        logger.LogInformation("Usuário demo criado: admin@defesa.sc / defesa123");
     }
 }
 

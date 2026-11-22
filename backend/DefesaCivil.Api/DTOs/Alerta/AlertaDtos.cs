@@ -1,4 +1,5 @@
 using System;
+using DefesaCivil.Api.Common;
 using DefesaCivil.Api.Entities;
 
 namespace DefesaCivil.Api.DTOs
@@ -33,6 +34,8 @@ namespace DefesaCivil.Api.DTOs
     public double? Latitude { get; set; }
 
     public double? Longitude { get; set; }
+
+    public DateTime? DataInicio { get; set; }
 
     public DateTime? DataFim { get; set; }
 
@@ -76,12 +79,12 @@ namespace DefesaCivil.Api.DTOs
       Cidade = a.Cidade,
       Latitude = a.Latitude,
       Longitude = a.Longitude,
-      DataInicio = a.DataInicio,
-      DataFim = a.DataFim,
+      DataInicio = DateTimeUtc.Normalize(a.DataInicio),
+      DataFim = DateTimeUtc.Normalize(a.DataFim),
       Responsavel = a.Responsavel,
       Observacoes = a.Observacoes,
-      CreatedAt = a.CreatedAt,
-      UpdatedAt = a.UpdatedAt,
+      CreatedAt = DateTimeUtc.Normalize(a.CreatedAt),
+      UpdatedAt = DateTimeUtc.Normalize(a.UpdatedAt),
 
     };
   }
