@@ -39,6 +39,9 @@ builder.Services.AddScoped<OcorrenciaService>();
 builder.Services.AddScoped<AlertaService>();
 builder.Services.AddScoped<EquipeService>();
 builder.Services.AddScoped<SolicitacaoService>();
+builder.Services.AddScoped<VistoriaService>();
+builder.Services.AddScoped<ViaturaService>();
+builder.Services.AddScoped<AbrigoService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -157,4 +160,3 @@ using (var scope = app.Services.CreateScope())
 app.Run();
 
 public partial class Program { }
-

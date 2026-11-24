@@ -33,6 +33,8 @@ public class AppDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Ocorrencias> Ocorrencias { get; set; }
+    public DbSet<Vistoria> Vistorias { get; set; }
+    public DbSet<Viatura> Viaturas { get; set; }
     public DbSet<Alerta> Alertas { get; set; }
     public DbSet<Equipe> Equipes { get; set; }
     public DbSet<Abrigo> Abrigos { get; set; }

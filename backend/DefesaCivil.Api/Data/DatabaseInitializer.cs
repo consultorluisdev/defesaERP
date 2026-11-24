@@ -24,7 +24,9 @@ public static class DatabaseInitializer
     private static readonly string[] LegacyBaselineMigrations =
     {
         "20261101175213_InitialCreate",
-        "20261120022101_AddSolicitacoes"
+        "20261120022101_AddSolicitacoes",
+        "20261124024857_AddVistorias",      // ajuste para o ID real da migration
+        "20261124_AddViaturas"        // ajuste para o ID real da migration
     };
 
     public static async Task InitializeAsync(

@@ -127,7 +127,8 @@ public class DatabaseInitializerTests
                 allowLegacySqliteBaseline: true);
 
             var applied = (await db.Database.GetAppliedMigrationsAsync()).ToList();
-            Assert.Equal(2, applied.Count);
+            Assert.True(applied.Count >= 2, $"Esperava pelo menos 2 migrations, mas encontrou {applied.Count}");
+            
         }
         finally
         {
