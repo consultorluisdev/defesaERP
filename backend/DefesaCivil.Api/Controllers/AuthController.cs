@@ -26,10 +26,12 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
+        var password = string.IsNullOrWhiteSpace(dto.PasswordHash) ? dto.Password : dto.PasswordHash;
+
+        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(password))
             return BadRequest("Email e senha são obrigatórios");
 
-        if (dto.PasswordHash.Length < 6)
+        if (password.Length < 6)
             return BadRequest("A senha deve ter no mínimo 6 caracteres");
 
         if (await _context.Users.AnyAsync(x => x.Email == dto.Email))
@@ -38,7 +40,7 @@ public class AuthController : ControllerBase
         var user = new User
         {
             Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.PasswordHash),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
         };
 
         _context.Users.Add(user);
@@ -51,13 +53,15 @@ public class AuthController : ControllerBase
     [EnableRateLimiting("auth")]
     public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.PasswordHash))
+        var password = string.IsNullOrWhiteSpace(dto.PasswordHash) ? dto.Password : dto.PasswordHash;
+
+        if (string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(password))
             return BadRequest("Email e senha são obrigatórios");
 
         var user = await _context.Users
             .FirstOrDefaultAsync(x => x.Email == dto.Email);
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.PasswordHash, user.PasswordHash))
+        if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             return Unauthorized("Credenciais inválidas");
 
         var token = _tokenService.GenerateAccessToken(user);

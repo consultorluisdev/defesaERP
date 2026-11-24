@@ -76,18 +76,18 @@ namespace DefesaERP.Services
       if (equipe == null)
         return null;
 
-      equipe.Nome = dto.Nome;
-      equipe.Descricao = dto.Descricao;
-      equipe.Tipo = dto.Tipo;
-      equipe.Status = dto.Status;
-      equipe.Responsavel = dto.Responsavel;
-      equipe.Telefone = dto.Telefone;
-      equipe.Email = dto.Email;
-      equipe.Municipio = dto.Municipio;
-      equipe.Endereco = dto.Endereco;
-      equipe.QuantidadeMembros = dto.QuantidadeMembros;
-      equipe.LocalizacaoAtual = dto.LocalizacaoAtual;
-      equipe.Observacoes = dto.Observacoes;
+      equipe.Nome = dto.Nome ?? equipe.Nome;
+      equipe.Descricao = dto.Descricao ?? equipe.Descricao;
+      equipe.Tipo = dto.Tipo ?? equipe.Tipo;
+      equipe.Status = dto.Status ?? equipe.Status;
+      equipe.Responsavel = dto.Responsavel ?? equipe.Responsavel;
+      equipe.Telefone = dto.Telefone ?? equipe.Telefone;
+      equipe.Email = dto.Email ?? equipe.Email;
+      equipe.Municipio = dto.Municipio ?? equipe.Municipio;
+      equipe.Endereco = dto.Endereco ?? equipe.Endereco;
+      equipe.QuantidadeMembros = dto.QuantidadeMembros ?? equipe.QuantidadeMembros;
+      equipe.LocalizacaoAtual = dto.LocalizacaoAtual ?? equipe.LocalizacaoAtual;
+      equipe.Observacoes = dto.Observacoes ?? equipe.Observacoes;
       equipe.UpdatedAt = DateTime.UtcNow;
 
       await _context.SaveChangesAsync();

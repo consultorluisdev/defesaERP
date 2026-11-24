@@ -1,3 +1,4 @@
+using DefesaERP.DTOs;
 using System;
 using System.ComponentModel.DataAnnotations;
 
